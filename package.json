@@ -6,9 +6,16 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "chart.js": "^2.9.3",
+    "firebase": "^7.17.1",
+    "fs": "0.0.1-security",
+    "line-by-line": "^0.1.6",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
+    "react-chartjs-2": "^2.10.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-table": "^7.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
