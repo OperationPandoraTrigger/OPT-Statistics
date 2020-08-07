@@ -1,10 +1,15 @@
 /* eslint import/no-webpack-loader-syntax: off */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 import './App.css';
 import {Line, Radar} from 'react-chartjs-2';
 import {duration, utc} from "moment";
-import {useSortBy, useTable} from "react-table";
 import {DEMOLOG} from "./log";
+import MaterialTable from "material-table";
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+
+const tableIcons = {
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
+};
 
 const LINE_TOOLTIP = {
     callbacks: {
@@ -27,7 +32,7 @@ const GAMETIME_SCALE = {
     bounds: 'data',
     ticks: {
         min: 0,
-    //    max: 9005000
+        //    max: 9005000
     },
     time: {
         unit: 'second',
@@ -51,56 +56,72 @@ const budgetDatasets = [];
 const playerStats = {};
 const playerColumns = [
     {
-        Header: 'Spielername',
-        accessor: 'name'
+        title: 'Spielername',
+        field: 'name',
     },
     {
-        Header: 'Abschüsse',
-        accessor: 'kills'
+        title: 'Abschüsse',
+        field: 'kills',
+        type: 'numeric',
     },
     {
-        Header: 'Eigenbeschuss',
-        accessor: 'friendlyFires'
+        title: 'Eigenbeschuss',
+        field: 'friendlyFires',
+        type: 'numeric',
     },
     {
-        Header: 'Wiederbelebung',
-        accessor: 'revives'
+        title: 'Wiederbelebung',
+        field: 'revives',
+        type: 'numeric',
     },
     {
-        Header: 'Eroberungen',
-        accessor: 'captures'
+        title: 'Eroberungen',
+        field: 'captures',
+        type: 'numeric',
     },
     {
-        Header: 'Fahrzeug (Leicht)',
-        accessor: 'lightVehicle'
+        title: 'Fahrzeug (Leicht)',
+        field: 'lightVehicle',
+        type: 'numeric',
     },
     {
-        Header: 'Fahrzeug (Schwer)',
-        accessor: 'heavyVehicle'
+        title: 'Fahrzeug (Schwer)',
+        field: 'heavyVehicle',
+        type: 'numeric',
     },
     {
-        Header: 'Fahrzeug (Luft)',
-        accessor: 'airVehicle'
+        title: 'Fahrzeug (Luft)',
+        field: 'airVehicle',
+        type: 'numeric',
     },
     {
-        Header: 'Passagier Flugdistanz',
-        accessor: 'traveled'
+        title: 'Passagier Flugdistanz',
+        field: 'traveled'
     },
     {
-        Header: 'Pilot Flugdistanz',
-        accessor: 'carried'
+        title: 'Pilot Flugdistanz',
+        field: 'carried'
     },
     {
-        Header: 'Bewusstlosigkeit',
-        accessor: 'passOuts'
+        title: 'Bewusstlosigkeit',
+        field: 'passOuts',
+        type: 'numeric',
     },
     {
-        Header: 'Geld ausgegeben',
-        accessor: 'moneySpent'
+        title: 'Geld ausgegeben',
+        field: 'moneySpent',
+        type: 'currency',
+        currencySetting: {
+            locale: 'de-DE',
+            currency: 'EUR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }
     },
     {
-        Header: 'Tode',
-        accessor: 'died'
+        title: 'Tode',
+        field: 'died',
+        type: 'numeric',
     },
 ]
 
@@ -232,7 +253,11 @@ function parseFlag(line, gameTimeAsMilliseconds) {
     const {player, flagSide, action} = dominationMatch?.groups || {};
     if (player) {
         appendPlayerData(player, "captures", 1)
-        appendLineData(dominationDatasets, flagSide, {t: gameTimeAsMilliseconds, y: action === "erobert" ? 1 : -1, line}, {
+        appendLineData(dominationDatasets, flagSide, {
+            t: gameTimeAsMilliseconds,
+            y: action === "erobert" ? 1 : -1,
+            line
+        }, {
             type: 'bar',
             barPercentage: 1,
             categoryPercentage: 1,
@@ -307,7 +332,7 @@ function parseLog(log) {
         })
 }
 
-const radarLabels = playerColumns.map(c => c.accessor);
+const radarLabels = playerColumns.map(c => c.field);
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -318,14 +343,27 @@ function App() {
     useEffect(() => {
         parseLog(DEMOLOG)
         setLoading(false)
-    })
-
+    }, [])
 
     return (
         <div className="App">
             <input type="file" onChange={onUploadLog}/>
             {!loading && <>
-                <PlayerTable/>
+                <MaterialTable
+                    icons={tableIcons}
+                    columns={playerColumns}
+                    data={Object.values(playerStats)}
+                    options={{
+                        tableLayout: "fixed",
+                        padding: "dense",
+                        filtering: false,
+                        grouping: false,
+                        search: false,
+                        selection: false,
+                        paging: false,
+                        sorting: true
+                    }}
+                />
                 <Line data={{datasets: dominationDatasets}} options={{
                     tooltips: LINE_TOOLTIP,
                     scales: {
@@ -358,69 +396,6 @@ function App() {
             </>}
         </div>
     );
-}
-
-function PlayerTable() {
-    const columns = useMemo(() => playerColumns, [playerColumns]);
-    const data = useMemo(() => Object.values(playerStats), [playerStats]);
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable(
-        {
-            columns,
-            data,
-        },
-        useSortBy
-    )
-
-    return (
-        <>
-            <table {...getTableProps()}>
-                <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            // Add the sorting props to control sorting. For this example
-                            // we can add them into the header props
-                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                {column.render('Header')}
-                                {/* Add a sort direction indicator */}
-                                <span>
-                    {column.isSorted
-                        ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                        : ''}
-                  </span>
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                {rows.map(
-                    (row, i) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return (
-                                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                    )
-                                })}
-                            </tr>
-                        )
-                    }
-                )}
-                </tbody>
-            </table>
-        </>
-    )
 }
 
 export default App;
