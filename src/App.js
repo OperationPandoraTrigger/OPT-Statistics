@@ -150,9 +150,11 @@ function getColorForSide(side, alpha = 1) {
 }
 
 function getPlayedSide(rawSide) {
-    switch (rawSide) {
+    switch (rawSide.toLowerCase()) {
+        case 'sword':
         case 'csat':
             return `sword`;
+        case 'arf':
         case 'aaf':
         case 'guer':
             return `arf`;
@@ -191,7 +193,7 @@ function appendPlayerData(player, dataKey, dataValue) {
 }
 
 function appendLineData(sourceDatasets, rawSide, data, dataSettings = {}) {
-    const side = getPlayedSide(rawSide.toLowerCase());
+    const side = getPlayedSide(rawSide);
     if (side) {
         const matchingDataset = sourceDatasets.find((dataset) => dataset.label === side);
         if (!matchingDataset) {
@@ -253,16 +255,35 @@ function parseFlag(line, gameTimeAsMilliseconds) {
     const {player, flagSide, action} = dominationMatch?.groups || {};
     if (player) {
         appendPlayerData(player, "captures", 1)
+
+        if (dominationDatasets.length === 0) {
+            appendLineData(dominationDatasets, 'AAF', {
+                t: 0,
+                y: 1,
+                line
+            }, {
+                backgroundColor: getColorForSide('arf', 0.33),
+                hoverBackgroundColor: getColorForSide('arf', 0.33),
+                borderColor: getColorForSide('arf', 0.33),
+                steppedLine: 'stepped'
+            })
+            appendLineData(dominationDatasets, 'CSAT', {
+                t: 0,
+                y: 1,
+                line
+            }, {
+                backgroundColor: getColorForSide('sword', 0.33),
+                hoverBackgroundColor: getColorForSide('sword', 0.33),
+                borderColor: getColorForSide('sword', 0.33),
+                steppedLine: 'stepped'
+            })
+        }
         appendLineData(dominationDatasets, flagSide, {
             t: gameTimeAsMilliseconds,
-            y: action === "erobert" ? 1 : -1,
+            y: action === 'gesichert' ? 1 : -1,
             line
-        }, {
-            type: 'bar',
-            barPercentage: 1,
-            categoryPercentage: 1,
-            barThickness: 'flex',
         })
+
     }
 
     const scoreMatches = [...line.matchAll(/(?<rawSide>\w+) (?<score>\d+)/g)];
