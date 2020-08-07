@@ -1,5 +1,6 @@
 {
   "name": "opt-stats",
+  "homepage": "https://operationpandoratrigger.github.io/opt-statistics",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +10,7 @@
     "chart.js": "^2.9.3",
     "firebase": "^7.17.1",
     "fs": "0.0.1-security",
+    "gh-pages": "^3.1.0",
     "line-by-line": "^0.1.6",
     "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
@@ -19,6 +21,8 @@
     "react-table": "^7.5.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
