@@ -1,72 +1,52 @@
 /* eslint import/no-webpack-loader-syntax: off */
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import './App.css';
 import {Line, Radar} from 'react-chartjs-2';
-import {duration} from "moment";
+import {duration, utc} from "moment";
 import {useSortBy, useTable} from "react-table";
+import {DEMOLOG} from "./log";
 
+const LINE_TOOLTIP = {
+    callbacks: {
+        title: (tooltipItem, data) => {
+            const {t} = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
+            return utc(t).format('HH:mm:ss');
+        },
+        footer: (tooltipItem, data) => {
+            const {line} = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
+            return line;
+        }
+    },
+    position: 'nearest',
+    mode: 'index',
+    intersect: false
+};
 const GAMETIME_SCALE = {
     type: 'time',
     distribution: 'linear',
     bounds: 'data',
     ticks: {
         min: 0,
-        max: 9005000
+    //    max: 9005000
     },
     time: {
         unit: 'second',
         displayFormats: {
-            'millisecond': 'HH:mm:ss',
-            'second': 'HH:mm:ss',
-            'minute': 'HH:mm:ss',
-            'hour': 'HH:mm:ss',
-            'day': 'HH:mm:ss',
-            'week': 'HH:mm:ss',
-            'month': 'HH:mm:ss',
-            'quarter': 'HH:mm:ss',
-            'year': 'HH:mm:ss',
+            'millisecond': 'HH:mm',
+            'second': 'HH:mm',
+            'minute': 'HH:mm',
+            'hour': 'HH:mm',
+            'day': 'HH:mm',
+            'week': 'HH:mm',
+            'month': 'HH:mm',
+            'quarter': 'HH:mm',
+            'year': 'HH:mm',
         },
     },
 };
 
-const metadata = /(?:(?<date>\d{4}\/\d{2}\/\d{2}), )?(?<time>\d{2}:\d{2}:\d{2}) "\[OPT] \((?<type>Mission|Budget|Punkte|Fahne|Transport|Fraktionsübersicht|Abschuss|REVIVE)\) (?:Log: (?<gametime>\d{1,2}:\d{2}:\d{2})? ---)?/;
-
-function getColorForSide(side, alpha = 1) {
-    switch (side?.toLowerCase()) {
-        case 'csat':
-            return `rgba(255, 0, 0, ${alpha})`;
-        case 'nato':
-            return `rgba(0, 0, 255, ${alpha})`;
-        case 'aaf':
-        case 'guer':
-            return `rgba(0, 255, 0, ${alpha})`;
-        case 'arf':
-            return `rgb(9, 90, 172, ${alpha})`;
-        case 'sword':
-            return `rgb(255, 95, 0, ${alpha})`;
-        default:
-            console.error("unable to find color for side", side)
-            return `rgba(0, 0, 0, ${alpha})`;
-
-    }
-
-
-}
-
-function getPlayedSide(rawSide) {
-    switch (rawSide) {
-        case 'csat':
-            return `sword`;
-        case 'aaf':
-        case 'guer':
-            return `arf`;
-        default:
-            throw new Error(`unable to find playedSide for rawSide ${rawSide}`);
-    }
-}
-
-
 const scoreDatasets = [];
+const dominationDatasets = [];
 const budgetDatasets = [];
 const playerStats = {};
 const playerColumns = [
@@ -124,6 +104,42 @@ const playerColumns = [
     },
 ]
 
+const metadata = /(?:(?<date>\d{4}\/\d{2}\/\d{2}), )?(?<time>\d{2}:\d{2}:\d{2}) "\[OPT] \((?<type>Mission|Budget|Punkte|Fahne|Transport|Fraktionsübersicht|Abschuss|REVIVE)\) (?:Log: (?<gametime>\d{1,2}:\d{2}:\d{2})? ---)?/;
+
+function getColorForSide(side, alpha = 1) {
+    switch (side?.toLowerCase()) {
+        case 'csat':
+            return `rgba(255, 0, 0, ${alpha})`;
+        case 'nato':
+            return `rgba(0, 0, 255, ${alpha})`;
+        case 'aaf':
+        case 'guer':
+            return `rgba(0, 255, 0, ${alpha})`;
+        case 'arf':
+            return `rgb(9, 90, 172, ${alpha})`;
+        case 'sword':
+            return `rgb(255, 95, 0, ${alpha})`;
+        default:
+            console.error("unable to find color for side", side)
+            return `rgba(0, 0, 0, ${alpha})`;
+
+    }
+
+
+}
+
+function getPlayedSide(rawSide) {
+    switch (rawSide) {
+        case 'csat':
+            return `sword`;
+        case 'aaf':
+        case 'guer':
+            return `arf`;
+        default:
+            throw new Error(`unable to find playedSide for rawSide ${rawSide}`);
+    }
+}
+
 function appendPlayerData(player, dataKey, dataValue) {
     if (player) {
         if (!playerStats[player]?.name) {
@@ -142,6 +158,7 @@ function appendPlayerData(player, dataKey, dataValue) {
                 moneySpent: 0,
                 died: 0,
             }
+
             playerStats[player] = {
                 ...PRISTINE_STAT,
                 ...{[dataKey]: dataValue}
@@ -152,19 +169,22 @@ function appendPlayerData(player, dataKey, dataValue) {
     }
 }
 
-function appendLineData(sourceDatasets, rawSide, data) {
+function appendLineData(sourceDatasets, rawSide, data, dataSettings = {}) {
     const side = getPlayedSide(rawSide.toLowerCase());
     if (side) {
         const matchingDataset = sourceDatasets.find((dataset) => dataset.label === side);
         if (!matchingDataset) {
             sourceDatasets.push({
-                label: side,
                 type: 'line',
+                label: side,
+                borderWidth: 1,
+                pointRadius: 0,
+                lineTension: 0.22,
                 data: [data],
-                radius: 0,
                 backgroundColor: getColorForSide(side, 0.05),
                 hoverBackgroundColor: getColorForSide(side, 0.55),
-                borderColor: getColorForSide(side)
+                borderColor: getColorForSide(side, 1),
+                ...dataSettings
             });
         } else {
             matchingDataset.data.push(data);
@@ -177,7 +197,11 @@ function parseBudget(line, gameTimeAsMilliseconds) {
     const budgetMatch = line.match(/--- (?<rawSide>\w+) alt: (?<oldTotal>.+) - neu: (?<newTotal>.+) - Differenz: (?<balance>-?\d+). (?<player>.+) \(ver\)kaufte/)
     const {rawSide, newTotal, balance, player} = budgetMatch?.groups || {};
     if (rawSide) {
-        appendLineData(budgetDatasets, rawSide, {t: gameTimeAsMilliseconds, y: +newTotal, line})
+        appendLineData(budgetDatasets, rawSide, {
+            t: gameTimeAsMilliseconds,
+            y: +newTotal,
+            line
+        }, {steppedLine: 'stepped'})
     }
 
 
@@ -205,9 +229,15 @@ function parseRevive(line) {
 
 function parseFlag(line, gameTimeAsMilliseconds) {
     const dominationMatch = line.match(/(?<flagSide>\w+) Flagge (?<action>gesichert|erobert) von (?<player>.*)"/)
-    const {player} = dominationMatch?.groups || {};
+    const {player, flagSide, action} = dominationMatch?.groups || {};
     if (player) {
         appendPlayerData(player, "captures", 1)
+        appendLineData(dominationDatasets, flagSide, {t: gameTimeAsMilliseconds, y: action === "erobert" ? 1 : -1, line}, {
+            type: 'bar',
+            barPercentage: 1,
+            categoryPercentage: 1,
+            barThickness: 'flex',
+        })
     }
 
     const scoreMatches = [...line.matchAll(/(?<rawSide>\w+) (?<score>\d+)/g)];
@@ -230,10 +260,9 @@ function parseKill(line, gameTimeAsMilliseconds) {
 
     const {victimPlayer, slayerPlayer, victimSide, slayerSide} = playerKillMatch?.groups || {};
 
-    console.debug(victimSide, slayerSide, victimSide === slayerSide)
-    if(!victimPlayer || !slayerPlayer) {
+    if (!victimPlayer || !slayerPlayer) {
         console.error("unable to parse", {line, victimPlayer, slayerPlayer});
-    } else if(victimSide === slayerSide) {
+    } else if (victimSide === slayerSide) {
         appendPlayerData(slayerPlayer, "friendlyFires", 1)
     } else {
         appendPlayerData(victimPlayer, "passOuts", 1)
@@ -286,26 +315,31 @@ function App() {
         setLoading(true);
         event.target.files[0].text().then(parseLog).then(() => setLoading(false));
     }
+    useEffect(() => {
+        parseLog(DEMOLOG)
+        setLoading(false)
+    })
+
 
     return (
         <div className="App">
             <input type="file" onChange={onUploadLog}/>
             {!loading && <>
                 <PlayerTable/>
+                <Line data={{datasets: dominationDatasets}} options={{
+                    tooltips: LINE_TOOLTIP,
+                    scales: {
+                        xAxes: [GAMETIME_SCALE]
+                    }
+                }}/>
                 <Line data={{datasets: scoreDatasets}} options={{
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false
-                    },
+                    tooltips: LINE_TOOLTIP,
                     scales: {
                         xAxes: [GAMETIME_SCALE]
                     }
                 }}/>
                 <Line data={{datasets: budgetDatasets}} options={{
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false
-                    },
+                    tooltips: LINE_TOOLTIP,
                     scales: {
                         xAxes: [GAMETIME_SCALE]
                     }
