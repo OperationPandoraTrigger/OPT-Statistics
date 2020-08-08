@@ -1,16 +1,28 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, {forwardRef, useEffect, useState} from 'react';
 import './App.css';
-import {Line, Radar} from 'react-chartjs-2';
+import {HorizontalBar, Line, Radar} from 'react-chartjs-2';
 import {duration, utc} from "moment";
 import {DEMOLOG} from "./log";
 import MaterialTable from "material-table";
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import {SvgIcon} from "@material-ui/core";
+import {
+    DeathIcon,
+    FlagTouchIcon,
+    FriendlyFireIcon,
+    KillIcon,
+    ReviveIcon,
+    TravelDistanceIcon,
+    VehicleAirIcon,
+    VehicleHeavyIcon,
+    VehicleLightIcon
+} from "./svg/scoreboard"
+import {AttachMoney, Person} from "@material-ui/icons";
 
 const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
 };
-
 const LINE_TOOLTIP = {
     callbacks: {
         title: (tooltipItem, data) => {
@@ -31,8 +43,7 @@ const GAMETIME_SCALE = {
     distribution: 'linear',
     bounds: 'data',
     ticks: {
-        min: 0,
-        //    max: 9005000
+        min: 0
     },
     time: {
         unit: 'second',
@@ -49,66 +60,78 @@ const GAMETIME_SCALE = {
         },
     },
 };
-
 const scoreDatasets = [];
 const dominationDatasets = [];
 const budgetDatasets = [];
 const playerStats = {};
 const playerColumns = [
     {
-        title: 'Spielername',
+        tooltip: "Spielername",
+        title: <><Person/></>,
         field: 'name',
     },
     {
-        title: 'Abschüsse',
+        tooltip: "Abschüsse",
+        title: <><SvgIcon ><KillIcon/></SvgIcon></>,
         field: 'kills',
         type: 'numeric',
     },
     {
-        title: 'Eigenbeschuss',
+        tooltip: "Eigenbeschuss",
+        title: <><SvgIcon><FriendlyFireIcon/></SvgIcon></>,
         field: 'friendlyFires',
         type: 'numeric',
+
     },
     {
-        title: 'Wiederbelebung',
+        tooltip: "Wiederbelebung",
+        title: <><SvgIcon><ReviveIcon/></SvgIcon></>,
         field: 'revives',
         type: 'numeric',
     },
     {
-        title: 'Eroberungen',
+        tooltip: "Eroberungen",
+        title: <><SvgIcon><FlagTouchIcon/></SvgIcon></>,
         field: 'captures',
         type: 'numeric',
     },
     {
-        title: 'Fahrzeug (Leicht)',
+        tooltip: "Fahrzeug (Leicht)",
+        title: <><SvgIcon><VehicleLightIcon/></SvgIcon></>,
         field: 'lightVehicle',
         type: 'numeric',
     },
     {
-        title: 'Fahrzeug (Schwer)',
+        tooltip: "Fahrzeug (Schwer)",
+        title: <><SvgIcon><VehicleHeavyIcon/></SvgIcon></>,
         field: 'heavyVehicle',
         type: 'numeric',
     },
     {
-        title: 'Fahrzeug (Luft)',
+        tooltip: "Fahrzeug (Luft)",
+        title: <><SvgIcon><VehicleAirIcon/></SvgIcon></>,
         field: 'airVehicle',
         type: 'numeric',
     },
     {
-        title: 'Passagier Flugdistanz',
+        tooltip: "Passagier Flugdistanz",
+        title: <><SvgIcon><KillIcon/></SvgIcon></>,
         field: 'traveled'
     },
     {
-        title: 'Pilot Flugdistanz',
+        tooltip: "Pilot Flugdistanz",
+        title: <><SvgIcon><TravelDistanceIcon/></SvgIcon></>,
         field: 'carried'
     },
     {
-        title: 'Bewusstlosigkeit',
+        tooltip: "Bewusstlosigkeit",
+        title: <><SvgIcon><DeathIcon/></SvgIcon></>,
         field: 'passOuts',
         type: 'numeric',
     },
     {
-        title: 'Geld ausgegeben',
+        tooltip: "Geld ausgegeben",
+        title: <><SvgIcon><AttachMoney/></SvgIcon></>,
         field: 'moneySpent',
         type: 'currency',
         currencySetting: {
@@ -119,7 +142,8 @@ const playerColumns = [
         }
     },
     {
-        title: 'Tode',
+        tooltip: "Tode",
+        title: <><SvgIcon><KillIcon/></SvgIcon></>,
         field: 'died',
         type: 'numeric',
     },
@@ -145,11 +169,9 @@ function getColorForSide(side, alpha = 1) {
             return `rgba(0, 0, 0, ${alpha})`;
 
     }
-
-
 }
 
-function getPlayedSide(rawSide) {
+function getFaction(rawSide) {
     switch (rawSide.toLowerCase()) {
         case 'sword':
         case 'csat':
@@ -159,7 +181,7 @@ function getPlayedSide(rawSide) {
         case 'guer':
             return `arf`;
         default:
-            throw new Error(`unable to find playedSide for rawSide ${rawSide}`);
+            return rawSide;
     }
 }
 
@@ -193,7 +215,7 @@ function appendPlayerData(player, dataKey, dataValue) {
 }
 
 function appendLineData(sourceDatasets, rawSide, data, dataSettings = {}) {
-    const side = getPlayedSide(rawSide);
+    const side = getFaction(rawSide);
     if (side) {
         const matchingDataset = sourceDatasets.find((dataset) => dataset.label === side);
         if (!matchingDataset) {
@@ -255,35 +277,29 @@ function parseFlag(line, gameTimeAsMilliseconds) {
     const {player, flagSide, action} = dominationMatch?.groups || {};
     if (player) {
         appendPlayerData(player, "captures", 1)
+    }
 
-        if (dominationDatasets.length === 0) {
-            appendLineData(dominationDatasets, 'AAF', {
-                t: 0,
-                y: 1,
-                line
-            }, {
-                backgroundColor: getColorForSide('arf', 0.33),
-                hoverBackgroundColor: getColorForSide('arf', 0.33),
-                borderColor: getColorForSide('arf', 0.33),
-                steppedLine: 'stepped'
-            })
-            appendLineData(dominationDatasets, 'CSAT', {
-                t: 0,
-                y: 1,
-                line
-            }, {
-                backgroundColor: getColorForSide('sword', 0.33),
-                hoverBackgroundColor: getColorForSide('sword', 0.33),
-                borderColor: getColorForSide('sword', 0.33),
-                steppedLine: 'stepped'
-            })
-        }
-        appendLineData(dominationDatasets, flagSide, {
-            t: gameTimeAsMilliseconds,
-            y: action === 'gesichert' ? 1 : -1,
-            line
-        })
+    if (flagSide) {
+        const faction = getFaction(flagSide);
+        const color = getColorForSide(action === "erobert" ? 'arf' : 'sword', 0.3);
 
+        appendLineData(dominationDatasets, faction, undefined, {
+            type: 'horizontalBar',
+            label: `${faction}-${gameTimeAsMilliseconds}`,
+            barPercentage: 1,
+            categoryPercentage: 1,
+            barThickness: 'flex',
+            stack: faction,
+            backgroundColor: color,
+            borderColor: color,
+            hoverBackgroundColor: color,
+            data: [{
+                t: gameTimeAsMilliseconds,
+                x: gameTimeAsMilliseconds,
+                y: faction,
+                line
+            }],
+        });
     }
 
     const scoreMatches = [...line.matchAll(/(?<rawSide>\w+) (?<score>\d+)/g)];
@@ -382,13 +398,40 @@ function App() {
                         search: false,
                         selection: false,
                         paging: false,
-                        sorting: true
+                        sorting: true,
+                        headerStyle: {
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                        },
                     }}
                 />
-                <Line data={{datasets: dominationDatasets}} options={{
-                    tooltips: LINE_TOOLTIP,
+
+                <HorizontalBar data={{
+                    yLabels: [...dominationDatasets.reduce((set, data) => set.add(data.stack), new Set())],
+                    datasets: dominationDatasets
+                }} options={{
+                    legend: {display: false},
+                    tooltips: {
+                        mode: 'nearest',
+                        callbacks: {
+                            title: (tooltipItem, data) => {
+                                const {t} = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
+                                return utc(t).format('HH:mm:ss');
+                            },
+                            footer: (tooltipItem, data) => {
+                                const {line} = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
+                                return line;
+                            }
+                        },
+                        intersect: true
+                    },
                     scales: {
-                        xAxes: [GAMETIME_SCALE]
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
                     }
                 }}/>
                 <Line data={{datasets: scoreDatasets}} options={{
