@@ -43,7 +43,8 @@ const GAMETIME_SCALE = {
     distribution: 'linear',
     bounds: 'data',
     ticks: {
-        min: 0
+        min: 1000*60, // 60s
+        max: 1000*60*60*2.5 // 2h30m
     },
     time: {
         unit: 'second',
@@ -58,6 +59,9 @@ const GAMETIME_SCALE = {
             'quarter': 'HH:mm',
             'year': 'HH:mm',
         },
+        parser: (t)=> {
+            return utc(t).subtract('1', 'hour');
+        }
     },
 };
 const scoreDatasets = [];
@@ -427,6 +431,7 @@ function App() {
                     },
                     scales: {
                         xAxes: [{
+                            ...GAMETIME_SCALE,
                             stacked: true,
                         }],
                         yAxes: [{
@@ -454,7 +459,7 @@ function App() {
                                 label: playerName,
                                 data: radarLabels.map((label) => playerStats[playerName][label] ?? 0)
                             }
-                        ))
+                        )),
                     }}
                 />
             </>}
