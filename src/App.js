@@ -1,7 +1,8 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, {forwardRef, useEffect, useState} from 'react';
+import * as nNorm from "number-normalizer"
 import './App.css';
-import {HorizontalBar, Line, Radar} from 'react-chartjs-2';
+import {defaults, HorizontalBar, Line, Radar} from 'react-chartjs-2';
 import {duration, utc} from "moment";
 import {DEMOLOG} from "./log";
 import MaterialTable from "material-table";
@@ -19,6 +20,9 @@ import {
     VehicleLightIcon
 } from "./svg/scoreboard"
 import {AttachMoney, Person} from "@material-ui/icons";
+import {merge} from "lodash";
+import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
+import {Classic20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 
 const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
@@ -43,8 +47,8 @@ const GAMETIME_SCALE = {
     distribution: 'linear',
     bounds: 'data',
     ticks: {
-        min: 1000*60, // 60s
-        max: 1000*60*60*2.5 // 2h30m
+        min: 1000 * 60, // 60s
+        max: 1000 * 60 * 60 * 2.5 // 2h30m
     },
     time: {
         unit: 'second',
@@ -59,7 +63,7 @@ const GAMETIME_SCALE = {
             'quarter': 'HH:mm',
             'year': 'HH:mm',
         },
-        parser: (t)=> {
+        parser: (t) => {
             return utc(t).subtract('1', 'hour');
         }
     },
@@ -76,7 +80,7 @@ const playerColumns = [
     },
     {
         tooltip: "Abschüsse",
-        title: <><SvgIcon ><KillIcon/></SvgIcon></>,
+        title: <><SvgIcon><KillIcon/></SvgIcon></>,
         field: 'kills',
         type: 'numeric',
     },
@@ -373,7 +377,7 @@ function parseLog(log) {
         })
 }
 
-const radarLabels = playerColumns.map(c => c.field);
+const radarLabels = playerColumns.map(c => c.field).filter(label => label !== 'name');
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -454,13 +458,40 @@ function App() {
                 <Radar
                     data={{
                         labels: radarLabels,
-                        datasets: Object.keys(playerStats).map((playerName) => (
-                            {
-                                label: playerName,
-                                data: radarLabels.map((label) => playerStats[playerName][label] ?? 0)
+                        datasets: Object.keys(playerStats).map((playerName) => {
+                                const bar = radarLabels.map((label) => playerStats[playerName][label] ?? 0)
+
+                                return {
+                                    label: playerName,
+                                    data: nNorm.normAllMinMax(bar, 4),
+                                    borderWidth: 1,
+                                    pointRadius: 0,
+                                    lineTension: 0.05,
+                                    hidden: true,
+                                }
                             }
-                        )),
+                        ),
                     }}
+                    options={{
+                        legend: {
+                            position: "left",
+                            align: "left"
+                        },
+                        plugins: {
+                            colorschemes: {
+                                scheme: Classic20
+                            }
+                        },
+                        tooltips: {
+                            mode: "index",
+                            position: "nearest",
+                            callbacks: {
+                                title: (tooltipItem, data) => data.labels[tooltipItem[0].index],
+                            },
+                            intersect: false
+                        },
+                    }
+                    }
                 />
             </>}
         </div>
