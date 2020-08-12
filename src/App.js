@@ -1,10 +1,9 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, {forwardRef, useEffect, useState} from 'react';
-import * as nNorm from "number-normalizer"
 import './App.css';
-import {defaults, HorizontalBar, Line, Radar} from 'react-chartjs-2';
+import {HorizontalBar, Line} from 'react-chartjs-2';
 import {duration, utc} from "moment";
-import {DEMOLOG} from "./log";
+import {DEMOLOG, FPSLOG} from "./log";
 import MaterialTable from "material-table";
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import {SvgIcon} from "@material-ui/core";
@@ -20,9 +19,9 @@ import {
     VehicleLightIcon
 } from "./svg/scoreboard"
 import {AttachMoney, Person} from "@material-ui/icons";
-import {merge} from "lodash";
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
+import moment from "moment";
 
 const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
@@ -156,10 +155,11 @@ const playerColumns = [
         type: 'numeric',
     },
 ]
+const performanceDatasets = [];
 
 const metadata = /(?:(?<date>\d{4}\/\d{2}\/\d{2}), )?(?<time>\d{2}:\d{2}:\d{2}) "\[OPT] \((?<type>Mission|Budget|Punkte|Fahne|Transport|Fraktionsübersicht|Abschuss|REVIVE)\) (?:Log: (?<gametime>\d{1,2}:\d{2}:\d{2})? ---)?/;
 
-function getColorForSide(side, alpha = 1) {
+function getColorForFaction(side, alpha = 1) {
     switch (side?.toLowerCase()) {
         case 'csat':
             return `rgba(255, 0, 0, ${alpha})`;
@@ -180,7 +180,7 @@ function getColorForSide(side, alpha = 1) {
 }
 
 function getFaction(rawSide) {
-    switch (rawSide.toLowerCase()) {
+    switch (rawSide?.toLowerCase()) {
         case 'sword':
         case 'csat':
             return `sword`;
@@ -222,21 +222,17 @@ function appendPlayerData(player, dataKey, dataValue) {
     }
 }
 
-function appendLineData(sourceDatasets, rawSide, data, dataSettings = {}) {
-    const side = getFaction(rawSide);
-    if (side) {
-        const matchingDataset = sourceDatasets.find((dataset) => dataset.label === side);
+function appendLineData(sourceDatasets, label, data, dataSettings = {}) {
+    if (label) {
+        const matchingDataset = sourceDatasets.find((dataset) => dataset.label === label);
         if (!matchingDataset) {
             sourceDatasets.push({
                 type: 'line',
-                label: side,
+                label,
                 borderWidth: 1,
                 pointRadius: 0,
                 lineTension: 0.22,
                 data: [data],
-                backgroundColor: getColorForSide(side, 0.05),
-                hoverBackgroundColor: getColorForSide(side, 0.55),
-                borderColor: getColorForSide(side, 1),
                 ...dataSettings
             });
         } else {
@@ -249,12 +245,18 @@ function parseBudget(line, gameTimeAsMilliseconds) {
     // 22:33:54 "[OPT] (Budget) Log: 2:24:45 --- AAF alt: 1.495e+06 - neu: 1.445e+06 - Differenz: -50000. Verondena (ver)kaufte WY-55 Hellcat (Unarmed)"
     const budgetMatch = line.match(/--- (?<rawSide>\w+) alt: (?<oldTotal>.+) - neu: (?<newTotal>.+) - Differenz: (?<balance>-?\d+). (?<player>.+) \(ver\)kaufte/)
     const {rawSide, newTotal, balance, player} = budgetMatch?.groups || {};
-    if (rawSide) {
-        appendLineData(budgetDatasets, rawSide, {
+    const faction = getFaction(rawSide);
+    if (faction) {
+        appendLineData(budgetDatasets, faction, {
             t: gameTimeAsMilliseconds,
             y: +newTotal,
             line
-        }, {steppedLine: 'stepped'})
+        }, {
+            steppedLine: 'stepped',
+            backgroundColor: getColorForFaction(faction, 0.05),
+            hoverBackgroundColor: getColorForFaction(faction, 0.55),
+            borderColor: getColorForFaction(faction, 1),
+        })
     }
 
 
@@ -289,11 +291,10 @@ function parseFlag(line, gameTimeAsMilliseconds) {
 
     if (flagSide) {
         const faction = getFaction(flagSide);
-        const color = getColorForSide(action === "erobert" ? 'arf' : 'sword', 0.3);
+        const color = getColorForFaction(action === "erobert" ? 'arf' : 'sword', 0.3);
 
-        appendLineData(dominationDatasets, faction, undefined, {
+        appendLineData(dominationDatasets, `${faction}-${gameTimeAsMilliseconds}`, undefined, {
             type: 'horizontalBar',
-            label: `${faction}-${gameTimeAsMilliseconds}`,
             barPercentage: 1,
             categoryPercentage: 1,
             barThickness: 'flex',
@@ -313,8 +314,14 @@ function parseFlag(line, gameTimeAsMilliseconds) {
     const scoreMatches = [...line.matchAll(/(?<rawSide>\w+) (?<score>\d+)/g)];
     scoreMatches.forEach((match) => {
         const {rawSide, score} = match?.groups || {};
-        if (rawSide) {
-            appendLineData(scoreDatasets, rawSide, {t: gameTimeAsMilliseconds, y: +score, line})
+        const faction = getFaction(rawSide);
+
+        if (faction) {
+            appendLineData(scoreDatasets, faction, {t: gameTimeAsMilliseconds, y: +score, line}, {
+                backgroundColor: getColorForFaction(faction, 0.05),
+                hoverBackgroundColor: getColorForFaction(faction, 0.55),
+                borderColor: getColorForFaction(faction, 1),
+            })
         }
     })
 }
@@ -377,7 +384,27 @@ function parseLog(log) {
         })
 }
 
-const radarLabels = playerColumns.map(c => c.field).filter(label => label !== 'name');
+function parseFps(log) {
+    let starttime;
+    log.split("\n").forEach((line) => {
+        const {datetime, player, fps} = line.match(/(?<datetime>\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}) - (?<player>.+);(?<fps>\d+\.\d+);/)?.groups || {};
+        if (datetime) {
+            if (!starttime) {
+                starttime = +moment(datetime, 'YYYY-MM-DD HH:mm:ss')
+            }
+            const gameTimeAsMilliseconds = +moment(datetime, 'YYYY-MM-DD HH:mm:ss') - starttime;
+
+            appendLineData(performanceDatasets, player, {t: gameTimeAsMilliseconds, y: +fps, line}, {
+                hidden: true,
+                backgroundColor: 'rgba(0,0,0,0)',
+                lineTension: 0.25,
+            })
+        }
+    })
+
+    // TODO: add median/average/highest/lowest thingies
+
+}
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -387,6 +414,7 @@ function App() {
     }
     useEffect(() => {
         parseLog(DEMOLOG)
+        parseFps(FPSLOG)
         setLoading(false)
     }, [])
 
@@ -394,30 +422,35 @@ function App() {
         <div className="App">
             <input type="file" onChange={onUploadLog}/>
             {!loading && <>
-                <MaterialTable
-                    icons={tableIcons}
-                    columns={playerColumns}
-                    data={Object.values(playerStats)}
-                    options={{
-                        tableLayout: "fixed",
-                        padding: "dense",
-                        filtering: false,
-                        grouping: false,
-                        search: false,
-                        selection: false,
-                        paging: false,
-                        sorting: true,
-                        headerStyle: {
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                        },
-                    }}
-                />
-
+                <Line data={{datasets: performanceDatasets}} options={{
+                    title: {
+                        display: true,
+                        text: 'Performance'
+                    },
+                    plugins: {
+                        colorschemes: {
+                            scheme: Classic20,
+                            fillAlpha: 0,
+                        }
+                    },
+                    tooltips: LINE_TOOLTIP,
+                    scales: {
+                        xAxes: [GAMETIME_SCALE]
+                    },
+                    trendlineLinear: {
+                        style: 'rgba(255,105,180, 1)',
+                        lineStyle: 'solid',
+                        width: 3
+                    },
+                }}/>
                 <HorizontalBar data={{
                     yLabels: [...dominationDatasets.reduce((set, data) => set.add(data.stack), new Set())],
                     datasets: dominationDatasets
                 }} options={{
+                    title: {
+                        display: true,
+                        text: 'Fahnenbesitz'
+                    },
                     legend: {display: false},
                     tooltips: {
                         mode: 'nearest',
@@ -444,54 +477,45 @@ function App() {
                     }
                 }}/>
                 <Line data={{datasets: scoreDatasets}} options={{
+                    title: {
+                        display: true,
+                        text: 'Punktestand'
+                    },
                     tooltips: LINE_TOOLTIP,
                     scales: {
                         xAxes: [GAMETIME_SCALE]
                     }
                 }}/>
                 <Line data={{datasets: budgetDatasets}} options={{
+                    title: {
+                        display: true,
+                        text: 'Fraktionenbudget'
+                    },
                     tooltips: LINE_TOOLTIP,
                     scales: {
                         xAxes: [GAMETIME_SCALE]
-                    }
+                    },
+                    zoom: {}
                 }}/>
-                <Radar
-                    data={{
-                        labels: radarLabels,
-                        datasets: Object.keys(playerStats).map((playerName) => {
-                                const bar = radarLabels.map((label) => playerStats[playerName][label] ?? 0)
 
-                                return {
-                                    label: playerName,
-                                    data: nNorm.normAllMinMax(bar, 4),
-                                    borderWidth: 1,
-                                    pointRadius: 0,
-                                    lineTension: 0.05,
-                                    hidden: true,
-                                }
-                            }
-                        ),
-                    }}
+                <MaterialTable
+                    icons={tableIcons}
+                    columns={playerColumns}
+                    data={Object.values(playerStats)}
                     options={{
-                        legend: {
-                            position: "left",
-                            align: "left"
+                        tableLayout: "fixed",
+                        padding: "dense",
+                        filtering: false,
+                        grouping: false,
+                        search: false,
+                        selection: false,
+                        paging: false,
+                        sorting: true,
+                        headerStyle: {
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
                         },
-                        plugins: {
-                            colorschemes: {
-                                scheme: Classic20
-                            }
-                        },
-                        tooltips: {
-                            mode: "index",
-                            position: "nearest",
-                            callbacks: {
-                                title: (tooltipItem, data) => data.labels[tooltipItem[0].index],
-                            },
-                            intersect: false
-                        },
-                    }
-                    }
+                    }}
                 />
             </>}
         </div>
