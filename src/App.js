@@ -1,8 +1,8 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, {forwardRef, useEffect, useState} from 'react';
 import './App.css';
-import {HorizontalBar, Line} from 'react-chartjs-2';
-import {duration, utc} from "moment";
+import {Bar, HorizontalBar, Line} from 'react-chartjs-2';
+import moment, {duration, utc} from "moment";
 import {DEMOLOG, FPSLOG} from "./log";
 import MaterialTable from "material-table";
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -21,7 +21,7 @@ import {
 import {AttachMoney, Person} from "@material-ui/icons";
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Classic20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
-import moment from "moment";
+import {maxBy, meanBy, minBy} from "lodash";
 
 const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
@@ -156,6 +156,7 @@ const playerColumns = [
     },
 ]
 const performanceDatasets = [];
+const performanceBarDatasets = [];
 
 const metadata = /(?:(?<date>\d{4}\/\d{2}\/\d{2}), )?(?<time>\d{2}:\d{2}:\d{2}) "\[OPT] \((?<type>Mission|Budget|Punkte|Fahne|Transport|Fraktionsübersicht|Abschuss|REVIVE)\) (?:Log: (?<gametime>\d{1,2}:\d{2}:\d{2})? ---)?/;
 
@@ -403,7 +404,19 @@ function parseFps(log) {
     })
 
     // TODO: add median/average/highest/lowest thingies
+    performanceDatasets.forEach(dataset => {
+        const player = dataset.label;
 
+        const max = maxBy(dataset.data, 'y').y
+        const min = minBy(dataset.data, 'y').y
+        const mean = meanBy(dataset.data, 'y')
+        appendLineData(performanceBarDatasets, player, undefined, {
+            type: 'bar',
+            category: player,
+            stack: player,
+            data: [min, mean, max]
+        })
+    })
 }
 
 function App() {
@@ -416,12 +429,20 @@ function App() {
         parseLog(DEMOLOG)
         parseFps(FPSLOG)
         setLoading(false)
+        console.debug(performanceBarDatasets)
     }, [])
 
     return (
         <div className="App">
-            <input type="file" onChange={onUploadLog}/>
+            <input disabled type="file" onChange={onUploadLog}/>
             {!loading && <>
+                <Bar data={{datasets: performanceBarDatasets}} options={{
+                    scales: {
+                        xAxes: [{
+                            type: 'category'
+                        }],
+                    }
+                }}/>
                 <Line data={{datasets: performanceDatasets}} options={{
                     title: {
                         display: true,
