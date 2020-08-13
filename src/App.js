@@ -6,7 +6,7 @@ import moment, {duration, utc} from "moment";
 import {DEMOLOG, FPSLOG} from "./log";
 import MaterialTable from "material-table";
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import {SvgIcon} from "@material-ui/core";
+import {SvgIcon, Typography} from "@material-ui/core";
 import {
     DeathIcon,
     FlagTouchIcon,
@@ -435,6 +435,7 @@ function App() {
     return (
         <div className="App">
             <input disabled type="file" onChange={onUploadLog}/>
+            <Typography variant={"h1"}>Ernte Gut, alles Gut. Funschlacht 1.3</Typography>
             {!loading && <>
                 <Bar data={{datasets: performanceBarDatasets}} options={{
                     scales: {
