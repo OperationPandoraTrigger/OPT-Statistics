@@ -7,7 +7,7 @@ import {DEMOLOG, FPSLOG} from "./log";
 import {Typography} from "@material-ui/core";
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
 import {Tableau20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
-import {maxBy, meanBy, minBy} from "lodash";
+import {maxBy, meanBy, minBy, sortBy} from "lodash";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'hammerjs';
 import 'chartjs-plugin-zoom';
@@ -320,21 +320,28 @@ function parseFps(log) {
         const max = maxBy(dataset.data, 'y').y
         const min = minBy(dataset.data, 'y').y
         const mean = meanBy(dataset.data, 'y')
-
-        appendLineData(performanceBarDatasets, 'min', min, {
-            type: 'bar',
-            borderColor: Tableau20[3],
-            backgroundColor: Tableau20[3]
-        })
-        appendLineData(performanceBarDatasets, 'mean', mean, {
+        const median = sortBy(dataset.data, 'y')[Math.ceil(dataset.data.length/2)].y
+        appendLineData(performanceBarDatasets, 'median', median, {
             type: 'bar',
             borderColor: Tableau20[1],
             backgroundColor: Tableau20[1]
         })
-        appendLineData(performanceBarDatasets, 'max', max, {
+        appendLineData(performanceBarDatasets, 'min', min, {
             type: 'bar',
             borderColor: Tableau20[5],
-            backgroundColor: Tableau20[5]
+            backgroundColor: Tableau20[5],
+            hidden: true
+        })
+        appendLineData(performanceBarDatasets, 'mean', mean, {
+            type: 'bar',
+            borderColor: Tableau20[3],
+            backgroundColor: Tableau20[3]
+        })
+        appendLineData(performanceBarDatasets, 'max', max, {
+            type: 'bar',
+            borderColor: Tableau20[9],
+            backgroundColor: Tableau20[9],
+            hidden: true
         })
     })
 }

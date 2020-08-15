@@ -26,6 +26,7 @@ const playerColumns = [
         title: <><SvgIcon><KillIcon/></SvgIcon></>,
         field: 'kills',
         type: 'numeric',
+        defaultSort: 'desc'
     },
     {
         tooltip: "Eigenbeschuss",
