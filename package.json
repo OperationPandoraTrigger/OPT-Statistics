@@ -12,6 +12,7 @@
     "chart.js": "^2.9.3",
     "chartjs-plugin-colorschemes": "^0.4.0",
     "chartjs-plugin-crosshair": "^1.1.6",
+    "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.7",
     "distributions": "^2.1.0",
     "firebase": "^7.17.1",

@@ -1,32 +1,25 @@
 /* eslint import/no-webpack-loader-syntax: off */
-import React, {forwardRef, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Bar, HorizontalBar, Line} from 'react-chartjs-2';
+import {Bar, Chart, HorizontalBar, Line} from 'react-chartjs-2';
 import moment, {duration, utc} from "moment";
 import {DEMOLOG, FPSLOG} from "./log";
-import MaterialTable from "material-table";
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import {SvgIcon, Typography} from "@material-ui/core";
-import {
-    DeathIcon,
-    FlagTouchIcon,
-    FriendlyFireIcon,
-    KillIcon,
-    ReviveIcon,
-    TravelDistanceIcon,
-    VehicleAirIcon,
-    VehicleHeavyIcon,
-    VehicleLightIcon
-} from "./svg/scoreboard"
-import {AttachMoney, Person} from "@material-ui/icons";
+import {Typography} from "@material-ui/core";
 import 'chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes';
-import {Classic20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
+import {Tableau20} from 'chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau';
 import {maxBy, meanBy, minBy} from "lodash";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import 'hammerjs';
+import 'chartjs-plugin-zoom';
+import BudgetBurndown from "./charts/budgetDurndown";
+import PlayerTable from "./charts/playerTable";
+import ScoreLineChart from "./charts/scoreLineChart";
 
-const tableIcons = {
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
-};
-const LINE_TOOLTIP = {
+
+Chart.plugins.unregister(ChartDataLabels);
+
+
+export const LINE_TOOLTIP = {
     callbacks: {
         title: (tooltipItem, data) => {
             const {t} = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
@@ -41,7 +34,7 @@ const LINE_TOOLTIP = {
     mode: 'index',
     intersect: false
 };
-const GAMETIME_SCALE = {
+export const GAMETIME_SCALE = {
     type: 'time',
     distribution: 'linear',
     bounds: 'data',
@@ -71,90 +64,7 @@ const scoreDatasets = [];
 const dominationDatasets = [];
 const budgetDatasets = [];
 const playerStats = {};
-const playerColumns = [
-    {
-        tooltip: "Spielername",
-        title: <><Person/></>,
-        field: 'name',
-    },
-    {
-        tooltip: "Abschüsse",
-        title: <><SvgIcon><KillIcon/></SvgIcon></>,
-        field: 'kills',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Eigenbeschuss",
-        title: <><SvgIcon><FriendlyFireIcon/></SvgIcon></>,
-        field: 'friendlyFires',
-        type: 'numeric',
 
-    },
-    {
-        tooltip: "Wiederbelebung",
-        title: <><SvgIcon><ReviveIcon/></SvgIcon></>,
-        field: 'revives',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Eroberungen",
-        title: <><SvgIcon><FlagTouchIcon/></SvgIcon></>,
-        field: 'captures',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Fahrzeug (Leicht)",
-        title: <><SvgIcon><VehicleLightIcon/></SvgIcon></>,
-        field: 'lightVehicle',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Fahrzeug (Schwer)",
-        title: <><SvgIcon><VehicleHeavyIcon/></SvgIcon></>,
-        field: 'heavyVehicle',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Fahrzeug (Luft)",
-        title: <><SvgIcon><VehicleAirIcon/></SvgIcon></>,
-        field: 'airVehicle',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Passagier Flugdistanz",
-        title: <><SvgIcon><KillIcon/></SvgIcon></>,
-        field: 'traveled'
-    },
-    {
-        tooltip: "Pilot Flugdistanz",
-        title: <><SvgIcon><TravelDistanceIcon/></SvgIcon></>,
-        field: 'carried'
-    },
-    {
-        tooltip: "Bewusstlosigkeit",
-        title: <><SvgIcon><DeathIcon/></SvgIcon></>,
-        field: 'passOuts',
-        type: 'numeric',
-    },
-    {
-        tooltip: "Geld ausgegeben",
-        title: <><SvgIcon><AttachMoney/></SvgIcon></>,
-        field: 'moneySpent',
-        type: 'currency',
-        currencySetting: {
-            locale: 'de-DE',
-            currency: 'EUR',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }
-    },
-    {
-        tooltip: "Tode",
-        title: <><SvgIcon><KillIcon/></SvgIcon></>,
-        field: 'died',
-        type: 'numeric',
-    },
-]
 const performanceDatasets = [];
 const performanceBarDatasets = [];
 
@@ -351,6 +261,7 @@ function parseKill(line, gameTimeAsMilliseconds) {
 }
 
 function parseLog(log) {
+    console.groupCollapsed(['LogParseErrors']);
     log.split("\n")
         .filter((line) => line.includes('"[OPT] ('))
         .forEach((line) => {
@@ -383,6 +294,7 @@ function parseLog(log) {
                     break;
             }
         })
+    console.groupEnd();
 }
 
 function parseFps(log) {
@@ -403,18 +315,26 @@ function parseFps(log) {
         }
     })
 
-    // TODO: add median/average/highest/lowest thingies
+    // add median/average/highest/lowest thingies
     performanceDatasets.forEach(dataset => {
-        const player = dataset.label;
-
         const max = maxBy(dataset.data, 'y').y
         const min = minBy(dataset.data, 'y').y
         const mean = meanBy(dataset.data, 'y')
-        appendLineData(performanceBarDatasets, player, undefined, {
+
+        appendLineData(performanceBarDatasets, 'min', min, {
             type: 'bar',
-            category: player,
-            stack: player,
-            data: [min, mean, max]
+            borderColor: Tableau20[3],
+            backgroundColor: Tableau20[3]
+        })
+        appendLineData(performanceBarDatasets, 'mean', mean, {
+            type: 'bar',
+            borderColor: Tableau20[1],
+            backgroundColor: Tableau20[1]
+        })
+        appendLineData(performanceBarDatasets, 'max', max, {
+            type: 'bar',
+            borderColor: Tableau20[5],
+            backgroundColor: Tableau20[5]
         })
     })
 }
@@ -429,7 +349,6 @@ function App() {
         parseLog(DEMOLOG)
         parseFps(FPSLOG)
         setLoading(false)
-        console.debug(performanceBarDatasets)
     }, [])
 
     return (
@@ -437,21 +356,38 @@ function App() {
             <input disabled type="file" onChange={onUploadLog}/>
             <Typography variant={"h1"}>Ernte Gut, alles Gut. Funschlacht 1.3</Typography>
             {!loading && <>
-                <Bar data={{datasets: performanceBarDatasets}} options={{
+                <Bar plugins={[ChartDataLabels]} data={{datasets: performanceBarDatasets}} options={{
+                    title: {
+                        display: true,
+                        text: 'Performance per Player'
+                    },
+                    tooltips: {
+                        position: 'nearest',
+                        mode: 'index',
+                        intersect: false
+                    },
                     scales: {
                         xAxes: [{
-                            type: 'category'
-                        }],
+                            type: 'category',
+                            labels: performanceDatasets.map(d => d.label)
+                        }]
+                    },
+                    plugins: {
+                        datalabels: {
+                            formatter: Math.floor,
+                            anchor: 'end',
+                            align: 'start',
+                        }
                     }
                 }}/>
                 <Line data={{datasets: performanceDatasets}} options={{
                     title: {
                         display: true,
-                        text: 'Performance'
+                        text: 'Performance over Time'
                     },
                     plugins: {
                         colorschemes: {
-                            scheme: Classic20,
+                            scheme: Tableau20,
                             fillAlpha: 0,
                         }
                     },
@@ -498,47 +434,9 @@ function App() {
                         }]
                     }
                 }}/>
-                <Line data={{datasets: scoreDatasets}} options={{
-                    title: {
-                        display: true,
-                        text: 'Punktestand'
-                    },
-                    tooltips: LINE_TOOLTIP,
-                    scales: {
-                        xAxes: [GAMETIME_SCALE]
-                    }
-                }}/>
-                <Line data={{datasets: budgetDatasets}} options={{
-                    title: {
-                        display: true,
-                        text: 'Fraktionenbudget'
-                    },
-                    tooltips: LINE_TOOLTIP,
-                    scales: {
-                        xAxes: [GAMETIME_SCALE]
-                    },
-                    zoom: {}
-                }}/>
-
-                <MaterialTable
-                    icons={tableIcons}
-                    columns={playerColumns}
-                    data={Object.values(playerStats)}
-                    options={{
-                        tableLayout: "fixed",
-                        padding: "dense",
-                        filtering: false,
-                        grouping: false,
-                        search: false,
-                        selection: false,
-                        paging: false,
-                        sorting: true,
-                        headerStyle: {
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                        },
-                    }}
-                />
+                <ScoreLineChart datasets={scoreDatasets} />
+                <BudgetBurndown datasets={budgetDatasets}/>
+                <PlayerTable playerStats={playerStats}/>
             </>}
         </div>
     );
