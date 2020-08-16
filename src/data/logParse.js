@@ -109,11 +109,12 @@ function parseBudget(line, gameTimeAsMilliseconds) {
       faction,
       {
         t: gameTimeAsMilliseconds,
+        x: gameTimeAsMilliseconds,
         y: +newTotal,
         line,
       },
       {
-        steppedLine: "stepped",
+        steppedLine: "before",
         backgroundColor: getColorForFaction(faction, 0.05),
         hoverBackgroundColor: getColorForFaction(faction, 0.55),
         borderColor: getColorForFaction(faction, 1),
@@ -193,7 +194,7 @@ function parseFlag(line, gameTimeAsMilliseconds) {
       appendLineData(
         scoreDatasets,
         faction,
-        { t: gameTimeAsMilliseconds, y: +score, line },
+        { t: gameTimeAsMilliseconds, x: gameTimeAsMilliseconds, y: +score, line },
         {
           backgroundColor: getColorForFaction(faction, 0.05),
           hoverBackgroundColor: getColorForFaction(faction, 0.55),

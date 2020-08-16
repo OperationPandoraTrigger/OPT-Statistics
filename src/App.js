@@ -44,10 +44,8 @@ export const GAMETIME_SCALE = {
   bounds: "data",
   stepSize: 1000 * 60 * 20, // 10min
   ticks: {
-    min: 1000 * 60, // 60s
-    max: 1000 * 60 * 60 * 2.5, // 2h30m
     callback: function (value) {
-      return utc(value).format("HH:mm");
+      return utc(value).format("HH:mm:ss");
     },
   },
 };
