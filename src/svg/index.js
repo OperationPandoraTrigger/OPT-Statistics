@@ -1,2 +1,2 @@
-import "./scoreboard"
-export { ReactComponent as OptIcon } from "./opt-logo-full.svg";
+import "./scoreboard";
+export { ReactComponent as OptFullLogo } from "./opt-logo-full.svg";

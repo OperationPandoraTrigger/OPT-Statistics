@@ -1,7 +1,7 @@
 import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import { SvgIcon, Typography } from "@material-ui/core";
-import { OptIcon } from "../svg";
+import { OptFullLogo } from "../svg";
 import AppBar from "@material-ui/core/AppBar";
 import { useStyles } from "../styles";
 
@@ -11,9 +11,7 @@ function TopAppBar(props) {
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        <SvgIcon>
-          <OptIcon />
-        </SvgIcon>
+        <OptFullLogo className={classes.appBarLogo} />
         <Typography variant="h6" noWrap>
           Operation Pandora Trigger
         </Typography>
