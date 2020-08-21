@@ -1,21 +1,27 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { useEffect, useState } from "react";
-import "./App.css";
 import { Chart } from "react-chartjs-2";
 import { utc } from "moment";
 import { DEMOLOG, FPSLOG } from "./log";
-import { Typography } from "@material-ui/core";
 import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import BudgetBurndown from "./charts/budgetDurndown";
-import PlayerTable from "./charts/playerTable";
-import ScoreLineChart from "./charts/scoreLineChart";
-import DominationTime from "./charts/dominationTime";
+import BudgetBurndown from "./components/charts/budgetDurndown";
+import PlayerTable from "./components/charts/playerTable";
+import ScoreLineChart from "./components/charts/scoreLineChart";
+import DominationTime from "./components/charts/dominationTime";
 import "hammerjs";
 import "chartjs-plugin-zoom";
 import { parseFps, parseLog } from "./data/logParse";
-import PerformanceOverTime from "./charts/performanceOverTime";
-import PerformancePlayerBar from "./charts/performancePlayerBar";
+import PerformanceOverTime from "./components/charts/performanceOverTime";
+import PerformancePlayerBar from "./components/charts/performancePlayerBar";
+import LeftDrawer from "./components/leftDrawer";
+import { ThemeProvider, useTheme } from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { useStyles } from "./styles";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import TopAppBar from "./components/topAppBar";
+import NotFoundPage from "./components/notFoundPage";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -59,13 +65,6 @@ function App() {
   const [performanceDatasets, setPerformanceDatasets] = useState([]);
   const [playerStats, setPlayerStats] = useState({});
 
-  const onUploadLog = (event) => {
-    setLoading(true);
-    event.target.files[0]
-      .text()
-      .then(parseLog)
-      .then(() => setLoading(false));
-  };
   useEffect(() => {
     parseLog(DEMOLOG).then(
       ({ scoreDatasets, dominationDatasets, budgetDatasets, playerStats }) => {
@@ -81,27 +80,58 @@ function App() {
     });
     setLoading(false);
   }, []);
+  const theme = useTheme();
+  const classes = useStyles();
 
   return (
-    <div className="App">
-      <input disabled type="file" onChange={onUploadLog} />
-      <Typography variant={"h1"}>
-        Ernte Gut, alles Gut. Funschlacht 1.3
-      </Typography>
-      {!loading && (
-        <>
-          <PerformancePlayerBar
-            datasets={performanceBarDatasets}
-            labels={performanceDatasets.map((d) => d.label)}
-          />
-          <PerformanceOverTime datasets={performanceDatasets} />
-          <DominationTime datasets={dominationDatasets} />
-          <ScoreLineChart datasets={scoreDatasets} />
-          <BudgetBurndown datasets={budgetDatasets} />
-          <PlayerTable playerStats={playerStats} />
-        </>
-      )}
-    </div>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <TopAppBar />
+          <LeftDrawer />
+          <main className={classes.main}>
+            <Toolbar />
+            <Routes>
+              <Route path="statistic">
+                <Route
+                  path="player-table"
+                  element={<PlayerTable playerStats={playerStats} />}
+                />
+                <Route
+                  path="performance"
+                  element={
+                    <>
+                      <PerformancePlayerBar
+                        datasets={performanceBarDatasets}
+                        labels={performanceDatasets.map((d) => d.label)}
+                      />
+                      <PerformanceOverTime datasets={performanceDatasets} />
+                    </>
+                  }
+                />
+                <Route
+                  path="economy"
+                  element={<BudgetBurndown datasets={budgetDatasets} />}
+                />
+                <Route
+                  path="campaign-score"
+                  element={
+                    <>
+                      <ScoreLineChart datasets={scoreDatasets} />
+                      <DominationTime datasets={dominationDatasets} />
+                    </>
+                  }
+                />
+              </Route>
+              <Route path="*">
+                <NotFoundPage />
+              </Route>
+            </Routes>
+          </main>
+        </div>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 

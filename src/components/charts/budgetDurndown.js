@@ -1,6 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import { GAMETIME_SCALE, LINE_TOOLTIP } from "../App";
+import { GAMETIME_SCALE, LINE_TOOLTIP } from "../../App";
 
 function BudgetBurndown({ datasets }) {
   return (
@@ -21,7 +21,7 @@ function BudgetBurndown({ datasets }) {
               mode: "xy",
               rangeMin: {
                   x: GAMETIME_SCALE.ticks.min,
-                  y: -100000,
+                  y: -500000,
               },
               rangeMax: {
                   x: GAMETIME_SCALE.ticks.max * 2,
@@ -30,7 +30,7 @@ function BudgetBurndown({ datasets }) {
           },
           zoom: {
               enabled: true,
-              mode: "xy",
+              mode: "x",
               speed: 0.5,
               rangeMin: {
                   x: GAMETIME_SCALE.ticks.min,

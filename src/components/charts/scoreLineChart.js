@@ -1,6 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import { GAMETIME_SCALE, LINE_TOOLTIP } from "../App";
+import { GAMETIME_SCALE, LINE_TOOLTIP } from "../../App";
 
 function ScoreLineChart({ datasets }) {
   return (

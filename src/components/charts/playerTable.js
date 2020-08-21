@@ -13,7 +13,7 @@ import {
   VehicleAirIcon,
   VehicleHeavyIcon,
   VehicleLightIcon,
-} from "../svg/scoreboard";
+} from "../../svg/scoreboard";
 
 const playerColumns = [
   {
