@@ -8,7 +8,6 @@ import { useTopAppBarStyles } from "./topAppBar.style";
 
 function TopAppBar() {
   const classes = useTopAppBarStyles();
-  console.debug(classes);
   return (
     <AppBar position="fixed" className={classes.root}>
       <Toolbar>

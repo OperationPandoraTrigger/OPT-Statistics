@@ -114,6 +114,7 @@ function LeftDrawer() {
         <ListItem
           component={"a"}
           button
+          target={"_blank"}
           href={"https://aar.byte.pm/missions"}
           activeClassName={"Mui-selected"}
         >
@@ -127,6 +128,7 @@ function LeftDrawer() {
         <ListItem
           component={"a"}
           button
+          target={"_blank"}
           href={"https://opt4.net/dashboard/"}
           activeClassName={"Mui-selected"}
         >
@@ -140,6 +142,7 @@ function LeftDrawer() {
         <ListItem
           component={"a"}
           button
+          target={"_blank"}
           href={"https://signatur.opt4.net/public/decorations"}
           activeClassName={"Mui-selected"}
         >
