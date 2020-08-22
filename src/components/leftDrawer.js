@@ -21,12 +21,10 @@ import {
 } from "@material-ui/icons";
 import { useStyles } from "../styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function LeftDrawer() {
   const classes = useStyles();
-  const foo = useLocation();
-  console.debug(foo);
 
   return (
     <Drawer

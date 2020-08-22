@@ -22,6 +22,8 @@ import { useStyles } from "./styles";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import TopAppBar from "./components/topAppBar";
 import NotFoundPage from "./components/notFoundPage";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -66,19 +68,27 @@ function App() {
   const [playerStats, setPlayerStats] = useState({});
 
   useEffect(() => {
-    parseLog(DEMOLOG).then(
-      ({ scoreDatasets, dominationDatasets, budgetDatasets, playerStats }) => {
-        setScoreDatasets(scoreDatasets);
-        setDominationDatasets(dominationDatasets);
-        setBudgetDatasets(budgetDatasets);
-        setPlayerStats(playerStats);
-      }
-    );
-    parseFps(FPSLOG).then(({ performanceDatasets, performanceBarDatasets }) => {
-      setPerformanceDatasets(performanceDatasets);
-      setPerformanceBarDatasets(performanceBarDatasets);
-    });
-    setLoading(false);
+    Promise.all([
+      parseLog(DEMOLOG).then(
+        ({
+          scoreDatasets,
+          dominationDatasets,
+          budgetDatasets,
+          playerStats,
+        }) => {
+          setScoreDatasets(scoreDatasets);
+          setDominationDatasets(dominationDatasets);
+          setBudgetDatasets(budgetDatasets);
+          setPlayerStats(playerStats);
+        }
+      ),
+      parseFps(FPSLOG).then(
+        ({ performanceDatasets, performanceBarDatasets }) => {
+          setPerformanceDatasets(performanceDatasets);
+          setPerformanceBarDatasets(performanceBarDatasets);
+        }
+      ),
+    ]).then(() => setLoading(false));
   }, []);
   const theme = useTheme();
   const classes = useStyles();
@@ -90,6 +100,9 @@ function App() {
           <CssBaseline />
           <TopAppBar />
           <LeftDrawer />
+          <Backdrop className={classes.backdrop} open={loading}>
+            <CircularProgress color={"secondary"} />
+          </Backdrop>
           <main className={classes.main}>
             <Toolbar />
             <Routes>

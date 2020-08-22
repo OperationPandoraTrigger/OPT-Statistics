@@ -1,20 +1,31 @@
 import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
-import { SvgIcon, Typography } from "@material-ui/core";
+import { Hidden, Typography, IconButton } from "@material-ui/core";
 import { OptFullLogo } from "../svg";
 import AppBar from "@material-ui/core/AppBar";
-import { useStyles } from "../styles";
+import { Menu } from "@material-ui/icons";
+import { useTopAppBarStyles } from "./topAppBar.style";
 
-function TopAppBar(props) {
-  const classes = useStyles();
-
+function TopAppBar() {
+  const classes = useTopAppBarStyles();
+  console.debug(classes);
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.root}>
       <Toolbar>
-        <OptFullLogo className={classes.appBarLogo} />
-        <Typography variant="h6" noWrap>
-          Operation Pandora Trigger
-        </Typography>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="menu"
+        >
+          <Menu />
+        </IconButton>
+        <OptFullLogo className={classes.logo} />
+        <Hidden xsDown>
+          <Typography variant="h6" noWrap>
+            Operation Pandora Trigger
+          </Typography>
+        </Hidden>
       </Toolbar>
     </AppBar>
   );
