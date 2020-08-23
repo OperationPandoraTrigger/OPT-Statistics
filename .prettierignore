@@ -1,4 +1,4 @@
 
 # Ignore devlogs:
-log.js
+devLogs/**.*
 build/*

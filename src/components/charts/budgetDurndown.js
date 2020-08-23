@@ -16,31 +16,31 @@ function BudgetBurndown({ datasets }) {
           xAxes: [GAMETIME_SCALE],
         },
         responsive: true,
-          pan: {
-              enabled: true,
-              mode: "xy",
-              rangeMin: {
-                  x: GAMETIME_SCALE.ticks.min,
-                  y: -500000,
-              },
-              rangeMax: {
-                  x: GAMETIME_SCALE.ticks.max * 2,
-                  y: 6000000,
-              },
+        pan: {
+          enabled: true,
+          mode: "xy",
+          rangeMin: {
+            x: GAMETIME_SCALE.ticks.min,
+            y: -500000,
           },
-          zoom: {
-              enabled: true,
-              mode: "x",
-              speed: 0.5,
-              rangeMin: {
-                  x: GAMETIME_SCALE.ticks.min,
-                  y: -500000,
-              },
-              rangeMax: {
-                  x: GAMETIME_SCALE.ticks.max,
-                  y: 4000000,
-              },
+          rangeMax: {
+            x: GAMETIME_SCALE.ticks.max * 2,
+            y: 6000000,
           },
+        },
+        zoom: {
+          enabled: true,
+          mode: "x",
+          speed: 0.5,
+          rangeMin: {
+            x: GAMETIME_SCALE.ticks.min,
+            y: -500000,
+          },
+          rangeMax: {
+            x: GAMETIME_SCALE.ticks.max,
+            y: 4000000,
+          },
+        },
       }}
     />
   );

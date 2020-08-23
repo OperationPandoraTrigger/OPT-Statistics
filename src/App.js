@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-chartjs-2";
 import { utc } from "moment";
-import { DEMOLOG, FPSLOG } from "./log";
+import { FPSLOG } from "./devLogs/rosche_1_3";
 import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import BudgetBurndown from "./components/charts/budgetDurndown";
 import PlayerTable from "./components/charts/playerTable";
-import ScoreLineChart from "./components/charts/scoreLineChart";
-import DominationTime from "./components/charts/dominationTime";
 import "hammerjs";
 import "chartjs-plugin-zoom";
 import { parseFps, parseLog } from "./data/logParse";
@@ -24,6 +22,8 @@ import TopAppBar from "./components/topAppBar";
 import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import CampaignScore from "./components/routes/campaignScore";
+import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -69,7 +69,7 @@ function App() {
 
   useEffect(() => {
     Promise.all([
-      parseLog(DEMOLOG).then(
+      parseLog(EGAG_EARLY_ACCESS).then(
         ({
           scoreDatasets,
           dominationDatasets,
@@ -130,10 +130,10 @@ function App() {
                 <Route
                   path="campaign-score"
                   element={
-                    <>
-                      <ScoreLineChart datasets={scoreDatasets} />
-                      <DominationTime datasets={dominationDatasets} />
-                    </>
+                    <CampaignScore
+                      dominationDatasets={dominationDatasets}
+                      scoreDatasets={scoreDatasets}
+                    />
                   }
                 />
               </Route>

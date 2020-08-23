@@ -194,7 +194,12 @@ function parseFlag(line, gameTimeAsMilliseconds) {
       appendLineData(
         scoreDatasets,
         faction,
-        { t: gameTimeAsMilliseconds, x: gameTimeAsMilliseconds, y: +score, line },
+        {
+          t: gameTimeAsMilliseconds,
+          x: gameTimeAsMilliseconds,
+          y: +score,
+          line,
+        },
         {
           backgroundColor: getColorForFaction(faction, 0.05),
           hoverBackgroundColor: getColorForFaction(faction, 0.55),
