@@ -17,7 +17,7 @@ import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { useStyles } from "./styles";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import TopAppBar from "./components/topAppBar";
 import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -94,7 +94,7 @@ function App() {
   const classes = useStyles();
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
           <CssBaseline />
@@ -144,7 +144,7 @@ function App() {
           </main>
         </div>
       </ThemeProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
