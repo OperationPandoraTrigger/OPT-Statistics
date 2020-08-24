@@ -106,7 +106,7 @@ function App() {
           <main className={classes.main}>
             <Toolbar />
             <Routes>
-              <Route path="OPT-Statistics/statistic">
+              <Route path="/OPT-Statistics/statistic">
                 <Route
                   path="player-table"
                   element={<PlayerTable playerStats={playerStats} />}
