@@ -105,7 +105,7 @@ function App() {
           </Backdrop>
           <main className={classes.main}>
             <Toolbar />
-            <Routes>
+            <Routes basename="OPT-Statistics">
               <Route path="statistic">
                 <Route
                   path="player-table"

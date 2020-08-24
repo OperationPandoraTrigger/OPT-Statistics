@@ -41,7 +41,7 @@ function LeftDrawer() {
         <ListItem
           component={NavLink}
           button
-          to={"/war-announcement"}
+          to={"/OPT-Statistics/war-announcement"}
           activeClassName={"Mui-selected"}
         >
           <ListItemIcon>
@@ -58,7 +58,7 @@ function LeftDrawer() {
         <ListItem
           component={NavLink}
           button
-          to={"/statistic/performance"}
+          to={"/OPT-Statistics/statistic/performance"}
           activeClassName={"Mui-selected"}
         >
           <ListItemIcon>
@@ -71,7 +71,7 @@ function LeftDrawer() {
         <ListItem
           component={NavLink}
           button
-          to={"/statistic/economy"}
+          to={"/OPT-Statistics/statistic/economy"}
           activeClassName={"Mui-selected"}
         >
           <ListItemIcon>
@@ -84,7 +84,7 @@ function LeftDrawer() {
         <ListItem
           component={NavLink}
           button
-          to={"/statistic/campaign-score"}
+          to={"/OPT-Statistics/statistic/campaign-score"}
           activeClassName={"Mui-selected"}
         >
           <ListItemIcon>
@@ -97,7 +97,7 @@ function LeftDrawer() {
         <ListItem
           component={NavLink}
           button
-          to={"/statistic/player-table"}
+          to={"/OPT-Statistics/statistic/player-table"}
           activeClassName={"Mui-selected"}
         >
           <ListItemIcon>
