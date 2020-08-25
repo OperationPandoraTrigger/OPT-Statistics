@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const DRAWER_WIDTH = 240;
+export const DRAWER_WIDTH_COLLAPSED = 58;
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,5 +22,22 @@ export const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: DRAWER_WIDTH,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  logo: {
+    width: "auto",
+    height: 64,
+    maxHeight: 64,
+    lineHeight: 64,
+    marginRight: theme.spacing(2),
+    padding: theme.spacing(1, 0),
+    [theme.breakpoints.down("xs")]: {
+      margin: "0 auto",
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
   },
 }));

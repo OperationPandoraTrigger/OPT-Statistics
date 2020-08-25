@@ -1,25 +1,26 @@
 import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
-import { Hidden, Typography, IconButton } from "@material-ui/core";
+import { Hidden, IconButton, Typography } from "@material-ui/core";
 import { OptFullLogo } from "../svg";
 import AppBar from "@material-ui/core/AppBar";
 import { Menu } from "@material-ui/icons";
-import { useTopAppBarStyles } from "./topAppBar.style";
+import { useStyles } from "../styles";
 
-function TopAppBar() {
-  const classes = useTopAppBarStyles();
+function TopAppBar({ onMenuClick }) {
+  const classes = useStyles();
   return (
-    <AppBar position="fixed" className={classes.root}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <IconButton
           edge="start"
           className={classes.menuButton}
           color="inherit"
           aria-label="menu"
+          onClick={onMenuClick}
         >
           <Menu />
         </IconButton>
-        <OptFullLogo className={classes.logo} />
+        <OptFullLogo fill="#FFF" className={classes.logo} />
         <Hidden xsDown>
           <Typography variant="h6" noWrap>
             Operation Pandora Trigger - Early Access: Ernte gut, alles Gut
