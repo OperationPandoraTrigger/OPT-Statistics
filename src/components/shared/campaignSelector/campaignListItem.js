@@ -8,6 +8,7 @@ import {
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { useCampaignSelectorStyles } from "./campaignSelector.style";
 
 function CampaignListItem({
   onClick,
@@ -17,8 +18,16 @@ function CampaignListItem({
   onSecondaryAction,
   children,
 }) {
+  const classes = useCampaignSelectorStyles();
+
   return (
-    <ListItem role={undefined} dense button onClick={onClick}>
+    <ListItem
+      className={classes.campaignListItem}
+      role={undefined}
+      dense
+      button
+      onClick={onClick}
+    >
       <ListItemIcon>
         <Checkbox
           disableRipple

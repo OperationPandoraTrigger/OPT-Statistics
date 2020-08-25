@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Divider,
   Drawer,
@@ -10,7 +10,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import {
+  Beenhere,
   ChatBubble,
+  ChevronRight,
   EmojiEvents,
   EuroSymbol,
   Flag,
@@ -22,9 +24,11 @@ import {
 import { useStyles } from "../styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { NavLink } from "react-router-dom";
+import CampaignSelectorPopover from "./shared/campaignSelector/campaignSelectorPopover";
 
 function LeftDrawer() {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
 
   return (
     <Drawer
@@ -38,12 +42,7 @@ function LeftDrawer() {
         <ListSubheader>
           <Typography>Allgemein</Typography>
         </ListSubheader>
-        <ListItem
-          component={NavLink}
-          button
-          to={"/war-announcement"}
-          activeClassName={"Mui-selected"}
-        >
+        <ListItem button>
           <ListItemIcon>
             <NewReleases />
           </ListItemIcon>
@@ -55,6 +54,23 @@ function LeftDrawer() {
         <ListSubheader>
           <Typography>Statistiken</Typography>
         </ListSubheader>
+        <ListItem
+          button
+          disabled // TODO enable the warEvent-Selection
+          onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
+        >
+          <ListItemIcon>
+            <Beenhere />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography>Schlachten</Typography>
+          </ListItemText>
+          <ChevronRight />
+        </ListItem>
+        <CampaignSelectorPopover
+          anchorEl={anchorEl}
+          onClose={() => setAnchorEl(null)}
+        />
         <ListItem
           component={NavLink}
           button

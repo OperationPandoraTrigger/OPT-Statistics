@@ -6,7 +6,7 @@ function NotFoundPage() {
     <div>
       <Typography>Was wenn Krieg ist, und keiner kommt?</Typography>
       <Typography>
-        Zurück aufs Schlachtfeld SOldat! Hier gibt es nichts zu sehen.
+        Zurück aufs Schlachtfeld Soldat! Hier gibt es nichts zu sehen.
       </Typography>
     </div>
   );
