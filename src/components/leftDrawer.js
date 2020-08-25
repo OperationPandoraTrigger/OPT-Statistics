@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
   Divider,
-  Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  SwipeableDrawer,
   Toolbar,
   Typography,
 } from "@material-ui/core";
@@ -25,24 +25,36 @@ import { useStyles } from "../styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { NavLink } from "react-router-dom";
 import CampaignSelectorPopover from "./shared/campaignSelector/campaignSelectorPopover";
+import { OptFullLogo } from "../svg";
 
-function LeftDrawer() {
+function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [campaignSelectorAnchorEl, setCampaignSelectorAnchorEl] = useState(
+    null
+  );
 
   return (
-    <Drawer
+    <SwipeableDrawer
       className={classes.drawer}
       anchor={"left"}
-      variant="permanent"
+      open={open}
+      onClose={onClose}
+      onOpen={onOpen}
       classes={{ paper: classes.drawerPaper }}
     >
-      <Toolbar />
+      <Toolbar>
+        <OptFullLogo fill="#000" className={classes.logo} />
+      </Toolbar>
       <List component={"nav"}>
         <ListSubheader>
           <Typography>Allgemein</Typography>
         </ListSubheader>
-        <ListItem button>
+        <ListItem
+          component={NavLink}
+          button
+          to={"war-announcement"}
+          activeClassName={"Mui-selected"}
+        >
           <ListItemIcon>
             <NewReleases />
           </ListItemIcon>
@@ -57,7 +69,9 @@ function LeftDrawer() {
         <ListItem
           button
           disabled // TODO enable the warEvent-Selection
-          onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
+          onClick={({ currentTarget }) =>
+            setCampaignSelectorAnchorEl(currentTarget)
+          }
         >
           <ListItemIcon>
             <Beenhere />
@@ -68,8 +82,8 @@ function LeftDrawer() {
           <ChevronRight />
         </ListItem>
         <CampaignSelectorPopover
-          anchorEl={anchorEl}
-          onClose={() => setAnchorEl(null)}
+          anchorEl={campaignSelectorAnchorEl}
+          onClose={() => setCampaignSelectorAnchorEl(null)}
         />
         <ListItem
           component={NavLink}
@@ -171,7 +185,7 @@ function LeftDrawer() {
         </ListItem>
       </List>
       <Divider />
-    </Drawer>
+    </SwipeableDrawer>
   );
 }
 

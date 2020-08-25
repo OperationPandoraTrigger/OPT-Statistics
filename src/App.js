@@ -17,13 +17,15 @@ import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { useStyles } from "./styles";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import TopAppBar from "./components/topAppBar";
 import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CampaignScore from "./components/routes/campaignScore";
 import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
+import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
+import { responsiveFontSizes } from "@material-ui/core";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -90,22 +92,31 @@ function App() {
       ),
     ]).then(() => setLoading(false));
   }, []);
-  const theme = useTheme();
+  const theme = responsiveFontSizes(useTheme());
   const classes = useStyles();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <HashRouter>
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
           <CssBaseline />
-          <TopAppBar />
-          <LeftDrawer />
+          <TopAppBar onMenuClick={() => setDrawerOpen(true)} />
+          <LeftDrawer
+            onOpen={() => setDrawerOpen(true)}
+            onClose={() => setDrawerOpen(false)}
+            open={drawerOpen}
+          />
           <Backdrop className={classes.backdrop} open={loading}>
             <CircularProgress color={"secondary"} />
           </Backdrop>
           <main className={classes.main}>
             <Toolbar />
             <Routes>
+              <Route path={"war-announcement"}>
+                <Route path={"latest"} element={<WarAnnouncement />} />
+                <Route path={""} element={<Navigate to="latest" />} />
+              </Route>
               <Route path="statistic">
                 <Route
                   path="player-table"
