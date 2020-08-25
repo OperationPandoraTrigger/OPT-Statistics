@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Paper, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import WarEventListItem from "./warEventListItem";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
@@ -26,7 +26,7 @@ function CampaignSelector({ warEvents, campaignEvent }) {
   };
 
   return (
-    <Paper elevation={2}>
+    <>
       <List disablePadding key={campaignEvent.campaignId}>
         <CampaignListItem
           onSecondaryAction={toggleOpen}
@@ -52,7 +52,7 @@ function CampaignSelector({ warEvents, campaignEvent }) {
           ))}
         </List>
       </Collapse>
-    </Paper>
+    </>
   );
 }
 
