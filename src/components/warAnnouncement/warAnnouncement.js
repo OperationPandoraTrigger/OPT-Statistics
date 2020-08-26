@@ -1,5 +1,6 @@
 import React from "react";
 import { Hidden, Typography } from "@material-ui/core";
+import WarEventEnroll from "../shared/warEventEnroll";
 
 function WarAnnouncement(props) {
   const warEvent = {
@@ -13,21 +14,13 @@ function WarAnnouncement(props) {
       <Typography variant={"overline"}>
         Saison 2020 - {warEvent.campaignName}
       </Typography>
-      <Typography variant={"h2"}>{warEvent.campaignName}</Typography>
       <Typography variant={"body1"}>
         <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
       </Typography>
-      <Typography variant={"h3"}>Anmeldung</Typography>
-      <Typography variant={"body1"}>
-        <a href="https://opt4.net/forum/thread/2939-du-m%C3%B6chtest-mitspielen">
-          Noch keine Fraktion? - Du möchtest mitspielen!
-        </a>
-      </Typography>
+      <Typography variant={"h3"}>Anmeldungen</Typography>
       <Typography variant={"body1"}>SWORD: 10</Typography>
       <Typography variant={"body1"}>ARF: 10</Typography>
-      <Typography variant={"h3"}>Wahl der Seite</Typography>
-      <Typography variant={"body1"}>ARF spielt AAF</Typography>
-      <Typography variant={"body1"}>SWORD spielt CSAT</Typography>
+      <WarEventEnroll />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
       <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
       <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>
@@ -43,10 +36,10 @@ function WarAnnouncement(props) {
           src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2Foml9e6Puvw5OWmOE1qW9r3%2FRosche-2020-ALPHA%3Fnode-id%3D0%253A1&chrome=DOCUMENTATION"
         />
       </Hidden>
+      <Typography variant={"h3"}>Wahl der Seite</Typography>
+      <Typography variant={"body1"}>ARF spielt AAF</Typography>
+      <Typography variant={"body1"}>SWORD spielt CSAT</Typography>
 
-      <Typography variant={"h3"}>Wetter</Typography>
-      <Typography variant={"body1"}>Spielzeit beginn: folgt...</Typography>
-      <Typography variant={"body1"}>Wetterlage: folgt...</Typography>
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
         <li>

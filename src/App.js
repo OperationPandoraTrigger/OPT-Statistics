@@ -26,6 +26,7 @@ import CampaignScore from "./components/routes/campaignScore";
 import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
+import * as firebase from "firebase/app";
 
 Chart.plugins.unregister(ChartDataLabels);
 
