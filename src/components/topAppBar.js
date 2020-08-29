@@ -6,6 +6,7 @@ import AppBar from "@material-ui/core/AppBar";
 import { Menu } from "@material-ui/icons";
 import { useStyles } from "../styles";
 import Authenticator from "./shared/authenticator";
+import { Link } from "react-router-dom";
 
 function TopAppBar({ onMenuClick }) {
   const classes = useStyles();
@@ -21,7 +22,9 @@ function TopAppBar({ onMenuClick }) {
         >
           <Menu />
         </IconButton>
-        <OptFullLogo fill="#FFF" className={classes.logo} />
+        <Link to={"/war-announcement/latest"}>
+          <OptFullLogo fill="#FFF" className={classes.logo} />
+        </Link>
         <Hidden xsDown>
           <Typography variant="h6" noWrap>
             Operation Pandora Trigger
