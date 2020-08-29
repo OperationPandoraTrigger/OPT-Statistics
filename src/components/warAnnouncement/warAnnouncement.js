@@ -1,6 +1,7 @@
 import React from "react";
 import { Hidden, Typography } from "@material-ui/core";
 import WarEventEnroll from "../shared/warEventEnroll";
+import WarEventEnrollCounter from "../shared/warEventEnrollCounter";
 
 function WarAnnouncement(props) {
   const warEvent = {
@@ -18,9 +19,8 @@ function WarAnnouncement(props) {
         <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
       </Typography>
       <Typography variant={"h3"}>Anmeldungen</Typography>
-      <Typography variant={"body1"}>SWORD: 10</Typography>
-      <Typography variant={"body1"}>ARF: 10</Typography>
-      <WarEventEnroll />
+      <WarEventEnrollCounter warEventId={"1-1"} />
+      <WarEventEnroll warEventId={"1-1"} />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
       <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
       <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>
@@ -31,6 +31,7 @@ function WarAnnouncement(props) {
       </Typography>
       <Hidden smDown>
         <iframe
+          title="sector-map"
           width="800"
           height="450"
           src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2Foml9e6Puvw5OWmOE1qW9r3%2FRosche-2020-ALPHA%3Fnode-id%3D0%253A1&chrome=DOCUMENTATION"

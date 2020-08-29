@@ -41,6 +41,17 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   enrollButton: {
-    display: "flex",
+    justifyContent: "start",
+  },
+  progressSecondary: {
+    color: theme.palette.primary.light,
+  },
+  progressPrimary: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    color: theme.palette.primary.dark,
   },
 }));

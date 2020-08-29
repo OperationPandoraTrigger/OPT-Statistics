@@ -30,7 +30,7 @@ import CampaignSelectorPopover from "./shared/campaignSelector/campaignSelectorP
 import { OptFullLogo } from "../svg";
 import { login, logout } from "./shared/authenticator";
 import { useAuthState } from "react-firebase-hooks/auth";
-import * as firebase from "firebase";
+import firebase from "firebase/app";
 
 function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();
