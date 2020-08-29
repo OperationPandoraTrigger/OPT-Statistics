@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Collapse,
   Divider,
   List,
   ListItem,
@@ -16,8 +15,6 @@ import {
   ChevronRight,
   EmojiEvents,
   EuroSymbol,
-  ExpandLess,
-  ExpandMore,
   Flag,
   Group,
   LocationOn,

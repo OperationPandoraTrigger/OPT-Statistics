@@ -2,8 +2,10 @@ import React from "react";
 import { Hidden, Typography } from "@material-ui/core";
 import WarEventEnroll from "../shared/warEventEnroll";
 import WarEventEnrollCounter from "../shared/warEventEnrollCounter";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
+import { delay } from "../shared/helpers/delay";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
   const [campaign = {}] = useObjectVal(
@@ -12,6 +14,24 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
   const [warEvent = {}] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/warEvents/${warEventId}`)
   );
+  const [user] = useAuthState(firebase.auth());
+
+  const setEnrollState = (state) => {
+    if (user) {
+      return firebase
+        .database()
+        .ref(
+          `campaigns/${campaignId}/warEvents/${warEventId}/participants/${user.uid}/state`
+        )
+        .transaction(() => {
+          return state;
+        })
+        .then(() => delay(500));
+    }
+    return Promise.reject("no user");
+  };
+
+  const participants = warEvent?.participants ?? {};
 
   return (
     <div>
@@ -22,8 +42,11 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
         <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
       </Typography>
       <Typography variant={"h3"}>Anmeldungen</Typography>
-      <WarEventEnrollCounter participants={warEvent?.participants} />
-      <WarEventEnroll warEvent={warEvent?.warEventId} />
+      <WarEventEnrollCounter participants={participants} />
+      <WarEventEnroll
+        enrollState={participants[user?.uid]?.state}
+        onEnrollStateChange={setEnrollState}
+      />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
       <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
       <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>
