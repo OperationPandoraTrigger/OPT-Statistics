@@ -1,43 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Typography } from "@material-ui/core";
+import { useAuthState } from "react-firebase-hooks/auth";
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBvUv_Li0UnU_ypDnFwQ47EuwJDX_imdBg",
-  authDomain: "opt-stats.firebaseapp.com",
-  databaseURL: "https://opt-stats.firebaseio.com",
-  projectId: "opt-stats",
-  storageBucket: "opt-stats.appspot.com",
-  messagingSenderId: "412471479558",
-  appId: "1:412471479558:web:7404e841f4c882c9df6287",
+export const login = () => {
+  firebase.auth().signInAnonymously();
+  //firebase.auth().signInWithRedirect("https://steamcommunity.com/openid");
 };
-firebase.initializeApp(firebaseConfig);
+
+export const logout = () => {
+  firebase.auth().signOut();
+};
 
 function Authenticator() {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    firebase.auth().signInAnonymously();
-
-    firebase.auth().onAuthStateChanged(function (user) {
-      console.debug(user);
-      setUser(user);
-    });
-  }, []);
+  const [user] = useAuthState(firebase.auth());
 
   return (
-    <div>
+    <Box ml={3}>
       {user ? (
-        <Typography>Hallo, {user.displayName}</Typography>
+        <Typography variant={"body2"}>Hallo, {user.uid}</Typography>
       ) : (
-        <a href={"#"}>
+        <Button onClick={login}>
           <img
             src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png"
             alt={"Login via Steam"}
           />
-        </a>
+        </Button>
       )}
-    </div>
+    </Box>
   );
 }
 

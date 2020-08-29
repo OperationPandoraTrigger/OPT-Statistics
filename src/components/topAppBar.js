@@ -24,7 +24,7 @@ function TopAppBar({ onMenuClick }) {
         <OptFullLogo fill="#FFF" className={classes.logo} />
         <Hidden xsDown>
           <Typography variant="h6" noWrap>
-            Operation Pandora Trigger - Early Access: Ernte gut, alles Gut
+            Operation Pandora Trigger
           </Typography>
         </Hidden>
         <Authenticator />

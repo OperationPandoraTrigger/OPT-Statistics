@@ -18,7 +18,9 @@ import {
   Flag,
   Group,
   LocationOn,
+  Login,
   NewReleases,
+  PowerSettingsNew,
   Speed,
 } from "@material-ui/icons";
 import { useStyles } from "../styles";
@@ -26,9 +28,13 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import { NavLink } from "react-router-dom";
 import CampaignSelectorPopover from "./shared/campaignSelector/campaignSelectorPopover";
 import { OptFullLogo } from "../svg";
+import { login, logout } from "./shared/authenticator";
+import { useAuthState } from "react-firebase-hooks/auth";
+import * as firebase from "firebase";
 
 function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();
+  const [user, loadingUser] = useAuthState(firebase.auth());
   const [campaignSelectorAnchorEl, setCampaignSelectorAnchorEl] = useState(
     null
   );
@@ -184,6 +190,29 @@ function LeftDrawer({ open, onClose, onOpen }) {
           </ListItemText>
         </ListItem>
       </List>
+
+      <ListSubheader>
+        <Typography>Benutzer</Typography>
+      </ListSubheader>
+      {user ? (
+        <ListItem disabled={loadingUser} button onClick={logout}>
+          <ListItemIcon>
+            <PowerSettingsNew />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography>Abmelden</Typography>
+          </ListItemText>
+        </ListItem>
+      ) : (
+        <ListItem disabled={loadingUser} button onClick={login}>
+          <ListItemIcon>
+            <Login />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography>Anmelden</Typography>
+          </ListItemText>
+        </ListItem>
+      )}
       <Divider />
     </SwipeableDrawer>
   );
