@@ -29,7 +29,7 @@ function WarEventEnroll({ warEventId }) {
     } else {
       setDatabaseRef(null);
     }
-  }, [user]);
+  }, [user, warEventId]);
   const setEnrollState = (state) => {
     setInTransaction(state);
     if (user) {
