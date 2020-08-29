@@ -26,33 +26,15 @@ import {
   PowerSettingsNew,
   Speed,
 } from "@material-ui/icons";
-import { useStyles } from "../styles";
+import { useStyles } from "../../styles";
 import { NavLink } from "react-router-dom";
-import CampaignSelectorPopover from "./shared/campaignSelector/campaignSelectorPopover";
-import { OptFullLogo } from "../svg";
-import { login, logout } from "./shared/authenticator";
+import CampaignSelectorPopover from "../shared/campaignSelector/campaignSelectorPopover";
+import { OptFullLogo } from "../../svg";
+import { login, logout } from "../shared/authenticator";
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase/app";
 import { xor } from "lodash";
-
-function CollapseListWrapper({ listOpen, onCollapseChange, label, children }) {
-  const open = listOpen.includes(label);
-  return (
-    <>
-      <ListItem onClick={() => onCollapseChange(label)}>
-        <ListItemText>
-          <Typography variant={"overline"}>{label}</Typography>
-        </ListItemText>
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {children}
-        </List>
-      </Collapse>
-    </>
-  );
-}
+import CollapseListWrapper from "./collapseListWrapper";
 
 function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();

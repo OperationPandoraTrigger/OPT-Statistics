@@ -12,7 +12,7 @@ import "chartjs-plugin-zoom";
 import { parseFps, parseLog } from "./data/logParse";
 import PerformanceOverTime from "./components/charts/performanceOverTime";
 import PerformancePlayerBar from "./components/charts/performancePlayerBar";
-import LeftDrawer from "./components/leftDrawer";
+import LeftDrawer from "./components/leftDrawer/leftDrawer";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
