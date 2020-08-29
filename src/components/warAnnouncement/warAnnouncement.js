@@ -2,25 +2,28 @@ import React from "react";
 import { Hidden, Typography } from "@material-ui/core";
 import WarEventEnroll from "../shared/warEventEnroll";
 import WarEventEnrollCounter from "../shared/warEventEnrollCounter";
+import firebase from "firebase";
+import { useObjectVal } from "react-firebase-hooks/database";
 
-function WarAnnouncement(props) {
-  const warEvent = {
-    matchId: "1.1",
-    matchDate: new Date(),
-    matchName: "Schlacht #1",
-    campaignName: "Ernte gut, alles gut",
-  };
+function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
+  const [campaign = {}] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}`)
+  );
+  const [warEvent = {}] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}/warEvents/${warEventId}`)
+  );
+
   return (
     <div>
       <Typography variant={"overline"}>
-        Saison 2020 - {warEvent.campaignName}
+        Saison 2020 - {campaign.campaignName}
       </Typography>
       <Typography variant={"body1"}>
         <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
       </Typography>
       <Typography variant={"h3"}>Anmeldungen</Typography>
-      <WarEventEnrollCounter warEventId={"1-1"} />
-      <WarEventEnroll warEventId={"1-1"} />
+      <WarEventEnrollCounter participants={warEvent?.participants} />
+      <WarEventEnroll warEvent={warEvent?.warEventId} />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
       <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
       <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>

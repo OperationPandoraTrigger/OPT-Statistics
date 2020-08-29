@@ -1,33 +1,29 @@
 import React from "react";
 import CountUp from "react-countup";
-import { CircularProgress } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import firebase from "firebase/app";
-import { useObjectVal } from "react-firebase-hooks/database";
+import { Box, CircularProgress, Tooltip, useTheme } from "@material-ui/core";
 import { countBy } from "lodash";
 import { useStyles } from "../../styles";
-import Tooltip from "@material-ui/core/Tooltip";
 
-function WarEventEnrollCounter({ warEventId }) {
+function WarEventEnrollCounter({ participants }) {
+  const theme = useTheme();
   const classes = useStyles();
-  const databaseRef = firebase
-    .database()
-    .ref(`warEvents/${warEventId}/participants`);
-  const [warEventParticipants = {}] = useObjectVal(databaseRef);
-  const { yes = 0, maybe = 0, no = 0 } = countBy(warEventParticipants, "state");
-  const predictedMax = yes + maybe + 3;
+
+  const { yes = 0, maybe = 0, no = 0 } = countBy(participants, "state");
+  const predictedMax = yes + maybe + 4;
 
   return (
     <>
       <Tooltip title={`Ja: ${yes} Nein: ${no} Vielleicht: ${maybe}`} arrow>
         <Box position="relative" display="inline-flex">
           <CircularProgress
+            size={theme.typography.h1.fontSize}
             thickness={2.6}
             className={classes.progressSecondary}
             variant={"determinate"}
             value={(100 / predictedMax) * (yes + maybe)}
           />
           <CircularProgress
+            size={theme.typography.h1.fontSize}
             className={classes.progressPrimary}
             variant={"determinate"}
             value={(100 / predictedMax) * yes}
@@ -41,6 +37,7 @@ function WarEventEnrollCounter({ warEventId }) {
             display="flex"
             alignItems="center"
             justifyContent="center"
+            fontSize={theme.typography.h4.fontSize}
           >
             <CountUp preserveValue end={yes + maybe / 2} />
           </Box>
