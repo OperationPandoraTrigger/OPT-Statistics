@@ -1,22 +1,25 @@
-import React from "react";
-import { Hidden, Typography } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Box, Divider, Hidden, Typography } from "@material-ui/core";
 import WarEventEnroll from "../shared/warEventEnroll";
-import WarEventEnrollCounter from "../shared/warEventEnrollCounter";
+import WarEventEnrollGauge from "../shared/warEventEnrollGauge";
 import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
 import { delay } from "../shared/helpers/delay";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { countBy, groupBy } from "lodash";
 
 function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
-  const [campaign = {}] = useObjectVal(
-    firebase.database().ref(`campaigns/${campaignId}`)
+  const [campaignName] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
-  const [warEvent = {}] = useObjectVal(
+  const [warEvent] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/warEvents/${warEventId}`)
   );
+  const [enrollState, setEnrollState] = useState();
+  const [counterGauges, setCounterGauges] = useState();
   const [user] = useAuthState(firebase.auth());
 
-  const setEnrollState = (state) => {
+  const handleEnrollState = (state) => {
     if (user) {
       return firebase
         .database()
@@ -30,23 +33,64 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
     }
     return Promise.reject("no user");
   };
+  const participants = warEvent?.participants;
+  useEffect(() => {
+    if (participants) {
+      const participantsByFaction = groupBy(participants, "faction");
+      const nextCounterGauges = [];
+      for (const factionKey in participantsByFaction) {
+        if (participantsByFaction.hasOwnProperty(factionKey)) {
+          //state is: yes, no, maybe
+          const stateCounts = countBy(
+            participantsByFaction[factionKey],
+            "state"
+          );
+          nextCounterGauges.push(
+            <Box
+              key={factionKey}
+              display={"inline-block"}
+              m={3}
+              textAlign={"center"}
+            >
+              <Typography variant={"h6"}>{factionKey}</Typography>
+              <WarEventEnrollGauge {...stateCounts} />
+            </Box>
+          );
+        }
+      }
+      setCounterGauges(nextCounterGauges);
+    }
+  }, [participants]);
 
-  const participants = warEvent?.participants ?? {};
+  useEffect(() => {
+    if (participants && user?.uid) {
+      setEnrollState(participants[user.uid]?.state);
+    }
+  }, [participants, user]);
 
   return (
     <div>
-      <Typography variant={"overline"}>
-        Saison 2020 - {campaign.campaignName}
-      </Typography>
+      <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
+      <Typography variant={"h1"}>{warEvent?.matchName}</Typography>
       <Typography variant={"body1"}>
         <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
       </Typography>
+      <Divider />
       <Typography variant={"h3"}>Anmeldungen</Typography>
-      <WarEventEnrollCounter participants={participants} />
-      <WarEventEnroll
-        enrollState={participants[user?.uid]?.state}
-        onEnrollStateChange={setEnrollState}
-      />
+      <Box display={"flex"}>
+        <Box flexGrow={1}>{counterGauges}</Box>
+        <Box flexShrink={1}>
+          <Typography display={"block"} variant={"button"}>
+            Deine Teilnahme
+          </Typography>
+          <WarEventEnroll
+            enrollState={enrollState}
+            onEnrollStateChange={handleEnrollState}
+          />
+        </Box>
+      </Box>
+
+      <Divider />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
       <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
       <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>
@@ -63,10 +107,15 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
           src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2Foml9e6Puvw5OWmOE1qW9r3%2FRosche-2020-ALPHA%3Fnode-id%3D0%253A1&chrome=DOCUMENTATION"
         />
       </Hidden>
+      <Typography variant={"h4"}>Verbrannte Sektoren</Typography>
+      <Typography variant={"body2"}>keine</Typography>
+
+      <Divider />
       <Typography variant={"h3"}>Wahl der Seite</Typography>
       <Typography variant={"body1"}>ARF spielt AAF</Typography>
       <Typography variant={"body1"}>SWORD spielt CSAT</Typography>
 
+      <Divider />
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
         <li>
@@ -91,8 +140,6 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
           </a>
         </li>
       </ul>
-      <Typography variant={"h3"}>Verbrannte Sektoren</Typography>
-      <Typography variant={"body1"}>keine</Typography>
     </div>
   );
 }
