@@ -54,11 +54,11 @@ export const useStyles = makeStyles((theme) => ({
     left: 0,
     color: theme.palette.primary.dark,
   },
-  warChronometerBox: {
+  captionInlineBox: {
     display: "inline-block",
     margin: theme.spacing(1, 2),
   },
-  warChronometerHeading: {
+  captionBlockBox: {
     margin: theme.spacing(1, 2),
   },
 }));

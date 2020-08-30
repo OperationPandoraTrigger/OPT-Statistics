@@ -8,24 +8,24 @@ function WarChronometer({ matchStart, matchEnd }) {
 
   return (
     <>
-      <Box className={classes.warChronometerHeading}>
+      <Box className={classes.captionBlockBox}>
         <Typography variant={"caption"}>Schlachttag</Typography>
         <Typography variant={"body1"}>
           <FormattedDate dateStyle={"long"} value={matchStart} />
         </Typography>
       </Box>
-      <Box className={classes.warChronometerBox}>
+      <Box className={classes.captionInlineBox}>
         <Typography variant={"caption"}>Briefing</Typography>
         <Typography variant={"body1"}>
           <FormattedTime value={matchStart} />
           &nbsp;Uhr
         </Typography>
       </Box>
-      <Box className={classes.warChronometerBox}>
+      <Box className={classes.captionInlineBox}>
         <Typography variant={"caption"}>Spielzeit</Typography>
         <Typography variant={"body1"}>90 Minuten</Typography>
       </Box>
-      <Box className={classes.warChronometerBox}>
+      <Box className={classes.captionInlineBox}>
         <Typography variant={"caption"}>Debriefing</Typography>
         <Typography variant={"body1"}>
           <FormattedTime value={matchEnd} />

@@ -8,8 +8,11 @@ import { delay } from "../shared/helpers/delay";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { countBy, groupBy } from "lodash";
 import WarChronometer from "./warChronometer";
+import { useStyles } from "../../styles";
+import Faction from "../shared/faction";
 
 function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
+  const classes = useStyles();
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
@@ -54,7 +57,9 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
               m={3}
               textAlign={"center"}
             >
-              <Typography variant={"h6"}>{factionKey}</Typography>
+              <Typography variant={"h6"}>
+                <Faction factionKey={factionKey} />
+              </Typography>
               <WarEventEnrollGauge {...stateCounts} />
             </Box>
           );
@@ -86,24 +91,36 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Box display={"flex"}>
         <Box flexGrow={1}>{counterGauges}</Box>
-        <Box flexShrink={1}>
-          <Typography display={"block"} variant={"button"}>
-            Deine Teilnahme
-          </Typography>
-          <WarEventEnroll
-            enrollState={enrollState}
-            onEnrollStateChange={handleEnrollState}
-          />
-        </Box>
+        {user?.uid && (
+          <Box flexShrink={1}>
+            <Typography display={"block"} variant={"button"}>
+              Deine Teilnahme
+            </Typography>
+            <WarEventEnroll
+              enrollState={enrollState}
+              onEnrollStateChange={handleEnrollState}
+            />
+          </Box>
+        )}
       </Box>
       <Divider />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
-      <Typography variant={"body1"}>
-        SWORD greift Sektor {warEvent?.attackingSector.sword} an.
-      </Typography>
-      <Typography variant={"body1"}>
-        ARF greift Sektor {warEvent?.attackingSector.arf} an.
-      </Typography>
+      <Box className={classes.captionInlineBox}>
+        <Typography variant={"caption"}>
+          <Faction factionKey={"arf"} />
+        </Typography>
+        <Typography variant={"body1"}>
+          Sektor {warEvent?.attackingSector.arf}
+        </Typography>
+      </Box>
+      <Box className={classes.captionInlineBox}>
+        <Typography variant={"caption"}>
+          <Faction factionKey={"sword"} />
+        </Typography>
+        <Typography variant={"body1"}>
+          Sektor {warEvent?.attackingSector.sword}
+        </Typography>
+      </Box>
       <Typography>
         <a href="https://www.figma.com/file/oml9e6Puvw5OWmOE1qW9r3/Rosche-2020---ALPHA?node-id=176%3A33">
           Vorläufige Sektoren-Karte
@@ -121,8 +138,18 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
       <Typography variant={"body2"}>keine</Typography>
       <Divider />
       <Typography variant={"h3"}>Wahl der Seite</Typography>
-      <Typography variant={"body1"}>ARF spielt AAF</Typography>
-      <Typography variant={"body1"}>SWORD spielt CSAT</Typography>
+      <Box className={classes.captionInlineBox}>
+        <Typography variant={"caption"}>
+          <Faction factionKey={"arf"} />
+        </Typography>
+        <Typography variant={"body1"}>spielt AAF</Typography>
+      </Box>
+      <Box className={classes.captionInlineBox}>
+        <Typography variant={"caption"}>
+          <Faction factionKey={"sword"} />
+        </Typography>
+        <Typography variant={"body1"}>spielt CSAT</Typography>
+      </Box>
       <Divider />
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
