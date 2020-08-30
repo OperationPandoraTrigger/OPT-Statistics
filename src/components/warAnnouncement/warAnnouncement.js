@@ -75,6 +75,8 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
     }
   }, [participants, user]);
 
+  if (!warEvent) return <></>;
+
   return (
     <div>
       <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
@@ -83,8 +85,8 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
         Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
       <WarChronometer
-        matchStart={warEvent?.matchStart}
-        matchEnd={warEvent?.matchEnd}
+        matchStart={new Date(+warEvent?.matchStart)}
+        matchEnd={new Date(+warEvent?.matchEnd)}
       />
 
       <Divider />
