@@ -2,7 +2,6 @@ import React from "react";
 import { Typography } from "@material-ui/core";
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase/app";
-import "firebase/auth";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 

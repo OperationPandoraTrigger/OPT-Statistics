@@ -27,6 +27,8 @@ import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
 import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 import { IntlProvider } from "react-intl";
 
 Chart.plugins.unregister(ChartDataLabels);
@@ -128,8 +130,11 @@ function App() {
               <Toolbar />
               <Routes>
                 <Route path={"war-announcement"}>
-                  <Route path={"latest"} element={<WarAnnouncement />} />
                   <Route path={""} element={<Navigate to="latest" />} />
+                  <Route path={"latest"} element={<Navigate to="../0/0" />} />
+                  <Route path={":campaignId"}>
+                    <Route path={":warEventId"} element={<WarAnnouncement />} />
+                  </Route>
                 </Route>
                 <Route path="statistic">
                   <Route

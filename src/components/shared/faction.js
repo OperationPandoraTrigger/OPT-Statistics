@@ -1,6 +1,3 @@
-import React from "react";
-import { Typography } from "@material-ui/core";
-
 const factionTranslations = {
   arf: {
     simple: "ARF",
@@ -18,6 +15,7 @@ const factionTranslations = {
     long: "Unbekannte Fraktion",
   },
 };
+
 function Faction({ factionKey = undefined, style = "short" }) {
   return factionTranslations[factionKey][style];
 }

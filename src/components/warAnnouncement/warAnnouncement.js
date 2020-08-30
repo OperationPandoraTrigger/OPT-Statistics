@@ -10,18 +10,32 @@ import { countBy, groupBy } from "lodash";
 import WarChronometer from "./warChronometer";
 import { useStyles } from "../../styles";
 import Faction from "../shared/faction";
+import { useParams } from "react-router-dom";
 
-function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
+function WarAnnouncement() {
   const classes = useStyles();
-  const [campaignName] = useObjectVal(
-    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
-  );
-  const [warEvent] = useObjectVal(
-    firebase.database().ref(`campaigns/${campaignId}/warEvents/${warEventId}`)
-  );
+  const { campaignId, warEventId } = useParams();
   const [enrollState, setEnrollState] = useState();
   const [counterGauges, setCounterGauges] = useState();
   const [user] = useAuthState(firebase.auth());
+  const [campaignName] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
+  );
+  const [participants] = useObjectVal(
+    firebase.database().ref(`warEvents/${warEventId}/participants`)
+  );
+  const [matchName] = useObjectVal(
+    firebase.database().ref(`warEvents/${warEventId}/matchName`)
+  );
+  const [matchStart] = useObjectVal(
+    firebase.database().ref(`warEvents/${warEventId}/matchStart`)
+  );
+  const [matchEnd] = useObjectVal(
+    firebase.database().ref(`warEvents/${warEventId}/matchEnd`)
+  );
+  const [attackingSector] = useObjectVal(
+    firebase.database().ref(`warEvents/${warEventId}/attackingSector`)
+  );
 
   const handleEnrollState = (state) => {
     if (user) {
@@ -37,7 +51,6 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
     }
     return Promise.reject("no user");
   };
-  const participants = warEvent?.participants;
 
   useEffect(() => {
     if (participants) {
@@ -75,18 +88,19 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
     }
   }, [participants, user]);
 
-  if (!warEvent) return <></>;
+  const loading = !(matchName && matchStart && matchEnd && participants);
+  if (loading) return <></>;
 
   return (
     <div>
       <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
-      <Typography variant={"h2"}>{warEvent?.matchName}</Typography>
+      <Typography variant={"h2"}>{matchName}</Typography>
       <Typography variant={"body1"} fontStyle={"italic"}>
         Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
       <WarChronometer
-        matchStart={new Date(+warEvent?.matchStart)}
-        matchEnd={new Date(+warEvent?.matchEnd)}
+        matchStart={new Date(+matchStart)}
+        matchEnd={new Date(+matchEnd)}
       />
 
       <Divider />
@@ -112,7 +126,7 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
           <Faction factionKey={"arf"} />
         </Typography>
         <Typography variant={"body1"}>
-          Sektor {warEvent?.attackingSector.arf}
+          Sektor {attackingSector?.arf ?? "unbekannt"}
         </Typography>
       </Box>
       <Box className={classes.captionInlineBox}>
@@ -120,7 +134,7 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
           <Faction factionKey={"sword"} />
         </Typography>
         <Typography variant={"body1"}>
-          Sektor {warEvent?.attackingSector.sword}
+          Sektor {attackingSector?.sword ?? "unbekannt"}
         </Typography>
       </Box>
       <Typography>
@@ -168,7 +182,7 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
         </li>
         <li>
           <a href="https://opt4.net/forum/index.php?thread/1214-unsere-aktuellen-server-versionen/">
-            "Unsere aktuellen Server-Versionen"
+            Unsere aktuellen Server-Versionen
           </a>
         </li>
         <li>

@@ -4,8 +4,17 @@ import WarEventListItem from "./warEventListItem";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
 import CampaignListItem from "./campaignListItem";
+import { useObjectVal } from "react-firebase-hooks/database";
+import firebase from "firebase/app";
 
-function CampaignSelector({ warEvents, campaignEvent }) {
+function CampaignSelector({ campaignId }) {
+  const [campaignName] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
+  );
+  const [warEvents] = useObjectVal(
+    firebase.database().ref(`/warEvents`).orderByChild("matchStart")
+  );
+
   const [selection, setSelection] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -27,7 +36,7 @@ function CampaignSelector({ warEvents, campaignEvent }) {
 
   return (
     <>
-      <List disablePadding key={campaignEvent.campaignId}>
+      <List disablePadding>
         <CampaignListItem
           onSecondaryAction={toggleOpen}
           onClick={handleSelectAll}
@@ -37,14 +46,14 @@ function CampaignSelector({ warEvents, campaignEvent }) {
           checked={selection.length === warEvents.length}
           open={open}
         >
-          <Typography>{campaignEvent.campaignName}</Typography>
+          <Typography>{campaignName}</Typography>
         </CampaignListItem>
       </List>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List disablePadding>
           {warEvents.map((warEvent) => (
             <WarEventListItem
-              key={warEvent.matchId}
+              key={warEvent.matchStart}
               onChange={handleChange}
               selection={selection}
               warEvent={warEvent}
