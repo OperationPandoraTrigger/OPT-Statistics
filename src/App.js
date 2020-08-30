@@ -27,6 +27,7 @@ import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
 import firebase from "firebase/app";
+import { IntlProvider } from "react-intl";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -110,63 +111,65 @@ function App() {
 
   return (
     <HashRouter>
-      <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <CssBaseline />
-          <TopAppBar onMenuClick={() => setDrawerOpen(true)} />
-          <LeftDrawer
-            onOpen={() => setDrawerOpen(true)}
-            onClose={() => setDrawerOpen(false)}
-            open={drawerOpen}
-          />
-          <Backdrop className={classes.backdrop} open={loading}>
-            <CircularProgress color={"secondary"} />
-          </Backdrop>
-          <main className={classes.main}>
-            <Toolbar />
-            <Routes>
-              <Route path={"war-announcement"}>
-                <Route path={"latest"} element={<WarAnnouncement />} />
-                <Route path={""} element={<Navigate to="latest" />} />
-              </Route>
-              <Route path="statistic">
-                <Route
-                  path="player-table"
-                  element={<PlayerTable playerStats={playerStats} />}
-                />
-                <Route
-                  path="performance"
-                  element={
-                    <>
-                      <PerformancePlayerBar
-                        datasets={performanceBarDatasets}
-                        labels={performanceDatasets.map((d) => d.label)}
+      <IntlProvider locale={"de"}>
+        <ThemeProvider theme={theme}>
+          <div className={classes.root}>
+            <CssBaseline />
+            <TopAppBar onMenuClick={() => setDrawerOpen(true)} />
+            <LeftDrawer
+              onOpen={() => setDrawerOpen(true)}
+              onClose={() => setDrawerOpen(false)}
+              open={drawerOpen}
+            />
+            <Backdrop className={classes.backdrop} open={loading}>
+              <CircularProgress color={"secondary"} />
+            </Backdrop>
+            <main className={classes.main}>
+              <Toolbar />
+              <Routes>
+                <Route path={"war-announcement"}>
+                  <Route path={"latest"} element={<WarAnnouncement />} />
+                  <Route path={""} element={<Navigate to="latest" />} />
+                </Route>
+                <Route path="statistic">
+                  <Route
+                    path="player-table"
+                    element={<PlayerTable playerStats={playerStats} />}
+                  />
+                  <Route
+                    path="performance"
+                    element={
+                      <>
+                        <PerformancePlayerBar
+                          datasets={performanceBarDatasets}
+                          labels={performanceDatasets.map((d) => d.label)}
+                        />
+                        <PerformanceOverTime datasets={performanceDatasets} />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="economy"
+                    element={<BudgetBurndown datasets={budgetDatasets} />}
+                  />
+                  <Route
+                    path="campaign-score"
+                    element={
+                      <CampaignScore
+                        dominationDatasets={dominationDatasets}
+                        scoreDatasets={scoreDatasets}
                       />
-                      <PerformanceOverTime datasets={performanceDatasets} />
-                    </>
-                  }
-                />
-                <Route
-                  path="economy"
-                  element={<BudgetBurndown datasets={budgetDatasets} />}
-                />
-                <Route
-                  path="campaign-score"
-                  element={
-                    <CampaignScore
-                      dominationDatasets={dominationDatasets}
-                      scoreDatasets={scoreDatasets}
-                    />
-                  }
-                />
-              </Route>
-              <Route path="*">
-                <NotFoundPage />
-              </Route>
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
+                    }
+                  />
+                </Route>
+                <Route path="*">
+                  <NotFoundPage />
+                </Route>
+              </Routes>
+            </main>
+          </div>
+        </ThemeProvider>
+      </IntlProvider>
     </HashRouter>
   );
 }

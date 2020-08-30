@@ -12,7 +12,7 @@ function CollapseListWrapper({ listOpen, onCollapseChange, label, children }) {
   const open = listOpen.includes(label);
   return (
     <>
-      <ListItem onClick={() => onCollapseChange(label)}>
+      <ListItem button disableRipple onClick={() => onCollapseChange(label)}>
         <ListItemText>
           <Typography variant={"overline"}>{label}</Typography>
         </ListItemText>

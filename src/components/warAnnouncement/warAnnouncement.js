@@ -7,6 +7,7 @@ import { useObjectVal } from "react-firebase-hooks/database";
 import { delay } from "../shared/helpers/delay";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { countBy, groupBy } from "lodash";
+import WarChronometer from "./warChronometer";
 
 function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
   const [campaignName] = useObjectVal(
@@ -34,6 +35,7 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
     return Promise.reject("no user");
   };
   const participants = warEvent?.participants;
+
   useEffect(() => {
     if (participants) {
       const participantsByFaction = groupBy(participants, "faction");
@@ -75,14 +77,10 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
       <Typography variant={"body1"} fontStyle={"italic"}>
         Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
-      <Typography variant={"caption"}>Briefing:</Typography>
-      <Typography variant={"body1"}>{warEvent?.matchStart}</Typography>
-      <Typography variant={"caption"}>Spielzeit</Typography>
-      <Typography variant={"body1"}>
-        {warEvent?.matchStart - warEvent?.matchEnd}
-      </Typography>
-      <Typography variant={"caption"}>Debriefing</Typography>
-      <Typography variant={"body1"}>{warEvent?.matchEnd}</Typography>
+      <WarChronometer
+        matchStart={warEvent?.matchStart}
+        matchEnd={warEvent?.matchEnd}
+      />
 
       <Divider />
       <Typography variant={"h3"}>Anmeldungen</Typography>
