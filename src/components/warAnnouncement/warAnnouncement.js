@@ -71,10 +71,19 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
   return (
     <div>
       <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
-      <Typography variant={"h1"}>{warEvent?.matchName}</Typography>
-      <Typography variant={"body1"}>
-        <em>Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.</em>
+      <Typography variant={"h2"}>{warEvent?.matchName}</Typography>
+      <Typography variant={"body1"} fontStyle={"italic"}>
+        Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
+      <Typography variant={"caption"}>Briefing:</Typography>
+      <Typography variant={"body1"}>{warEvent?.matchStart}</Typography>
+      <Typography variant={"caption"}>Spielzeit</Typography>
+      <Typography variant={"body1"}>
+        {warEvent?.matchStart - warEvent?.matchEnd}
+      </Typography>
+      <Typography variant={"caption"}>Debriefing</Typography>
+      <Typography variant={"body1"}>{warEvent?.matchEnd}</Typography>
+
       <Divider />
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Box display={"flex"}>
@@ -89,11 +98,14 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
           />
         </Box>
       </Box>
-
       <Divider />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>
-      <Typography variant={"body1"}>SWORD greift Sektor ??? an.</Typography>
-      <Typography variant={"body1"}>ARF greift Sektor ??? an.</Typography>
+      <Typography variant={"body1"}>
+        SWORD greift Sektor {warEvent?.attackingSector.sword} an.
+      </Typography>
+      <Typography variant={"body1"}>
+        ARF greift Sektor {warEvent?.attackingSector.arf} an.
+      </Typography>
       <Typography>
         <a href="https://www.figma.com/file/oml9e6Puvw5OWmOE1qW9r3/Rosche-2020---ALPHA?node-id=176%3A33">
           Vorläufige Sektoren-Karte
@@ -109,12 +121,10 @@ function WarAnnouncement({ campaignId = "1", warEventId = "1-1" }) {
       </Hidden>
       <Typography variant={"h4"}>Verbrannte Sektoren</Typography>
       <Typography variant={"body2"}>keine</Typography>
-
       <Divider />
       <Typography variant={"h3"}>Wahl der Seite</Typography>
       <Typography variant={"body1"}>ARF spielt AAF</Typography>
       <Typography variant={"body1"}>SWORD spielt CSAT</Typography>
-
       <Divider />
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
