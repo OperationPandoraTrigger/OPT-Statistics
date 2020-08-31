@@ -41,9 +41,7 @@ function WarAnnouncement() {
     if (user) {
       return firebase
         .database()
-        .ref(
-          `campaigns/${campaignId}/warEvents/${warEventId}/participants/${user.uid}/state`
-        )
+        .ref(`warEvents/${warEventId}/participants/${user.uid}/state`)
         .transaction(() => {
           return state;
         })
@@ -88,7 +86,7 @@ function WarAnnouncement() {
     }
   }, [participants, user]);
 
-  const loading = !(matchName && matchStart && matchEnd && participants);
+  const loading = !(matchName && matchStart && matchEnd);
   if (loading) return <></>;
 
   return (
