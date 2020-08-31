@@ -11,12 +11,13 @@ import WarChronometer from "./warChronometer";
 import { useStyles } from "../../styles";
 import Faction from "../shared/faction";
 import { useParams } from "react-router-dom";
+import { useLocalStorage } from "../shared/helpers/useLocalStorage";
 
 function WarAnnouncement() {
   const classes = useStyles();
   const { campaignId, warEventId } = useParams();
-  const [enrollState, setEnrollState] = useState();
   const [counterGauges, setCounterGauges] = useState();
+  const [steamProfile] = useLocalStorage("steamProfile");
   const [user] = useAuthState(firebase.auth());
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
@@ -36,14 +37,21 @@ function WarAnnouncement() {
   const [attackingSector] = useObjectVal(
     firebase.database().ref(`warEvents/${warEventId}/attackingSector`)
   );
+  const [enrollState] = useObjectVal(
+    firebase
+      .database()
+      .ref(
+        `warEvents/${warEventId}/participants/${steamProfile?.steamid}/state`
+      )
+  );
 
   const handleEnrollState = (state) => {
     if (user) {
       return firebase
         .database()
-        .ref(`warEvents/${warEventId}/participants/${user.uid}/state`)
-        .transaction(() => {
-          return state;
+        .ref(`warEvents/${warEventId}/participants/${steamProfile.steamid}`)
+        .transaction((oldState) => {
+          return { ...oldState, state };
         })
         .then(() => delay(500));
     }
@@ -80,12 +88,6 @@ function WarAnnouncement() {
     }
   }, [participants]);
 
-  useEffect(() => {
-    if (participants && user?.uid) {
-      setEnrollState(participants[user.uid]?.state);
-    }
-  }, [participants, user]);
-
   const loading = !(matchName && matchStart && matchEnd);
   if (loading) return <></>;
 
@@ -105,7 +107,7 @@ function WarAnnouncement() {
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Box display={"flex"}>
         <Box flexGrow={1}>{counterGauges}</Box>
-        {user?.uid && (
+        {user?.uid && steamProfile?.steamid && (
           <Box flexShrink={1}>
             <Typography display={"block"} variant={"button"}>
               Deine Teilnahme

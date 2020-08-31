@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { xor } from "lodash";
-import { useCampaignScoreStyles } from "../../routes/campaignScore.style";
+import { useCampaignScoreStyles } from "../../campaignScore/campaignScore.style";
 
 function WarEventListItem({ warEvent, selection, onChange }) {
   const { matchName, matchId } = warEvent;

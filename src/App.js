@@ -17,12 +17,12 @@ import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { useStyles } from "./styles";
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TopAppBar from "./components/topAppBar";
 import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import CampaignScore from "./components/routes/campaignScore";
+import CampaignScore from "./components/campaignScore/campaignScore";
 import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
@@ -112,7 +112,7 @@ function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <IntlProvider locale={"de"}>
         <ThemeProvider theme={theme}>
           <div className={classes.root}>
@@ -175,7 +175,7 @@ function App() {
           </div>
         </ThemeProvider>
       </IntlProvider>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
