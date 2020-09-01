@@ -292,8 +292,6 @@ export const EGAG_1 = `
 19:46:30 No more slot to add connection at 083801 (3328.8,15257.0)
 19:46:30 No more slot to add connection at 139780 (8944.2,13130.2)
 19:46:30 No more slot to add connection at 176728 (12646.2,7901.4)
-19:46:31 Strange convex component45 in ca\buildings\cihlovej_dum_in.p3d:geometryView
-19:46:31 Strange convex component46 in ca\buildings\cihlovej_dum_in.p3d:geometryView
 19:46:32 Land_NetFence_02_m_gate_v1_closed_F: door_1_locked_rot - unknown animation source door_1_locked_source
 19:46:32 (20010) [CLib Log - Core]: Reading and Compiling all Function and Modules Required: 15.99884033203125 ms
 19:46:32 [CBA] (xeh) INFO: [20010,42.063,0] PreInit started. v3.15.1.200418
@@ -405,7 +403,6 @@ Attempt to override final function - bis_fnc_storeparamsvalues_data
 19:47:37 Player =B2F= Vitaly Kaminski connected (id=76561198070761657).
 19:47:37 Player Preacher connected (id=76561198126166020).
 19:47:39 Player L. Canavar connected (id=76561198171657467).
-19:47:42 z\ace\addons\explosives\data\ace_m57.p3d: No geometry and no visual shape
 19:47:42 [D] Pelle uses modified data file
 19:47:42 Player [D] Pelle connecting.
 19:47:52 HayaKatana uses modified data file
@@ -1930,7 +1927,6 @@ soldier[O_Soldier_AR_F]:Some of magazines weren't stored in soldier Vest or Unif
 22:35:41 Client: Remote object 63:0 not found
 22:35:41 Client: Remote object 61:0 not found
 22:35:41 Client: Remote object 58:0 not found
-22:35:41 z\ace\addons\grenades\models\ace_anm14th3_armed.p3d
 22:35:41 Client: Remote object 59:0 not found
 22:35:42 Player [OPT]Schrecki disconnected.
 22:35:42 Player [SWORD]mehrb00n disconnected.

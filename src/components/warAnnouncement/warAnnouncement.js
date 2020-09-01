@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Divider, Hidden, Typography } from "@material-ui/core";
-import WarEventEnroll from "../shared/warEventEnroll";
-import WarEventEnrollGauge from "../shared/warEventEnrollGauge";
+import WarEventEnroll from "../shared/warEventEnroll/warEventEnroll";
+import ParticipantGauge from "../shared/participantGauge";
 import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
 import { delay } from "../shared/helpers/delay";
@@ -23,7 +23,7 @@ function WarAnnouncement() {
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
   const [participants] = useObjectVal(
-    firebase.database().ref(`warEvents/${warEventId}/participants`)
+    firebase.database().ref(`participants/${warEventId}`)
   );
   const [matchName] = useObjectVal(
     firebase.database().ref(`warEvents/${warEventId}/matchName`)
@@ -40,22 +40,20 @@ function WarAnnouncement() {
   const [enrollState] = useObjectVal(
     firebase
       .database()
-      .ref(
-        `warEvents/${warEventId}/participants/${steamProfile?.steamid}/state`
-      )
+      .ref(`participants/${warEventId}/${steamProfile?.steamid}/state`)
   );
 
   const handleEnrollState = (state) => {
-    if (user) {
+    if (warEventId && steamProfile?.steamid) {
       return firebase
         .database()
-        .ref(`warEvents/${warEventId}/participants/${steamProfile.steamid}`)
+        .ref(`participants/${warEventId}/${steamProfile.steamid}`)
         .transaction((oldState) => {
           return { ...oldState, state };
         })
         .then(() => delay(500));
     }
-    return Promise.reject("no user");
+    return Promise.reject("missing auth");
   };
 
   useEffect(() => {
@@ -79,7 +77,7 @@ function WarAnnouncement() {
               <Typography variant={"h6"}>
                 <Faction factionKey={factionKey} />
               </Typography>
-              <WarEventEnrollGauge {...stateCounts} />
+              <ParticipantGauge {...stateCounts} />
             </Box>
           );
         }
@@ -107,17 +105,15 @@ function WarAnnouncement() {
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Box display={"flex"}>
         <Box flexGrow={1}>{counterGauges}</Box>
-        {user?.uid && steamProfile?.steamid && (
-          <Box flexShrink={1}>
-            <Typography display={"block"} variant={"button"}>
-              Deine Teilnahme
-            </Typography>
-            <WarEventEnroll
-              enrollState={enrollState}
-              onEnrollStateChange={handleEnrollState}
-            />
-          </Box>
-        )}
+        <Box flexShrink={1}>
+          <Typography display={"block"} variant={"button"}>
+            Deine Teilnahme
+          </Typography>
+          <WarEventEnroll
+            enrollState={enrollState}
+            onEnrollStateChange={handleEnrollState}
+          />
+        </Box>
       </Box>
       <Divider />
       <Typography variant={"h3"}>Wahl des Sektors</Typography>

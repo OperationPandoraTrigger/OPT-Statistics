@@ -3,7 +3,7 @@ import CountUp from "react-countup";
 import { Box, CircularProgress, Tooltip, useTheme } from "@material-ui/core";
 import { useStyles } from "../../styles";
 
-function WarEventEnrollGauge({ yes = 0, maybe = 0, no = 0 }) {
+function ParticipantGauge({ yes = 0, maybe = 0, no = 0 }) {
   const theme = useTheme();
   const classes = useStyles();
   const predictedMax = yes + maybe + 4;
@@ -42,4 +42,4 @@ function WarEventEnrollGauge({ yes = 0, maybe = 0, no = 0 }) {
   );
 }
 
-export default WarEventEnrollGauge;
+export default ParticipantGauge;

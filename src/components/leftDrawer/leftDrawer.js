@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Divider,
   List,
@@ -32,6 +32,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase/app";
 import { xor } from "lodash";
 import CollapseListWrapper from "./collapseListWrapper";
+import { useLocation } from "react-router-dom";
 
 function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();
@@ -40,6 +41,11 @@ function LeftDrawer({ open, onClose, onOpen }) {
   const [campaignSelectorAnchorEl, setCampaignSelectorAnchorEl] = useState(
     null
   );
+  let location = useLocation();
+
+  React.useEffect(() => {
+    onClose(); // close on navigation
+  }, [location]);
 
   return (
     <SwipeableDrawer

@@ -3,8 +3,5 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="JSX" />
   </component>
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/src/devLogs/rosche_1_3.js" />
-  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="ruby-2.6.3-p62" project-jdk-type="RUBY_SDK" />
 </project>

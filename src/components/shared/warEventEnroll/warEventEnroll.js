@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Check, Event, EventAvailable, EventBusy } from "@material-ui/icons";
 import { Button, ButtonGroup } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useStyles } from "../../styles";
+import { useStyles } from "../../../styles";
 
 function WarEventEnroll({ enrollState, onEnrollStateChange }) {
   const classes = useStyles();

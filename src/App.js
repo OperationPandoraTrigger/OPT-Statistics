@@ -22,7 +22,6 @@ import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CampaignScore from "./components/campaignScore/campaignScore";
-import { EGAG_EARLY_ACCESS } from "./devLogs/egag_early_access";
 import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
 import firebase from "firebase/app";
@@ -31,6 +30,7 @@ import "firebase/database";
 import { IntlProvider } from "react-intl";
 import { EGAG_1 } from "./devLogs/egag_s_1";
 import { FPS_LOG } from "./devLogs/rosche_1_3";
+import LandingPage from "./components/landingPage";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -140,7 +140,8 @@ function App() {
             </Backdrop>
             <main className={classes.main}>
               <Toolbar />
-              <Routes>
+              <Routes basename={"/"}>
+                <Route path={""} element={<LandingPage />} />
                 <Route path={"war-announcement"}>
                   <Route path={""} element={<Navigate to="latest" />} />
                   <Route path={"latest"} element={<Navigate to="../0/1" />} />
