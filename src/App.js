@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-chartjs-2";
 import { utc } from "moment";
-import { FPSLOG } from "./devLogs/rosche_1_3";
 import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import BudgetBurndown from "./components/charts/budgetDurndown";
@@ -30,6 +29,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import { IntlProvider } from "react-intl";
+import { EGAG_1 } from "./devLogs/egag_s_1";
+import { FPS_LOG } from "./devLogs/rosche_1_3";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -83,10 +84,11 @@ function App() {
   const [performanceBarDatasets, setPerformanceBarDatasets] = useState([]);
   const [performanceDatasets, setPerformanceDatasets] = useState([]);
   const [playerStats, setPlayerStats] = useState({});
+  const [nextWarEventId, setNextWarEventId] = useState();
 
   useEffect(() => {
     Promise.all([
-      parseLog(EGAG_EARLY_ACCESS).then(
+      parseLog(EGAG_1).then(
         ({
           scoreDatasets,
           dominationDatasets,
@@ -99,13 +101,23 @@ function App() {
           setPlayerStats(playerStats);
         }
       ),
-      parseFps(FPSLOG).then(
+      parseFps(FPS_LOG).then(
         ({ performanceDatasets, performanceBarDatasets }) => {
           setPerformanceDatasets(performanceDatasets);
           setPerformanceBarDatasets(performanceBarDatasets);
         }
       ),
     ]).then(() => setLoading(false));
+
+    firebase
+      .database()
+      .ref(`warEvents`)
+      .orderByChild("matchStart")
+      .limitToLast(1)
+      .once("value")
+      .then((e) => {
+        console.debug(e.val());
+      });
   }, []);
   const theme = responsiveFontSizes(useTheme());
   const classes = useStyles();
@@ -131,7 +143,7 @@ function App() {
               <Routes>
                 <Route path={"war-announcement"}>
                   <Route path={""} element={<Navigate to="latest" />} />
-                  <Route path={"latest"} element={<Navigate to="../0/0" />} />
+                  <Route path={"latest"} element={<Navigate to="../0/1" />} />
                   <Route path={":campaignId"}>
                     <Route path={":warEventId"} element={<WarAnnouncement />} />
                   </Route>
