@@ -3,18 +3,28 @@ import { Divider, Typography } from "@material-ui/core";
 import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
 import BattleChronometer from "./battleChronometer";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BattleParticipants from "./battleParticipants";
 import BattleSectorChoice from "./battleSectorChoice";
 import BattleSideChoice from "./battleSideChoice";
+import BurnedSectors from "./burnedSectors";
+import Box from "@material-ui/core/Box";
+import { useStyles } from "../../styles";
+import { ChevronLeft, ChevronRight } from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
 
 function BattleAnnouncement() {
-  const { campaignId, battleId } = useParams();
-  const [campaignName] = useObjectVal(
-    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
-  );
+  const classes = useStyles();
+  const { battleId } = useParams();
+
   const [battleName] = useObjectVal(
     firebase.database().ref(`battles/${battleId}/battleName`)
+  );
+  const [campaignId] = useObjectVal(
+    firebase.database().ref(`battles/${battleId}/campaignId`)
+  );
+  const [campaignName] = useObjectVal(
+    firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
   const [battleStart] = useObjectVal(
     firebase.database().ref(`battles/${battleId}/battleStart`)
@@ -22,25 +32,44 @@ function BattleAnnouncement() {
   const [battleEnd] = useObjectVal(
     firebase.database().ref(`battles/${battleId}/battleEnd`)
   );
-
-  const loading = !(battleName && battleStart && battleEnd);
-  if (loading) return <></>;
+  const nextBattleId = +battleId + 1;
+  const prevBattleId = +battleId - 1;
+  const [nextBattleName] = useObjectVal(
+    firebase.database().ref(`battles/${nextBattleId}/battleName`)
+  );
+  const [prevBattleName] = useObjectVal(
+    firebase.database().ref(`battles/${prevBattleId}/battleName`)
+  );
 
   return (
     <div>
-      <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
+      <Box className={classes.battleNavigator}>
+        <Button
+          disabled={!prevBattleName}
+          component={Link}
+          to={`/battle-announcement/${prevBattleId}`}
+        >
+          <ChevronLeft /> {prevBattleName}
+        </Button>
+        <Typography variant={"button"}>Saison - {campaignName}</Typography>
+        <Button
+          disabled={!nextBattleName}
+          component={Link}
+          to={`/battle-announcement/${nextBattleId}`}
+        >
+          {nextBattleName} <ChevronRight />
+        </Button>
+      </Box>
       <Typography variant={"h2"}>{battleName}</Typography>
       <Typography variant={"body1"} fontStyle={"italic"}>
         Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
-      <BattleChronometer
-        battleStart={new Date(+battleStart)}
-        battleEnd={new Date(+battleEnd)}
-      />
+      <BattleChronometer battleStart={battleStart} battleEnd={battleEnd} />
       <Divider />
       <BattleParticipants battleId={battleId} />
       <Divider />
       <BattleSectorChoice battleId={battleId} />
+      <BurnedSectors until={battleStart} />
       <Divider />
       <BattleSideChoice />
       <Divider />

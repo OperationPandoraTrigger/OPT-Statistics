@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import BattleEnrollButtonGroup from "./battleEnrollButtonGroup";
-import { useObjectVal } from "react-firebase-hooks/database";
+import { useListVals, useObjectVal } from "react-firebase-hooks/database";
 import firebase from "firebase/app";
 import { delay } from "../shared/helpers/delay";
 import { useLocalStorage } from "../shared/helpers/useLocalStorage";
 import { countBy, groupBy } from "lodash";
 import Faction from "../shared/faction";
 import ParticipantGauge from "./participantGauge";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { ExpandMore } from "@material-ui/icons";
 import PlayerChip from "../shared/playerChip";
 import Collapse from "@material-ui/core/Collapse";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import clsx from "clsx";
+import { useStyles } from "../../styles";
 import ButtonBase from "@material-ui/core/ButtonBase";
 
 function BattleParticipants({ battleId }) {
+  const classes = useStyles();
   const [counterGauges, setCounterGauges] = useState([]);
-  const [expandParticipantNames, setExpandParticipantNames] = useState(false);
+  const [expandParticipantNames, setExpandParticipantNames] = useState(true);
   const [steamProfile] = useLocalStorage("steamProfile", {
     avatar: undefined,
     personaname: undefined,
     profileurl: undefined,
     steamid: undefined,
   });
-  const [participants] = useObjectVal(
+  const [participants] = useListVals(
     firebase.database().ref(`participants/${battleId}`)
   );
 
@@ -41,6 +46,8 @@ function BattleParticipants({ battleId }) {
         }
       }
       setCounterGauges(nextCounterGauges);
+    } else {
+      setCounterGauges([]);
     }
   }, [participants]);
 
@@ -77,46 +84,41 @@ function BattleParticipants({ battleId }) {
   return (
     <>
       <Typography variant={"h3"}>Anmeldungen</Typography>
-      <Box display={"flex"}>
-        <Box flexGrow={1}>
-          {counterGauges.map(({ factionKey, stateCounts }) => (
-            <Box
-              key={factionKey}
-              display={"inline-block"}
-              m={3}
-              textAlign={"center"}
+      <Grid container spacing={3}>
+        {counterGauges.map(({ factionKey, stateCounts }) => (
+          <Grid key={factionKey} xs={4} item>
+            <ButtonBase
+              className={classes.participantActionArea}
+              onClick={() => setExpandParticipantNames(!expandParticipantNames)}
             >
-              <ButtonBase
-                disableRipple
-                onClick={() =>
-                  setExpandParticipantNames(expandParticipantNames)
-                }
+              <Typography variant={"h5"}>
+                <Faction factionKey={factionKey} />
+              </Typography>
+              <ParticipantGauge {...stateCounts} />
+              <IconButton
+                className={clsx(classes.expand, {
+                  [classes.expandOpen]: expandParticipantNames,
+                })}
               >
-                <Typography variant={"h6"}>
-                  <Faction factionKey={factionKey} />
-                </Typography>
-                {expandParticipantNames ? <ExpandLess /> : <ExpandMore />}
-                <ParticipantGauge {...stateCounts} />
-              </ButtonBase>
-              <Collapse
-                in={expandParticipantNames}
-                timeout="auto"
-                unmountOnExit
-              >
-                {Object.keys(participants).map((steamId) => (
+                <ExpandMore />
+              </IconButton>
+            </ButtonBase>
+            <Collapse in={expandParticipantNames} timeout="auto" unmountOnExit>
+              {participants.map(
+                ({ state, steamId, steamName, steamAvatar }) => (
                   <PlayerChip
-                    key={"s"}
-                    label={"Fr"}
-                    avatarSrc={
-                      "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ad/ad31fda82eda3600385bc00cc4551614b3e02bf9.jpg"
-                    }
+                    key={steamId}
+                    label={steamName}
+                    avatarSrc={steamAvatar}
+                    state={state}
                   />
-                ))}
-              </Collapse>
-            </Box>
-          ))}
-        </Box>
-        <Box flexShrink={1}>
+                )
+              )}
+            </Collapse>
+          </Grid>
+        ))}
+
+        <Grid item xs={2} className={classes.marginLeft}>
           <Typography display={"block"} variant={"button"}>
             Deine Teilnahme
           </Typography>
@@ -124,8 +126,8 @@ function BattleParticipants({ battleId }) {
             enrollState={enrollState}
             onEnrollStateChange={handleEnrollState}
           />
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }

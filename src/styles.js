@@ -61,4 +61,36 @@ export const useStyles = makeStyles((theme) => ({
   captionBlockBox: {
     margin: theme.spacing(1, 2),
   },
+  battleNavigator: {
+    display: "flex",
+    justifyItems: "center",
+    alignItems: "stretch",
+    justifyContent: "space-between",
+  },
+  expand: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
+  participantGauge: {
+    display: "flex",
+    position: "relative",
+    width: theme.typography.h1.fontSize,
+    height: theme.typography.h1.fontSize,
+  },
+  participantActionArea: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  playerChip: {
+    pointerEvents: "none",
+  },
+  marginLeft: {
+    marginLeft: "auto",
+  },
 }));

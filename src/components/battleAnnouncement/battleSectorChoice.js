@@ -43,8 +43,6 @@ function BattleSectorChoice({ battleId }) {
           src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2Foml9e6Puvw5OWmOE1qW9r3%2FRosche-2020-ALPHA%3Fnode-id%3D0%253A1&chrome=DOCUMENTATION"
         />
       </Hidden>
-      <Typography variant={"h4"}>Verbrannte Sektoren</Typography>
-      <Typography variant={"body2"}>keine</Typography>
     </>
   );
 }

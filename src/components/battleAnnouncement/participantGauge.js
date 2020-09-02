@@ -10,7 +10,7 @@ function ParticipantGauge({ yes = 0, maybe = 0, no = 0 }) {
 
   return (
     <Tooltip title={`Ja: ${yes} Nein: ${no} Vielleicht: ${maybe}`} arrow>
-      <Box position="relative" display="flex">
+      <Box className={classes.participantGauge}>
         <CircularProgress
           size={theme.typography.h1.fontSize}
           thickness={2.6}

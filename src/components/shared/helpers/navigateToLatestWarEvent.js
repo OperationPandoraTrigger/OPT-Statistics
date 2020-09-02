@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { now } from "moment";
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase/app";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-function NavigateToLatestBattle(props) {
+function NavigateToLatestBattle() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,14 +18,13 @@ function NavigateToLatestBattle(props) {
       .then((snapshot) => {
         const battleEvent = snapshot.val().pop();
         if (battleEvent) {
-          navigate(
-            `/battle-announcement/${battleEvent.campaignId}/${battleEvent.battleId}`,
-            { replace: true }
-          );
+          navigate(`/battle-announcement/${battleEvent.battleId}`, {
+            replace: true,
+          });
         }
       });
   }, []);
-  return <CircularProgress />;
+  return <LinearProgress color={"secondary"} />;
 }
 
 export default NavigateToLatestBattle;

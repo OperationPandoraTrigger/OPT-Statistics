@@ -137,12 +137,7 @@ function App() {
                 <Route path={"battle-announcement"}>
                   <Route path={""} element={<Navigate replace to="latest" />} />
                   <Route path={"latest"} element={<NavigateToLatestBattle />} />
-                  <Route path={":campaignId"}>
-                    <Route
-                      path={":battleId"}
-                      element={<BattleAnnouncement />}
-                    />
-                  </Route>
+                  <Route path={":battleId"} element={<BattleAnnouncement />} />
                 </Route>
                 <Route path="statistic">
                   <Route
