@@ -1,10 +1,12 @@
 ## OPT Statistics
 
-go to [https://operationpandoratrigger.github.io/OPT-Statistics/](https://operationpandoratrigger.github.io/OPT-Statistics/)
+go to [https://opt-stats.web.app/](https://opt-stats.web.app/)
 
 ## Dev-Info:
 
-Demologfile is automatically included (will be fetched from remote later)
+powered by react and firebase
+
+special thanks to failender for steamauth backend
 
 ### To install
 
@@ -14,4 +16,8 @@ Clone this repo an execute `npm i`
 
 simply `npm run start`
 
-Any qwestshuns? Open Ticket
+### To deploy
+
+carefully `npm run deploy`
+
+Any qwestshuns? - Open a Ticket!
