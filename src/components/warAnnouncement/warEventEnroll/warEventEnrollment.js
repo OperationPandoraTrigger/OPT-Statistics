@@ -11,7 +11,7 @@ import ParticipantGauge from "../participantGauge";
 
 function WarEventEnrollment({ warEventId }) {
   const [counterGauges, setCounterGauges] = useState();
-  const [steamProfile] = useLocalStorage("steamProfile");
+  const [steamProfile] = useLocalStorage("steamProfile", { steamid: null });
   const [participants] = useObjectVal(
     firebase.database().ref(`participants/${warEventId}`)
   );
