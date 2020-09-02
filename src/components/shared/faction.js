@@ -9,6 +9,11 @@ const factionTranslations = {
     short: "S.W.O.R.D",
     long: "Strategic Weaponized Operational Response Division",
   },
+  opt: {
+    simple: "OPT",
+    short: "OPT",
+    long: "Operation Pandora Trigger",
+  },
   undefined: {
     simple: "???",
     short: "Unbekannt",

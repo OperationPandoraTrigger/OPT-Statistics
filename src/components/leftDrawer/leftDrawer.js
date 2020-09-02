@@ -71,7 +71,7 @@ function LeftDrawer({ open, onClose, onOpen }) {
           <ListItem
             component={NavLink}
             button
-            to={"war-announcement"}
+            to={"battle-announcement"}
             activeClassName={"Mui-selected"}
           >
             <ListItemIcon>
@@ -90,7 +90,7 @@ function LeftDrawer({ open, onClose, onOpen }) {
         >
           <ListItem
             button
-            disabled // TODO enable the warEvent-Selection
+            disabled // TODO enable the battleEvent-Selection
             onClick={({ currentTarget }) =>
               setCampaignSelectorAnchorEl(currentTarget)
             }

@@ -3,7 +3,7 @@ import { Box, Typography } from "@material-ui/core";
 import Faction from "../shared/faction";
 import { useStyles } from "../../styles";
 
-function WarEventSide() {
+function BattleSideChoice() {
   const classes = useStyles();
 
   return (
@@ -25,4 +25,4 @@ function WarEventSide() {
   );
 }
 
-export default WarEventSide;
+export default BattleSideChoice;

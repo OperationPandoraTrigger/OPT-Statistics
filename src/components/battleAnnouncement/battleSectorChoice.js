@@ -5,10 +5,10 @@ import { useStyles } from "../../styles";
 import { useObjectVal } from "react-firebase-hooks/database";
 import firebase from "firebase/app";
 
-function WarEventSectors({ warEventId }) {
+function BattleSectorChoice({ battleId }) {
   const classes = useStyles();
   const [attackingSector] = useObjectVal(
-    firebase.database().ref(`warEvents/${warEventId}/attackingSector`)
+    firebase.database().ref(`battles/${battleId}/attackingSector`)
   );
 
   return (
@@ -49,4 +49,4 @@ function WarEventSectors({ warEventId }) {
   );
 }
 
-export default WarEventSectors;
+export default BattleSectorChoice;

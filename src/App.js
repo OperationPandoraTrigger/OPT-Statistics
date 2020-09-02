@@ -1,7 +1,7 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-chartjs-2";
-import { now, utc } from "moment";
+import { utc } from "moment";
 import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import BudgetBurndown from "./components/charts/budgetDurndown";
@@ -22,7 +22,6 @@ import NotFoundPage from "./components/notFoundPage";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CampaignScore from "./components/campaignScore/campaignScore";
-import WarAnnouncement from "./components/warAnnouncement/warAnnouncement";
 import { responsiveFontSizes } from "@material-ui/core";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -30,6 +29,8 @@ import "firebase/database";
 import { IntlProvider } from "react-intl";
 import { EGAG_1 } from "./devLogs/egag_s_1";
 import { FPS_LOG } from "./devLogs/rosche_1_3";
+import NavigateToLatestBattle from "./components/shared/helpers/navigateToLatestWarEvent";
+import BattleAnnouncement from "./components/battleAnnouncement/battleAnnouncement";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -83,7 +84,6 @@ function App() {
   const [performanceBarDatasets, setPerformanceBarDatasets] = useState([]);
   const [performanceDatasets, setPerformanceDatasets] = useState([]);
   const [playerStats, setPlayerStats] = useState({});
-  const [nextWarEventId, setNextWarEventId] = useState();
 
   useEffect(() => {
     Promise.all([
@@ -107,20 +107,6 @@ function App() {
         }
       ),
     ]).then(() => setLoading(false));
-
-    firebase
-      .database()
-      .ref(`warEvents`)
-      .orderByChild("matchStart")
-      .startAt(now())
-      .limitToFirst(1)
-      .once("value")
-      .then((snapshot) => {
-        const val = snapshot.val().pop().warEventId;
-        if (val) {
-          setNextWarEventId(val);
-        }
-      });
   }, []);
   const theme = responsiveFontSizes(useTheme());
   const classes = useStyles();
@@ -146,16 +132,16 @@ function App() {
               <Routes basename={"/"}>
                 <Route
                   path={""}
-                  element={<Navigate replace to="war-announcement/latest" />}
+                  element={<Navigate replace to="battle-announcement/latest" />}
                 />
-                <Route path={"war-announcement"}>
+                <Route path={"battle-announcement"}>
                   <Route path={""} element={<Navigate replace to="latest" />} />
-                  <Route
-                    path={"latest"}
-                    element={<Navigate replace to={`../0/1`} />}
-                  />
+                  <Route path={"latest"} element={<NavigateToLatestBattle />} />
                   <Route path={":campaignId"}>
-                    <Route path={":warEventId"} element={<WarAnnouncement />} />
+                    <Route
+                      path={":battleId"}
+                      element={<BattleAnnouncement />}
+                    />
                   </Route>
                 </Route>
                 <Route path="statistic">

@@ -10,19 +10,19 @@ function ParticipantGauge({ yes = 0, maybe = 0, no = 0 }) {
 
   return (
     <Tooltip title={`Ja: ${yes} Nein: ${no} Vielleicht: ${maybe}`} arrow>
-      <Box position="relative" display="inline-flex">
+      <Box position="relative" display="flex">
         <CircularProgress
           size={theme.typography.h1.fontSize}
           thickness={2.6}
           className={classes.progressSecondary}
           variant={"determinate"}
-          value={(100 / predictedMax) * (yes + maybe)}
+          value={1 + (100 / predictedMax) * (yes + maybe)}
         />
         <CircularProgress
           size={theme.typography.h1.fontSize}
           className={classes.progressPrimary}
           variant={"determinate"}
-          value={(100 / predictedMax) * yes}
+          value={1 + (100 / predictedMax) * yes}
         />
         <Box
           top={0}

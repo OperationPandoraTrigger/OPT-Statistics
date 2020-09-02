@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography } from "@material-ui/core";
-import WarEventListItem from "./warEventListItem";
+import BattleListItem from "./battleListItem";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
 import CampaignListItem from "./campaignListItem";
@@ -11,8 +11,8 @@ function CampaignSelector({ campaignId }) {
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
-  const [warEvents] = useObjectVal(
-    firebase.database().ref(`/warEvents`).orderByChild("matchStart")
+  const [battles] = useObjectVal(
+    firebase.database().ref(`/battles`).orderByChild("battleStart")
   );
 
   const [selection, setSelection] = useState([]);
@@ -25,12 +25,12 @@ function CampaignSelector({ campaignId }) {
     setOpen(!open);
   };
   const handleSelectAll = () => {
-    if (selection.length === warEvents.length) {
+    if (selection.length === battles.length) {
       // select none
       setSelection([]);
     } else {
       // select all
-      setSelection(warEvents.map((w) => w.matchId));
+      setSelection(battles.map((w) => w.battleId));
     }
   };
 
@@ -41,9 +41,9 @@ function CampaignSelector({ campaignId }) {
           onSecondaryAction={toggleOpen}
           onClick={handleSelectAll}
           indeterminate={
-            selection.length !== 0 && selection.length !== warEvents.length
+            selection.length !== 0 && selection.length !== battles.length
           }
-          checked={selection.length === warEvents.length}
+          checked={selection.length === battles.length}
           open={open}
         >
           <Typography>{campaignName}</Typography>
@@ -51,12 +51,12 @@ function CampaignSelector({ campaignId }) {
       </List>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List disablePadding>
-          {warEvents.map((warEvent) => (
-            <WarEventListItem
-              key={warEvent.matchStart}
+          {battles.map((battleEvent) => (
+            <BattleListItem
+              key={battleEvent.battleStart}
               onChange={handleChange}
               selection={selection}
-              warEvent={warEvent}
+              battleEvent={battleEvent}
             />
           ))}
         </List>

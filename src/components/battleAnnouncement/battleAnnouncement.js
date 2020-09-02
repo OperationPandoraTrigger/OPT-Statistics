@@ -2,47 +2,47 @@ import React from "react";
 import { Divider, Typography } from "@material-ui/core";
 import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
-import WarChronometer from "./warChronometer";
+import BattleChronometer from "./battleChronometer";
 import { useParams } from "react-router-dom";
-import WarEventEnrollment from "./warEventEnroll/warEventEnrollment";
-import WarEventSectors from "./warEventSectors";
-import WarEventSide from "./warEventSide";
+import BattleParticipants from "./battleParticipants";
+import BattleSectorChoice from "./battleSectorChoice";
+import BattleSideChoice from "./battleSideChoice";
 
-function WarAnnouncement() {
-  const { campaignId, warEventId } = useParams();
+function BattleAnnouncement() {
+  const { campaignId, battleId } = useParams();
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
   );
-  const [matchName] = useObjectVal(
-    firebase.database().ref(`warEvents/${warEventId}/matchName`)
+  const [battleName] = useObjectVal(
+    firebase.database().ref(`battles/${battleId}/battleName`)
   );
-  const [matchStart] = useObjectVal(
-    firebase.database().ref(`warEvents/${warEventId}/matchStart`)
+  const [battleStart] = useObjectVal(
+    firebase.database().ref(`battles/${battleId}/battleStart`)
   );
-  const [matchEnd] = useObjectVal(
-    firebase.database().ref(`warEvents/${warEventId}/matchEnd`)
+  const [battleEnd] = useObjectVal(
+    firebase.database().ref(`battles/${battleId}/battleEnd`)
   );
 
-  const loading = !(matchName && matchStart && matchEnd);
+  const loading = !(battleName && battleStart && battleEnd);
   if (loading) return <></>;
 
   return (
     <div>
       <Typography variant={"overline"}>Saison 2020 - {campaignName}</Typography>
-      <Typography variant={"h2"}>{matchName}</Typography>
+      <Typography variant={"h2"}>{battleName}</Typography>
       <Typography variant={"body1"} fontStyle={"italic"}>
         Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
       </Typography>
-      <WarChronometer
-        matchStart={new Date(+matchStart)}
-        matchEnd={new Date(+matchEnd)}
+      <BattleChronometer
+        battleStart={new Date(+battleStart)}
+        battleEnd={new Date(+battleEnd)}
       />
       <Divider />
-      <WarEventEnrollment warEventId={warEventId} />
+      <BattleParticipants battleId={battleId} />
       <Divider />
-      <WarEventSectors warEventId={warEventId} />
+      <BattleSectorChoice battleId={battleId} />
       <Divider />
-      <WarEventSide />
+      <BattleSideChoice />
       <Divider />
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
@@ -72,4 +72,4 @@ function WarAnnouncement() {
   );
 }
 
-export default WarAnnouncement;
+export default BattleAnnouncement;

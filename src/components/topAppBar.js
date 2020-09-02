@@ -22,7 +22,7 @@ function TopAppBar({ onMenuClick }) {
         >
           <Menu />
         </IconButton>
-        <Link to={"/war-announcement/latest"}>
+        <Link to={"/battle-announcement/latest"}>
           <OptFullLogo fill="#FFF" className={classes.logo} />
         </Link>
         <Hidden xsDown>

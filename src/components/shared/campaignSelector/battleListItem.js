@@ -9,8 +9,8 @@ import {
 import { xor } from "lodash";
 import { useCampaignScoreStyles } from "../../campaignScore/campaignScore.style";
 
-function WarEventListItem({ warEvent, selection, onChange }) {
-  const { matchName, matchId } = warEvent;
+function BattleListItem({ battleEvent, selection, onChange }) {
+  const { battleName, battleId } = battleEvent;
   const classes = useCampaignScoreStyles();
 
   return (
@@ -18,17 +18,17 @@ function WarEventListItem({ warEvent, selection, onChange }) {
       role={undefined}
       dense
       button
-      onClick={(event) => onChange(event, xor(selection, [matchId]))}
+      onClick={(event) => onChange(event, xor(selection, [battleId]))}
       className={classes.nested}
     >
       <ListItemIcon>
-        <Checkbox disableRipple checked={selection.includes(matchId)} />
+        <Checkbox disableRipple checked={selection.includes(battleId)} />
       </ListItemIcon>
       <ListItemText>
-        <Typography>{matchName}</Typography>
+        <Typography>{battleName}</Typography>
       </ListItemText>
     </ListItem>
   );
 }
 
-export default WarEventListItem;
+export default BattleListItem;
