@@ -43,8 +43,10 @@ function LeftDrawer({ open, onClose, onOpen }) {
   );
   let location = useLocation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     onClose(); // close on navigation
+    // we do not wanna execute if "onClose" prop changes, only on location
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   return (
