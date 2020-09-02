@@ -1,7 +1,7 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-chartjs-2";
-import { utc } from "moment";
+import { now, utc } from "moment";
 import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import BudgetBurndown from "./components/charts/budgetDurndown";
@@ -30,7 +30,6 @@ import "firebase/database";
 import { IntlProvider } from "react-intl";
 import { EGAG_1 } from "./devLogs/egag_s_1";
 import { FPS_LOG } from "./devLogs/rosche_1_3";
-import LandingPage from "./components/landingPage";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -113,10 +112,14 @@ function App() {
       .database()
       .ref(`warEvents`)
       .orderByChild("matchStart")
-      .limitToLast(1)
+      .startAt(now())
+      .limitToFirst(1)
       .once("value")
-      .then((e) => {
-        console.debug(e.val());
+      .then((snapshot) => {
+        const val = snapshot.val().pop().warEventId;
+        if (val) {
+          setNextWarEventId(val);
+        }
       });
   }, []);
   const theme = responsiveFontSizes(useTheme());
@@ -141,10 +144,16 @@ function App() {
             <main className={classes.main}>
               <Toolbar />
               <Routes basename={"/"}>
-                <Route path={""} element={<LandingPage />} />
+                <Route
+                  path={""}
+                  element={<Navigate replace to="war-announcement/latest" />}
+                />
                 <Route path={"war-announcement"}>
-                  <Route path={""} element={<Navigate to="latest" />} />
-                  <Route path={"latest"} element={<Navigate to="../0/1" />} />
+                  <Route path={""} element={<Navigate replace to="latest" />} />
+                  <Route
+                    path={"latest"}
+                    element={<Navigate replace to={`../0/1`} />}
+                  />
                   <Route path={":campaignId"}>
                     <Route path={":warEventId"} element={<WarAnnouncement />} />
                   </Route>
