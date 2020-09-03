@@ -20,7 +20,7 @@ import ButtonBase from "@material-ui/core/ButtonBase";
 function BattleParticipants({ battleId }) {
   const classes = useStyles();
   const [counterGauges, setCounterGauges] = useState([]);
-  const [expandParticipantNames, setExpandParticipantNames] = useState(true);
+  const [expandParticipantNames, setExpandParticipantNames] = useState(false);
   const [steamProfile] = useLocalStorage("steamProfile", {
     avatar: undefined,
     personaname: undefined,
@@ -88,6 +88,7 @@ function BattleParticipants({ battleId }) {
         {counterGauges.map(({ factionKey, stateCounts }) => (
           <Grid key={factionKey} xs={4} item>
             <ButtonBase
+              component={"div"}
               className={classes.participantActionArea}
               onClick={() => setExpandParticipantNames(!expandParticipantNames)}
             >
