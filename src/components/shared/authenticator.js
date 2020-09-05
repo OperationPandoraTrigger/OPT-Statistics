@@ -10,7 +10,7 @@ import { useLocalStorage } from "./helpers/useLocalStorage";
 export const STEAM_AUTHORITY_URL = "https://byte.pm/api/steam";
 
 export const login = () => {
-  fetch(STEAM_AUTHORITY_URL + "/authenticate", { mode: "no-cors" })
+  fetch(STEAM_AUTHORITY_URL + "/authenticate", { mode: "cors" })
     .then((response) => response.text())
     .then((redirectUrl) => {
       if (redirectUrl) window.open(redirectUrl, "self");
