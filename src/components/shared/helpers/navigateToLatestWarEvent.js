@@ -23,7 +23,7 @@ function NavigateToLatestBattle() {
           });
         }
       });
-  }, []);
+  }, [navigate]);
   return <LinearProgress color={"secondary"} />;
 }
 

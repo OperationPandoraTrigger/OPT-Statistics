@@ -21,6 +21,12 @@ const factionTranslations = {
   },
 };
 
+export const SIDE_TO_COLOR_MAP = {
+  aaf: "green",
+  csat: "red",
+  nato: "blue",
+};
+
 function Faction({ factionKey = undefined, style = "short" }) {
   return factionTranslations[factionKey][style];
 }

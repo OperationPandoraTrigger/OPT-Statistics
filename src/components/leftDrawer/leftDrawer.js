@@ -170,6 +170,7 @@ function LeftDrawer({ open, onClose, onOpen }) {
             component={"a"}
             button
             target={"_blank"}
+            rel="noopener noreferrer"
             href={"https://aar.byte.pm/missions"}
             activeClassName={"Mui-selected"}
           >
@@ -184,6 +185,7 @@ function LeftDrawer({ open, onClose, onOpen }) {
             component={"a"}
             button
             target={"_blank"}
+            rel="noopener noreferrer"
             href={"https://opt4.net/dashboard/"}
             activeClassName={"Mui-selected"}
           >
@@ -198,6 +200,7 @@ function LeftDrawer({ open, onClose, onOpen }) {
             component={"a"}
             button
             target={"_blank"}
+            rel="noopener noreferrer"
             href={"https://signatur.opt4.net/public/decorations"}
             activeClassName={"Mui-selected"}
           >
