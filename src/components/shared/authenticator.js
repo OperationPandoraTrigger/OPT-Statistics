@@ -7,13 +7,13 @@ import { useSearchParams } from "react-router-dom";
 import { useLocalStorage } from "./helpers/useLocalStorage";
 
 // TODO: move to firebase
-export const STEAM_AUTHORITY_URL = "http://byte.pm:8080/api/steam";
+export const STEAM_AUTHORITY_URL = "https://byte.pm/api/steam";
 
 export const login = () => {
-  fetch(STEAM_AUTHORITY_URL + "/authenticate")
+  fetch(STEAM_AUTHORITY_URL + "/authenticate", { mode: "no-cors" })
     .then((response) => response.text())
     .then((redirectUrl) => {
-      window.open(redirectUrl, "self");
+      if (redirectUrl) window.open(redirectUrl, "self");
     });
 };
 
