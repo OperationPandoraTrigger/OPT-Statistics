@@ -20,7 +20,7 @@ function BattleSectorChoice({ battleId }) {
     firebase.database().ref(`pendingSecretSectorChoices/${battleId}/deadline`)
   );
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const delta = deadline - now();
   const myFaction = "arf"; // TODO get from Auth/userRole
