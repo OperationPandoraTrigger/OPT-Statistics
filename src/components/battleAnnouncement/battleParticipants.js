@@ -17,7 +17,7 @@ import clsx from "clsx";
 import { useStyles } from "../../styles";
 import ButtonBase from "@material-ui/core/ButtonBase";
 
-function BattleParticipants({ battleId }) {
+function BattleParticipants({ battleId, faction }) {
   const classes = useStyles();
   const [counterGauges, setCounterGauges] = useState([]);
   const [expandParticipantNames, setExpandParticipantNames] = useState(false);
@@ -27,13 +27,13 @@ function BattleParticipants({ battleId }) {
     profileurl: undefined,
     steamid: undefined,
   });
-  const [participants] = useListVals(
+  const [battleParticipants] = useListVals(
     firebase.database().ref(`participants/${battleId}`)
   );
 
   useEffect(() => {
-    if (participants) {
-      const participantsByFaction = groupBy(participants, "faction");
+    if (battleParticipants) {
+      const participantsByFaction = groupBy(battleParticipants, "faction");
       const nextCounterGauges = [];
       for (const factionKey in participantsByFaction) {
         if (participantsByFaction.hasOwnProperty(factionKey)) {
@@ -42,14 +42,18 @@ function BattleParticipants({ battleId }) {
             participantsByFaction[factionKey],
             "state"
           );
-          nextCounterGauges.push({ factionKey, stateCounts });
+          nextCounterGauges.push({
+            factionKey,
+            stateCounts,
+            participants: participantsByFaction[factionKey],
+          });
         }
       }
       setCounterGauges(nextCounterGauges);
     } else {
       setCounterGauges([]);
     }
-  }, [participants]);
+  }, [battleParticipants]);
 
   const [enrollState] = useObjectVal(
     firebase
@@ -85,7 +89,7 @@ function BattleParticipants({ battleId }) {
     <>
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Grid container spacing={3}>
-        {counterGauges.map(({ factionKey, stateCounts }) => (
+        {counterGauges.map(({ factionKey, stateCounts, participants }) => (
           <Grid key={factionKey} xs={4} item>
             <ButtonBase
               component={"div"}
