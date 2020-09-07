@@ -2,9 +2,14 @@ import React, { useState } from "react";
 import { Check, Event, EventAvailable, EventBusy } from "@material-ui/icons";
 import { Button, ButtonGroup } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useStyles } from "../../styles";
+import { useStyles } from "../../../styles";
+import { useLocalStorage } from "../../shared/helpers/useLocalStorage";
 
-function BattleEnrollButtonGroup({ enrollState, onEnrollStateChange }) {
+function BattleEnrollButtonGroup({
+  enrollState,
+  onEnrollStateChange,
+  ...buttonGroupProps
+}) {
   const classes = useStyles();
   const [inTransaction, setInTransaction] = useState();
 
@@ -27,7 +32,7 @@ function BattleEnrollButtonGroup({ enrollState, onEnrollStateChange }) {
   });
 
   return (
-    <ButtonGroup orientation="vertical" disableElevation>
+    <ButtonGroup {...buttonGroupProps}>
       <Button {...getButtonProps("yes", <EventAvailable />)}>Ja</Button>
       <Button {...getButtonProps("no", <EventBusy />)}>Nein</Button>
       <Button {...getButtonProps("maybe", <Event />)}>Vielleicht</Button>

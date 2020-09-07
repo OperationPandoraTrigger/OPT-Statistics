@@ -10,6 +10,7 @@ import { now } from "moment";
 import "moment/locale/de";
 import { FormattedPlural, FormattedRelativeTime } from "react-intl";
 import { trimStart } from "lodash";
+import useBurnedSectors from "../shared/hooks/useBurnedSectors";
 
 function BattleSectorChoice({ battleId }) {
   const classes = useStyles();

@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Typography } from "@material-ui/core";
-import { useListVals } from "react-firebase-hooks/database";
-import firebase from "firebase/app";
+import useBurnedSectors from "../shared/hooks/useBurnedSectors";
 
-function BurnedSectors({ until = 0 }) {
-  const [battles] = useListVals(
-    firebase
-      .database()
-      .ref(`battles`)
-      .orderByChild("battleStart")
-      .endAt(until - 1) // do not include own match
-  );
-  const [sectorEnumeration, setSectorEnumeration] = useState("keine");
-
-  useEffect(() => {
-    setSectorEnumeration(
-      battles
-        ?.filter((b) => !!b.attackingSector)
-        ?.map(({ attackingSector }) => {
-          return "#" + Object.values(attackingSector).join(", #");
-        })
-        .join(", ") || "keine"
-    );
-  }, [battles]);
+function BurnedSectors({ until }) {
+  const burnedSectors = useBurnedSectors(until - 1); // do not include own battle
 
   return (
     <div>
       <Typography variant={"h4"}>Verbrannte Sektoren</Typography>
-      <Typography variant={"body2"}>{sectorEnumeration}</Typography>
+      <Typography variant={"body2"}>
+        {burnedSectors.map((v) => `#${v}`).join(", ")}
+      </Typography>
     </div>
   );
 }

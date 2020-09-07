@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import { useObjectVal } from "react-firebase-hooks/database";
 import BattleChronometer from "./battleChronometer";
 import { Link, useParams } from "react-router-dom";
-import BattleParticipants from "./battleParticipants";
+import BattleParticipants from "./battleParticipants/battleParticipants";
 import BattleSectorChoice from "./battleSectorChoice";
 import BattleSideChoice from "./battleSideChoice";
 import BurnedSectors from "./burnedSectors";

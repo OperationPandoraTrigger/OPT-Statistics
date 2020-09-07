@@ -6,10 +6,11 @@ import { RadioSVGMap } from "react-svg-map";
 import EGAG_SECTORS from "../../svg/egag_sectors.js";
 import firebase from "firebase/app";
 import { SIDE_TO_COLOR_MAP } from "./faction";
-import { now } from "moment";
 import { Typography } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
+import { useObjectVal } from "react-firebase-hooks/database";
+import { useStyles } from "../../styles";
 
 const INITIAL_SECTOR_COLOR_MAP = {
   "sector-1": "red",
@@ -50,10 +51,14 @@ function SectorChoiceDialog({
   myFaction,
   ...dialogProps
 }) {
+  const classes = useStyles();
   const [sectorColorMap, setSectorColorMap] = useState(
     INITIAL_SECTOR_COLOR_MAP
   );
   const [selectedSector, setSelectedSector] = useState();
+  const [battleStart] = useObjectVal(
+    firebase.database().ref(`battles/${battleId}/battleStart`)
+  );
 
   // reset to origin value stored by Backend
   const resetSector = useCallback(
@@ -69,37 +74,44 @@ function SectorChoiceDialog({
   );
 
   useEffect(() => {
-    firebase
-      .database()
-      .ref(`battles`)
-      .orderByChild("battleStart")
-      .endAt(now())
-      .once("value")
-      .then((snapshot) => {
-        const battles = snapshot.val();
-        console.debug(battles);
-        battles.forEach(({ attackingSector, factionSide, battleWinner }) => {
-          if (attackingSector) {
-            Object.values(attackingSector).forEach((sectorId) => {
-              const battleWinnerSide = factionSide[battleWinner];
-              const wonSector = attackingSector[battleWinner];
-              let nextColor;
+    if (battleStart) {
+      firebase
+        .database()
+        .ref(`battles`)
+        .orderByChild("battleStart")
+        .endAt(battleStart) // do not include own battle
+        .once("value")
+        .then((snapshot) => {
+          const battles = snapshot.val();
+          battles.forEach(({ attackingSector, factionSide, battleWinner }) => {
+            if (attackingSector) {
+              Object.values(attackingSector).forEach((sectorId) => {
+                const battleWinnerSide = factionSide[battleWinner];
+                const wonSector = attackingSector[battleWinner];
+                const sectorSvgId = `sector-${sectorId}`;
+                let nextColor;
 
-              if (wonSector && battleWinnerSide) {
-                nextColor = SIDE_TO_COLOR_MAP[battleWinnerSide];
-              }
+                if (wonSector && battleWinnerSide) {
+                  nextColor = SIDE_TO_COLOR_MAP[battleWinnerSide];
+                } else {
+                  nextColor = INITIAL_SECTOR_COLOR_MAP[sectorSvgId];
+                }
 
-              const nextSectorColorMap = {
-                [`sector-${sectorId}`]: `disabled ${nextColor}`,
-              };
-              setSectorColorMap((prev) => ({ ...prev, ...nextSectorColorMap }));
-            });
-          }
+                const nextSectorColorMap = {
+                  [sectorSvgId]: `disabled ${nextColor}`,
+                };
+                setSectorColorMap((prev) => ({
+                  ...prev,
+                  ...nextSectorColorMap,
+                }));
+              });
+            }
+          });
         });
-      });
+    }
 
     resetSector();
-  }, [resetSector]);
+  }, [resetSector, battleStart]);
 
   const handleSectorChange = (location) => {
     setSelectedSector(location);
@@ -124,8 +136,8 @@ function SectorChoiceDialog({
         }}
       />
       <DialogActions>
-        <Typography variant={"button"}>
-          Gewählter Sektor: {selectedSector?.getAttribute?.("name")}
+        <Typography className={classes.sectorName} variant={"button"}>
+          {selectedSector?.getAttribute?.("name")}
         </Typography>
         <Button
           onClick={() => {

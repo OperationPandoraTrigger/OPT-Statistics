@@ -1,9 +1,13 @@
 import { makeStyles } from "@material-ui/core/styles";
+import ENROLL_PARTICIPANTS_STYLE from "./components/battleAnnouncement/battleParticipants/battleParticipants.style";
+import PARTICIPANT_GAUGE_STYLE from "./components/battleAnnouncement/battleParticipants/participantGauge.style";
 
 export const DRAWER_WIDTH = 240;
 export const DRAWER_WIDTH_COLLAPSED = 58;
 
 export const useStyles = makeStyles((theme) => ({
+  ...ENROLL_PARTICIPANTS_STYLE(theme),
+  ...PARTICIPANT_GAUGE_STYLE(theme),
   root: {
     display: "flex",
   },
@@ -40,20 +44,6 @@ export const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  enrollButton: {
-    justifyContent: "start",
-  },
-  progressSecondary: {
-    color: theme.palette.primary.light,
-  },
-  progressPrimary: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    color: theme.palette.primary.dark,
-  },
   captionInlineBox: {
     display: "inline-block",
     margin: theme.spacing(1, 2),
@@ -67,30 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: "stretch",
     justifyContent: "space-between",
   },
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-  participantGauge: {
-    display: "flex",
-    position: "relative",
-    width: theme.typography.h1.fontSize,
-    height: theme.typography.h1.fontSize,
-  },
-  participantActionArea: {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  playerChip: {
-    pointerEvents: "none",
-  },
-  marginLeft: {
-    marginLeft: "auto",
+  sectorName: {
+    minWidth: "89px",
   },
 }));

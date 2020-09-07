@@ -3,19 +3,20 @@ import { Typography } from "@material-ui/core";
 import BattleEnrollButtonGroup from "./battleEnrollButtonGroup";
 import { useListVals, useObjectVal } from "react-firebase-hooks/database";
 import firebase from "firebase/app";
-import { delay } from "../shared/helpers/delay";
-import { useLocalStorage } from "../shared/helpers/useLocalStorage";
+import { delay } from "../../shared/helpers/delay";
+import { useLocalStorage } from "../../shared/helpers/useLocalStorage";
 import { countBy, groupBy } from "lodash";
-import Faction from "../shared/faction";
+import Faction from "../../shared/faction";
 import ParticipantGauge from "./participantGauge";
 import { ExpandMore } from "@material-ui/icons";
-import PlayerChip from "../shared/playerChip";
+import PlayerChip from "../../shared/playerChip";
 import Collapse from "@material-ui/core/Collapse";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import clsx from "clsx";
-import { useStyles } from "../../styles";
+import { useStyles } from "../../../styles";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import Box from "@material-ui/core/Box";
 
 function BattleParticipants({ battleId, faction }) {
   const classes = useStyles();
@@ -108,7 +109,12 @@ function BattleParticipants({ battleId, faction }) {
                 <ExpandMore />
               </IconButton>
             </ButtonBase>
-            <Collapse in={expandParticipantNames} timeout="auto" unmountOnExit>
+            <Collapse
+              in={expandParticipantNames}
+              timeout="auto"
+              className={classes.chipList}
+              unmountOnExit
+            >
               {participants.map(
                 ({ state, steamId, steamName, steamAvatar }) => (
                   <PlayerChip
@@ -123,14 +129,22 @@ function BattleParticipants({ battleId, faction }) {
           </Grid>
         ))}
 
-        <Grid item xs={2} className={classes.marginLeft}>
+        <Grid item className={classes.enrollWrapper}>
           <Typography display={"block"} variant={"button"}>
             Deine Teilnahme
           </Typography>
-          <BattleEnrollButtonGroup
-            enrollState={enrollState}
-            onEnrollStateChange={handleEnrollState}
-          />
+          <Box className={classes.enrollContainer}>
+            <Box className={classes.enrollHint}>
+              Melde dich zuerst mittels STEAM an um deinen Status zu setzten.
+            </Box>
+            <BattleEnrollButtonGroup
+              disabled={true}
+              orientation="vertical"
+              disableElevation
+              enrollState={enrollState}
+              onEnrollStateChange={handleEnrollState}
+            />
+          </Box>
         </Grid>
       </Grid>
     </>

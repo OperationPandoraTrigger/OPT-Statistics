@@ -1,7 +1,7 @@
 import React from "react";
 import CountUp from "react-countup";
 import { Box, CircularProgress, Tooltip, useTheme } from "@material-ui/core";
-import { useStyles } from "../../styles";
+import { useStyles } from "../../../styles";
 
 function ParticipantGauge({ yes = 0, maybe = 0, no = 0 }) {
   const theme = useTheme();
@@ -25,14 +25,7 @@ function ParticipantGauge({ yes = 0, maybe = 0, no = 0 }) {
           value={1 + (100 / predictedMax) * yes}
         />
         <Box
-          top={0}
-          right={0}
-          bottom={0}
-          left={0}
-          position="absolute"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          className={classes.gaugeCounter}
           fontSize={theme.typography.h4.fontSize}
         >
           <CountUp preserveValue end={yes + maybe / 2} />
