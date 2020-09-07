@@ -1,9 +1,15 @@
-import { styles as BackdropStyles } from "@material-ui/core/Backdrop/Backdrop";
+import { styles as BackdropStyles } from "@material-ui/core/Backdrop/Backdrop.js";
 import { fade } from "@material-ui/core";
 
 const ENROLL_HINT_BG_COLOR = fade(BackdropStyles.root.backgroundColor, 0.6);
 
 export const ENROLL_PARTICIPANTS_STYLE = (theme) => ({
+  emptyNotice: {
+    color: theme.palette.text.hint,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   enrollWrapper: {
     marginLeft: "auto",
     margin: theme.spacing(2),

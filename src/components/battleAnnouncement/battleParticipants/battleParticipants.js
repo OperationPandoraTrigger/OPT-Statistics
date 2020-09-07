@@ -18,7 +18,7 @@ import { useStyles } from "../../../styles";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Box from "@material-ui/core/Box";
 
-function BattleParticipants({ battleId, faction }) {
+function BattleParticipants({ battleId }) {
   const classes = useStyles();
   const [counterGauges, setCounterGauges] = useState([]);
   const [expandParticipantNames, setExpandParticipantNames] = useState(false);
@@ -90,6 +90,18 @@ function BattleParticipants({ battleId, faction }) {
     <>
       <Typography variant={"h3"}>Anmeldungen</Typography>
       <Grid container spacing={3}>
+        {counterGauges.length === 0 && (
+          <Grid
+            key={"empty-notice"}
+            xs={7}
+            item
+            className={classes.emptyNotice}
+          >
+            <Typography variant={"h4"}>
+              Keine Teilnehmer verzeichnet.
+            </Typography>
+          </Grid>
+        )}
         {counterGauges.map(({ factionKey, stateCounts, participants }) => (
           <Grid key={factionKey} xs={4} item>
             <ButtonBase
@@ -128,7 +140,6 @@ function BattleParticipants({ battleId, faction }) {
             </Collapse>
           </Grid>
         ))}
-
         <Grid item className={classes.enrollWrapper}>
           <Typography display={"block"} variant={"button"}>
             Deine Teilnahme
