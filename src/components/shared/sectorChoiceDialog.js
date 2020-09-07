@@ -70,7 +70,7 @@ function SectorChoiceDialog({
         .then((snapshot) => {
           setSelectedSector(snapshot.val());
         }),
-    []
+    [battleId, myFaction]
   );
 
   useEffect(() => {

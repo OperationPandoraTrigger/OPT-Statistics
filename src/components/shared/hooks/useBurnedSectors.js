@@ -1,4 +1,3 @@
-import { useListVals } from "react-firebase-hooks/database";
 import { useEffect, useState } from "react";
 import firebase from "firebase/app";
 
