@@ -21,7 +21,7 @@ function useBurnedSectors(until) {
         setSectorEnumeration(
           battlesWithAttackingSector?.flatMap(({ attackingSector }) => {
             return Object.values(attackingSector);
-          })
+          }) ?? []
         );
       });
 
