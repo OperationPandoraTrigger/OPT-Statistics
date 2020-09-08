@@ -13,7 +13,7 @@ function useBurnedSectors(until) {
         .endAt(until);
 
       const off = ref.on("value", (snapshot) => {
-        const battles = snapshot?.val();
+        const battles = Object.values(snapshot?.val() ?? []);
         const battlesWithAttackingSector = battles?.filter(
           (b) => !!b.attackingSector
         );
