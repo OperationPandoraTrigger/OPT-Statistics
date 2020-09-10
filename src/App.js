@@ -27,10 +27,10 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import { IntlProvider } from "react-intl";
-import { EGAG_1 } from "./devLogs/egag_s_1";
 import { FPS_LOG } from "./devLogs/rosche_1_3";
 import NavigateToLatestBattle from "./components/shared/helpers/navigateToLatestWarEvent";
 import BattleAnnouncement from "./components/battleAnnouncement/battleAnnouncement";
+import { EGAG_FUN } from "./devLogs/egag_fun";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -87,7 +87,7 @@ function App() {
 
   useEffect(() => {
     Promise.all([
-      parseLog(EGAG_1).then(
+      parseLog(EGAG_FUN).then(
         ({
           scoreDatasets,
           dominationDatasets,

@@ -16,7 +16,7 @@ function NavigateToLatestBattle() {
       .limitToFirst(1)
       .once("value")
       .then((snapshot) => {
-        const battleEvent = snapshot.val().pop();
+        const battleEvent = Object.values(snapshot.val()).pop();
         if (battleEvent) {
           navigate(`/battle-announcement/${battleEvent.battleId}`, {
             replace: true,
