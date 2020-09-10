@@ -27,10 +27,10 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import { IntlProvider } from "react-intl";
-import { FPS_LOG } from "./devLogs/rosche_1_3";
 import NavigateToLatestBattle from "./components/shared/helpers/navigateToLatestWarEvent";
 import BattleAnnouncement from "./components/battleAnnouncement/battleAnnouncement";
 import { EGAG_FUN } from "./devLogs/egag_fun";
+import { EGAG_FUN_FPS } from "./devLogs/egag_fun_fps";
 
 Chart.plugins.unregister(ChartDataLabels);
 
@@ -100,7 +100,7 @@ function App() {
           setPlayerStats(playerStats);
         }
       ),
-      parseFps(FPS_LOG).then(
+      parseFps(EGAG_FUN_FPS).then(
         ({ performanceDatasets, performanceBarDatasets }) => {
           setPerformanceDatasets(performanceDatasets);
           setPerformanceBarDatasets(performanceBarDatasets);
