@@ -17,20 +17,12 @@ function BattleAnnouncement() {
   const classes = useStyles();
   const { battleId } = useParams();
 
-  const [battleName] = useObjectVal(
-    firebase.database().ref(`battles/${battleId}/battleName`)
-  );
-  const [campaignId] = useObjectVal(
-    firebase.database().ref(`battles/${battleId}/campaignId`)
-  );
+  const [battle] = useObjectVal(firebase.database().ref(`battles/${battleId}`));
+  const { campaignId, battleName, battleStart, battleEnd, battleComment } =
+    battle ?? {};
+
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${campaignId}/campaignName`)
-  );
-  const [battleStart] = useObjectVal(
-    firebase.database().ref(`battles/${battleId}/battleStart`)
-  );
-  const [battleEnd] = useObjectVal(
-    firebase.database().ref(`battles/${battleId}/battleEnd`)
   );
   const nextBattleId = +battleId + 1;
   const prevBattleId = +battleId - 1;
@@ -61,8 +53,8 @@ function BattleAnnouncement() {
         </Button>
       </Box>
       <Typography variant={"h2"}>{battleName}</Typography>
-      <Typography variant={"body1"} fontStyle={"italic"}>
-        Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.
+      <Typography className={classes.battleComment} variant={"body1"}>
+        {battleComment}
       </Typography>
       <BattleChronometer battleStart={battleStart} battleEnd={battleEnd} />
       <Divider />

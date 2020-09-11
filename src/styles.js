@@ -66,6 +66,10 @@ export const useStyles = makeStyles(
     sectorName: {
       minWidth: "89px",
     },
+    battleComment: {
+      whiteSpace: "pre-wrap",
+      fontStyle: "italic",
+    },
   }),
   { index: 1 } // jss way to say: !important
 );
