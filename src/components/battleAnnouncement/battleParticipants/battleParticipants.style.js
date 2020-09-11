@@ -32,7 +32,6 @@ export const ENROLL_PARTICIPANTS_STYLE = (theme) => ({
     backgroundColor: ENROLL_HINT_BG_COLOR,
     color: theme.palette.getContrastText(ENROLL_HINT_BG_COLOR),
   },
-
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {

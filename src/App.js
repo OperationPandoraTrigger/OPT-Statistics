@@ -64,7 +64,7 @@ function App() {
                   <Route path={"latest"} element={<NavigateToLatestBattle />} />
                   <Route path={":battleId"} element={<BattleAnnouncement />} />
                 </Route>
-                <Route path="statistic/*" element={<StatisticsProvider/>}/>
+                <Route path="statistic/*" element={<StatisticsProvider />} />
                 <Route path="*">
                   <NotFoundPage />
                 </Route>
