@@ -1,7 +1,7 @@
 import React from "react";
 import { utc } from "moment";
 import { HorizontalBar } from "react-chartjs-2";
-import { GAMETIME_SCALE } from "../../App";
+import { GAMETIME_SCALE} from "../shared/statisticsProvider";
 
 function DominationTime({ datasets }) {
   return (

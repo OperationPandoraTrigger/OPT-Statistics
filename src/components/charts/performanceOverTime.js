@@ -1,7 +1,7 @@
 import React from "react";
 import { Tableau20 } from "chartjs-plugin-colorschemes/src/colorschemes/colorschemes.tableau";
 import { Line } from "react-chartjs-2";
-import { GAMETIME_SCALE, LINE_TOOLTIP } from "../../App";
+import {LINE_TOOLTIP, GAMETIME_SCALE} from "../shared/statisticsProvider";
 
 function PerformanceOverTime({ datasets }) {
   return (

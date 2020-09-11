@@ -1,6 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import { GAMETIME_SCALE, LINE_TOOLTIP } from "../../App";
+import {LINE_TOOLTIP, GAMETIME_SCALE} from "../shared/statisticsProvider";
 
 function BudgetBurndown({ datasets }) {
   return (
