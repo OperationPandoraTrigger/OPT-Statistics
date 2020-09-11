@@ -15,11 +15,11 @@ function TopAppBar({ onMenuClick }) {
       <Toolbar>
         <Hidden lgUp>
           <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="menu"
-              onClick={onMenuClick}
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={onMenuClick}
           >
             <Menu />
           </IconButton>

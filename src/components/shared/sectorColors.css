@@ -1,45 +1,44 @@
 .burned {
-    pointer-events: none;
+  pointer-events: none;
 }
 .sector {
-    cursor: pointer;
-    stroke-width: 1.2rem;
+  cursor: pointer;
+  stroke-width: 1.2rem;
 }
 .sector:focus {
-    outline: 0;
+  outline: 0;
 }
 
 .red {
-    fill: rgba(255, 78, 78, 0.17);
-    stroke: rgba(255, 78, 78, 0.17);
+  fill: rgba(255, 78, 78, 0.17);
+  stroke: rgba(255, 78, 78, 0.17);
 }
 .red:hover {
-    fill: rgba(255, 78, 78, 0.44);
-    stroke: rgba(255, 78, 78, 0.44);
+  fill: rgba(255, 78, 78, 0.44);
+  stroke: rgba(255, 78, 78, 0.44);
 }
 .red.selected {
-    fill: rgba(255, 78, 78, 0.64);
-    stroke: rgba(255, 78, 78, 0.64);
+  fill: rgba(255, 78, 78, 0.64);
+  stroke: rgba(255, 78, 78, 0.64);
 }
 .red.disabled {
-    fill: rgba(255, 78, 78, 0.08);
-    stroke: rgba(255, 78, 78, 0.08);
+  fill: rgba(255, 78, 78, 0.08);
+  stroke: rgba(255, 78, 78, 0.08);
 }
-
 
 .green {
-    fill: rgba(106, 206, 104, 0.26);
-    stroke: rgba(106, 206, 104, 0.26);
+  fill: rgba(106, 206, 104, 0.26);
+  stroke: rgba(106, 206, 104, 0.26);
 }
 .green:hover {
-    fill: rgba(106, 206, 104, 0.51);
-    stroke: rgba(106, 206, 104, 0.51);
+  fill: rgba(106, 206, 104, 0.51);
+  stroke: rgba(106, 206, 104, 0.51);
 }
 .green.selected {
-    fill: rgba(106, 206, 104, 0.81);
-    stroke: rgba(106, 206, 104, 0.81);
+  fill: rgba(106, 206, 104, 0.81);
+  stroke: rgba(106, 206, 104, 0.81);
 }
 .green.disabled {
-    fill: rgba(106, 206, 104, 0.16);
-    stroke: rgba(106, 206, 104, 0.16);
+  fill: rgba(106, 206, 104, 0.16);
+  stroke: rgba(106, 206, 104, 0.16);
 }
