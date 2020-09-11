@@ -13,18 +13,20 @@ function TopAppBar({ onMenuClick }) {
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-          onClick={onMenuClick}
-        >
-          <Menu />
-        </IconButton>
-        <Link to={"/battle-announcement/latest"}>
-          <OptFullLogo fill="#FFF" className={classes.logo} />
-        </Link>
+        <Hidden lgUp>
+          <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={onMenuClick}
+          >
+            <Menu />
+          </IconButton>
+          <Link to={"/battle-announcement/latest"}>
+            <OptFullLogo fill="#FFF" className={classes.logo} />
+          </Link>
+        </Hidden>
         <Hidden xsDown>
           <Typography variant="h6" noWrap>
             Operation Pandora Trigger

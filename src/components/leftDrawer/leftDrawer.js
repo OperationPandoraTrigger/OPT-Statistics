@@ -7,7 +7,7 @@ import {
   ListItemText,
   SwipeableDrawer,
   Toolbar,
-  Typography,
+  Typography, useMediaQuery,
 } from "@material-ui/core";
 import {
   Beenhere,
@@ -24,7 +24,7 @@ import {
   Speed,
 } from "@material-ui/icons";
 import { useStyles } from "../../styles";
-import { NavLink } from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import CampaignSelectorPopover from "../shared/campaignSelector/campaignSelectorPopover";
 import { OptFullLogo } from "../../svg";
 import { login, logout } from "../shared/authenticator";
@@ -33,10 +33,13 @@ import firebase from "firebase/app";
 import { xor } from "lodash";
 import CollapseListWrapper from "./collapseListWrapper";
 import { useLocation } from "react-router-dom";
+import {useTheme} from "@material-ui/core/styles";
 
 function LeftDrawer({ open, onClose, onOpen }) {
   const classes = useStyles();
-  const [listOpen, setListOpen] = useState(["Allgemein"]);
+  const theme = useTheme();
+  const [listOpen, setListOpen] = useState(["Allgemein", "Statistiken"]);
+  const mediaQuery = useMediaQuery(theme.breakpoints.up('lg'))
   const [user, loadingUser] = useAuthState(firebase.auth());
   const [campaignSelectorAnchorEl, setCampaignSelectorAnchorEl] = useState(
     null
@@ -56,10 +59,13 @@ function LeftDrawer({ open, onClose, onOpen }) {
       open={open}
       onClose={onClose}
       onOpen={onOpen}
+      variant={mediaQuery ? "permanent" : "temporary"}
       classes={{ paper: classes.drawerPaper }}
     >
       <Toolbar>
-        <OptFullLogo fill="#000" className={classes.logo} />
+        <Link to={"/battle-announcement/latest"}>
+          <OptFullLogo fill="#000" className={classes.logo} />
+        </Link>
       </Toolbar>
 
       <List component={"nav"}>

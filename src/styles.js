@@ -2,8 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ENROLL_PARTICIPANTS_STYLE from "./components/battleAnnouncement/battleParticipants/battleParticipants.style";
 import PARTICIPANT_GAUGE_STYLE from "./components/battleAnnouncement/battleParticipants/participantGauge.style";
 
-export const DRAWER_WIDTH = 240;
-export const DRAWER_WIDTH_COLLAPSED = 58;
+export const DRAWER_WIDTH = 252;
 
 export const useStyles = makeStyles((theme) => ({
   ...ENROLL_PARTICIPANTS_STYLE(theme),
@@ -28,7 +27,10 @@ export const useStyles = makeStyles((theme) => ({
     width: DRAWER_WIDTH,
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    [theme.breakpoints.up('lg')]: {
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
+      marginLeft: DRAWER_WIDTH,
+    },
   },
   logo: {
     width: "auto",
