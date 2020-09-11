@@ -10,4 +10,5 @@ export { ReactComponent as TravelDistanceIcon } from "./travel-distance.svg";
 export { ReactComponent as VehicleAirIcon } from "./vehicle-air.svg";
 export { ReactComponent as VehicleHeavyIcon } from "./vehicle-heavy.svg";
 export { ReactComponent as VehicleLightIcon } from "./vehicle-light.svg";
+export { ReactComponent as UnconciousIcon } from "./unconscious.svg";
 export { ReactComponent as WarCountIcon } from "./war-count.svg";

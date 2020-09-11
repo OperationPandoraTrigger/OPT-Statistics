@@ -4,15 +4,11 @@ import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import { AttachMoney, Person } from "@material-ui/icons";
 import { SvgIcon } from "@material-ui/core";
 import {
-  DeathIcon,
   FlagTouchIcon,
   FriendlyFireIcon,
   KillIcon,
   ReviveIcon,
-  TravelDistanceIcon,
-  VehicleAirIcon,
-  VehicleHeavyIcon,
-  VehicleLightIcon,
+  UnconciousIcon,
 } from "../../svg/scoreboard";
 
 const playerColumns = [
@@ -74,70 +70,70 @@ const playerColumns = [
     field: "captures",
     type: "numeric",
   },
-  {
-    tooltip: "Fahrzeug (Leicht)",
-    title: (
-      <>
-        <SvgIcon>
-          <VehicleLightIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "lightVehicle",
-    type: "numeric",
-  },
-  {
-    tooltip: "Fahrzeug (Schwer)",
-    title: (
-      <>
-        <SvgIcon>
-          <VehicleHeavyIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "heavyVehicle",
-    type: "numeric",
-  },
-  {
-    tooltip: "Fahrzeug (Luft)",
-    title: (
-      <>
-        <SvgIcon>
-          <VehicleAirIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "airVehicle",
-    type: "numeric",
-  },
-  {
-    tooltip: "Passagier Flugdistanz",
-    title: (
-      <>
-        <SvgIcon>
-          <KillIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "traveled",
-  },
-  {
-    tooltip: "Pilot Flugdistanz",
-    title: (
-      <>
-        <SvgIcon>
-          <TravelDistanceIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "carried",
-  },
+  // {
+  //   tooltip: "Fahrzeug (Leicht)",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <VehicleLightIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "lightVehicle",
+  //   type: "numeric",
+  // },
+  // {
+  //   tooltip: "Fahrzeug (Schwer)",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <VehicleHeavyIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "heavyVehicle",
+  //   type: "numeric",
+  // },
+  // {
+  //   tooltip: "Fahrzeug (Luft)",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <VehicleAirIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "airVehicle",
+  //   type: "numeric",
+  // },
+  // {
+  //   tooltip: "Passagier Flugdistanz",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <KillIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "traveled",
+  // },
+  // {
+  //   tooltip: "Pilot Flugdistanz",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <TravelDistanceIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "carried",
+  // },
   {
     tooltip: "Bewusstlosigkeit",
     title: (
       <>
         <SvgIcon>
-          <DeathIcon />
+          <UnconciousIcon />
         </SvgIcon>
       </>
     ),
@@ -162,18 +158,18 @@ const playerColumns = [
       maximumFractionDigits: 0,
     },
   },
-  {
-    tooltip: "Tode",
-    title: (
-      <>
-        <SvgIcon>
-          <KillIcon />
-        </SvgIcon>
-      </>
-    ),
-    field: "died",
-    type: "numeric",
-  },
+  // {
+  //   tooltip: "Tode",
+  //   title: (
+  //     <>
+  //       <SvgIcon>
+  //         <KillIcon />
+  //       </SvgIcon>
+  //     </>
+  //   ),
+  //   field: "died",
+  //   type: "numeric",
+  // },
 ];
 const tableIcons = {
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
@@ -186,7 +182,7 @@ function PlayerTable({ playerStats }) {
       columns={playerColumns}
       data={Object.values(playerStats)}
       options={{
-        tableLayout: "fixed",
+        tableLayout: "auto",
         padding: "dense",
         filtering: false,
         grouping: false,
@@ -194,10 +190,7 @@ function PlayerTable({ playerStats }) {
         selection: false,
         paging: false,
         sorting: true,
-        headerStyle: {
-          whiteSpace: "nowrap",
-          textOverflow: "ellipsis",
-        },
+        // fixedColumns: { left: 1 },
       }}
     />
   );

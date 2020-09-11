@@ -19,6 +19,9 @@ export const useStyles = makeStyles(
     main: {
       flexGrow: 1,
       padding: theme.spacing(3),
+      [theme.breakpoints.up("lg")]: {
+        width: `calc(100% - ${DRAWER_WIDTH}px)`,
+      },
     },
     drawer: {
       width: DRAWER_WIDTH,
