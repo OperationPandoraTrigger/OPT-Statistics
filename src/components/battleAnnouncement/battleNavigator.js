@@ -34,7 +34,7 @@ function BattleNavigator({ currentBattleId, currentCampaignId }) {
       </Button>
       <Box className={classes.battleNavigatorCampaign}>
         <Typography display={"inline"} variant={"button"}>
-          Kampagne {campaignName}
+          Kampagne - {campaignName}
         </Typography>
       </Box>
       <Button
