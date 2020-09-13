@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { useLocalStorage } from "./helpers/useLocalStorage";
 
 // TODO: move to firebase
-export const STEAM_AUTHORITY_URL = "https://byte.pm/api/steam";
+export const STEAM_AUTHORITY_URL = "https://steam.byte.pm/api/steam";
 
 export const login = () => {
   fetch(STEAM_AUTHORITY_URL + "/authenticate", { mode: "cors" })
