@@ -146,7 +146,7 @@ function BattleParticipants({ battleId }) {
           </Typography>
           <Box className={classes.enrollContainer}>
             <Box className={classes.enrollHint}>
-              Melde dich zuerst mittels STEAM an um deinen Status zu setzten.
+              Melde dich zuerst mittels STEAM an um deinen Status zu setzen.
             </Box>
             <BattleEnrollButtonGroup
               disabled={true}
