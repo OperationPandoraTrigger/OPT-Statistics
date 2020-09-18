@@ -144,11 +144,13 @@ function BattleParticipants({ battleId }) {
             Deine Teilnahme
           </Typography>
           <Box className={classes.enrollContainer}>
-            <Box className={classes.enrollHint}>
-              Melde dich zuerst mittels STEAM an um deinen Status zu setzen.
-            </Box>
+            {!steamProfile.steamid && (
+              <Box className={classes.enrollHint}>
+                Melde dich zuerst mittels STEAM an um deinen Status zu setzen.
+              </Box>
+            )}
             <BattleEnrollButtonGroup
-              disabled={true}
+              disabled={!steamProfile.steamid}
               orientation="vertical"
               disableElevation
               enrollState={enrollState}
