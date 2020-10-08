@@ -31,6 +31,11 @@ function BattleParticipants({ battleId }) {
   const [battleParticipants] = useListVals(
     firebase.database().ref(`participants/${battleId}`)
   );
+  const [enrollState] = useObjectVal(
+    firebase
+      .database()
+      .ref(`participants/${battleId}/${steamProfile.steamid}/state`)
+  );
 
   useEffect(() => {
     if (battleParticipants) {
@@ -55,12 +60,6 @@ function BattleParticipants({ battleId }) {
       setCounterGauges([]);
     }
   }, [battleParticipants]);
-
-  const [enrollState] = useObjectVal(
-    firebase
-      .database()
-      .ref(`participants/${battleId}/${steamProfile.steamid}/state`)
-  );
 
   const handleEnrollState = (state) => {
     if (battleId && steamProfile.steamid) {
@@ -145,11 +144,13 @@ function BattleParticipants({ battleId }) {
             Deine Teilnahme
           </Typography>
           <Box className={classes.enrollContainer}>
-            <Box className={classes.enrollHint}>
-              Melde dich zuerst mittels STEAM an um deinen Status zu setzten.
-            </Box>
+            {!steamProfile.steamid && (
+              <Box className={classes.enrollHint}>
+                Melde dich zuerst mittels STEAM an um deinen Status zu setzen.
+              </Box>
+            )}
             <BattleEnrollButtonGroup
-              disabled={true}
+              disabled={!steamProfile.steamid}
               orientation="vertical"
               disableElevation
               enrollState={enrollState}

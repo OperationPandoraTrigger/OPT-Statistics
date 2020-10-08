@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { parseFps, parseLog } from "../../data/logParse";
-import { EGAG_FUN } from "../../devLogs/egag_fun";
-import { EGAG_FUN_FPS } from "../../devLogs/egag_fun_fps";
 import { Route, Routes } from "react-router-dom";
 import PlayerTable from "../charts/playerTable";
 import PerformancePlayerBar from "../charts/performancePlayerBar";
@@ -12,6 +10,8 @@ import { utc } from "moment";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useStyles } from "../../styles";
+import { EGAG_4 } from "../../devLogs/egag_s_4";
+import { EGAG_4_FPS } from "../../devLogs/egag_s_4_fps";
 
 export const LINE_TOOLTIP = {
   callbacks: {
@@ -44,7 +44,7 @@ export const GAMETIME_SCALE = {
   },
 };
 
-function StatisticsProvider(props) {
+function StatisticsProvider() {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [scoreDatasets, setScoreDatasets] = useState([]);
@@ -56,7 +56,7 @@ function StatisticsProvider(props) {
 
   useEffect(() => {
     Promise.all([
-      parseLog(EGAG_FUN).then(
+      parseLog(EGAG_4).then(
         ({
           scoreDatasets,
           dominationDatasets,
@@ -69,7 +69,7 @@ function StatisticsProvider(props) {
           setPlayerStats(playerStats);
         }
       ),
-      parseFps(EGAG_FUN_FPS).then(
+      parseFps(EGAG_4_FPS).then(
         ({ performanceDatasets, performanceBarDatasets }) => {
           setPerformanceDatasets(performanceDatasets);
           setPerformanceBarDatasets(performanceBarDatasets);
