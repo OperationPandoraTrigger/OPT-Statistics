@@ -36,11 +36,11 @@ function getFaction(rawSide) {
   switch (rawSide?.toLowerCase()) {
     case "arf":
     case "csat":
-      return `arf`;
+      return `sword`;
     case "sword":
     case "aaf":
     case "guer":
-      return `sword`;
+      return `arf`;
     default:
       return rawSide;
   }
