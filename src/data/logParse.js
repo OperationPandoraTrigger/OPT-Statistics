@@ -35,11 +35,11 @@ function getColorForFaction(side, alpha = 1) {
 function getFaction(rawSide) {
   switch (rawSide?.toLowerCase()) {
     case "arf":
-    case "csat":
-      return `sword`;
-    case "sword":
     case "aaf":
     case "guer":
+      return `sword`;
+    case "sword":
+    case "csat":
       return `arf`;
     default:
       return rawSide;
