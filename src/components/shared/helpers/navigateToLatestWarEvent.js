@@ -16,9 +16,16 @@ function NavigateToLatestBattle() {
       .limitToFirst(1)
       .once("value")
       .then((snapshot) => {
-        const battleEvent = Object.values(snapshot.val()).pop();
-        if (battleEvent) {
-          navigate(`/battle-announcement/${battleEvent.battleId}`, {
+        if (snapshot.val()) {
+          const battleEvent = Object.values(snapshot.val()).pop();
+          if (battleEvent) {
+            navigate(`/battle-announcement/${battleEvent.battleId}`, {
+              replace: true,
+            });
+          }
+        } else {
+          // no latest battle found
+          navigate(`/battle-announcement/soontm`, {
             replace: true,
           });
         }
