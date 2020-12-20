@@ -213,17 +213,18 @@ function parseFlag(line, gameTimeAsMilliseconds) {
 function parseKill(line, gameTimeAsMilliseconds) {
   // 21:09:20 "[OPT] (Abschuss) Log: 1:00:11 --- Einheit: Pelle (side: GUER) von: Frozen_byte (side: EAST) (magazine: 5.8 mm 30Rnd Mag)"
   // 22:38:24 "[OPT] (Abschuss) Log: 2:29:15 --- Einheit: [THE](Cpt.)schmiet (side: EAST) von: Dominik (side: EAST) (magazine: 5.8 mm 30Rnd Mag)"
-  const playerKillMatch = line.match(
-    /--- Einheit: (?<victimPlayer>.+) \(side: (?<victimSide>\w+)\) von: (?<slayerPlayer>.+) \(side: (?<slayerSide>\w+)\) \((?<crimeWeapon>.+)\)/
-  );
   // 21:11:35 "[OPT] (Abschuss) Log: 1:02:26 --- Fahrzeug: Strider (category: Leicht) (side: OPT_AAF) von: Wiesl (side: EAST) (vehicle: BTR-K Kamysh), Murda]X[ (side: EAST) (vehicle: BTR-K Kamysh), [GNC]Lord-MDB (side: EAST) (vehicle: BTR-K Kamysh)"
   // TODO vehicle Syntax?!
 
   //"22:39:08 "[OPT] (Abschuss) Log: 2:29:59 --- Einheit: Error: No unit (side: CIV) von: Scott (side: GUER) (magazine: RGO Grenade)""
 
-  const { victimPlayer, slayerPlayer, victimSide, slayerSide } =
-    playerKillMatch?.groups || {};
-
+  const { victimPlayer, victimSide } =
+    line.match(
+      /--- Einheit: (?<victimPlayer>.+?) \(side: (?<victimSide>\w+?)\)/
+    )?.groups || {};
+  const { slayerPlayer, slayerSide } =
+    line.match(/von: (?<slayerPlayer>.+?) \(side: (?<slayerSide>\w+?)\)/)
+      ?.groups || {};
   if (!victimPlayer || !slayerPlayer) {
     console.error("unable to parse", { line, victimPlayer, slayerPlayer });
   } else if (victimSide === slayerSide) {
