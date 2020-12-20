@@ -10,8 +10,8 @@ import { utc } from "moment";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useStyles } from "../../styles";
-import { EGAG_10 } from "../../devLogs/egag_s_10";
-import { EGAG_10_FPS } from "../../devLogs/egag_s_10_fps";
+import { TECH_1 } from "../../devLogs/tech_1";
+import { TECH_1_FPS } from "../../devLogs/tech_fps_1";
 
 export const LINE_TOOLTIP = {
   callbacks: {
@@ -56,7 +56,7 @@ function StatisticsProvider() {
 
   useEffect(() => {
     Promise.all([
-      parseLog(EGAG_10).then(
+      parseLog(TECH_1).then(
         ({
           scoreDatasets,
           dominationDatasets,
@@ -69,7 +69,7 @@ function StatisticsProvider() {
           setPlayerStats(playerStats);
         }
       ),
-      parseFps(EGAG_10_FPS).then(
+      parseFps(TECH_1_FPS).then(
         ({ performanceDatasets, performanceBarDatasets }) => {
           setPerformanceDatasets(performanceDatasets);
           setPerformanceBarDatasets(performanceBarDatasets);
