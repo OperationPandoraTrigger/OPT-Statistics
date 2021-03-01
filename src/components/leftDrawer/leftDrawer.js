@@ -11,29 +11,22 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import {
-  Beenhere,
   ChatBubble,
-  ChevronRight,
   EmojiEvents,
-  EuroSymbol,
-  Flag,
-  Group,
   LocationOn,
   Login,
+  MultilineChart,
   NewReleases,
   PowerSettingsNew,
-  Speed,
 } from "@material-ui/icons";
 import { useStyles } from "../../styles";
-import { Link, NavLink } from "react-router-dom";
-import CampaignSelectorPopover from "../shared/campaignSelector/campaignSelectorPopover";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { OptFullLogo } from "../../svg";
 import { login, logout } from "../shared/authenticator";
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase/app";
 import { xor } from "lodash";
 import CollapseListWrapper from "./collapseListWrapper";
-import { useLocation } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 
 function LeftDrawer({ open, onClose, onOpen }) {
@@ -42,9 +35,6 @@ function LeftDrawer({ open, onClose, onOpen }) {
   const [listOpen, setListOpen] = useState(["Allgemein", "Statistiken"]);
   const mediaQuery = useMediaQuery(theme.breakpoints.up("lg"));
   const [user, loadingUser] = useAuthState(firebase.auth());
-  const [campaignSelectorAnchorEl, setCampaignSelectorAnchorEl] = useState(
-    null
-  );
   let location = useLocation();
 
   useEffect(() => {
@@ -93,84 +83,6 @@ function LeftDrawer({ open, onClose, onOpen }) {
         <CollapseListWrapper
           listOpen={listOpen}
           onCollapseChange={(key) => setListOpen(xor(listOpen, [key]))}
-          label={"Statistiken"}
-        >
-          <ListItem
-            button
-            disabled // TODO enable the battleEvent-Selection
-            onClick={({ currentTarget }) =>
-              setCampaignSelectorAnchorEl(currentTarget)
-            }
-          >
-            <ListItemIcon>
-              <Beenhere />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography>Schlachten</Typography>
-            </ListItemText>
-            <ChevronRight />
-          </ListItem>
-          <CampaignSelectorPopover
-            anchorEl={campaignSelectorAnchorEl}
-            onClose={() => setCampaignSelectorAnchorEl(null)}
-          />
-          <ListItem
-            component={NavLink}
-            button
-            to={"/statistic/performance"}
-            activeClassName={"Mui-selected"}
-          >
-            <ListItemIcon>
-              <Speed />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography>Performance</Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            component={NavLink}
-            button
-            to={"/statistic/economy"}
-            activeClassName={"Mui-selected"}
-          >
-            <ListItemIcon>
-              <EuroSymbol />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography>Ressourcen</Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            component={NavLink}
-            button
-            to={"/statistic/campaign-score"}
-            activeClassName={"Mui-selected"}
-          >
-            <ListItemIcon>
-              <Flag />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography>Punkte</Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            component={NavLink}
-            button
-            to={"/statistic/player-table"}
-            activeClassName={"Mui-selected"}
-          >
-            <ListItemIcon>
-              <Group />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography>Spielerstatistiken</Typography>
-            </ListItemText>
-          </ListItem>
-        </CollapseListWrapper>
-
-        <CollapseListWrapper
-          listOpen={listOpen}
-          onCollapseChange={(key) => setListOpen(xor(listOpen, [key]))}
           label={"Externe Links"}
         >
           <ListItem
@@ -186,6 +98,21 @@ function LeftDrawer({ open, onClose, onOpen }) {
             </ListItemIcon>
             <ListItemText>
               <Typography>AAR</Typography>
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            component={"a"}
+            button
+            target={"_blank"}
+            rel="noopener noreferrer"
+            href={"https://stats.opt4.net:2021/"}
+            activeClassName={"Mui-selected"}
+          >
+            <ListItemIcon>
+              <MultilineChart />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography>Statistiken</Typography>
             </ListItemText>
           </ListItem>
           <ListItem

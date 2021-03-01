@@ -20,7 +20,6 @@ import "firebase/database";
 import { IntlProvider } from "react-intl";
 import NavigateToLatestBattle from "./components/shared/helpers/navigateToLatestWarEvent";
 import BattleAnnouncement from "./components/battleAnnouncement/battleAnnouncement";
-import StatisticsProvider from "./components/shared/statisticsProvider";
 import Soontm from "./components/battleAnnouncement/soontm";
 
 Chart.plugins.unregister(ChartDataLabels);
@@ -66,7 +65,6 @@ function App() {
                   <Route path={"soontm"} element={<Soontm />} />
                   <Route path={":battleId"} element={<BattleAnnouncement />} />
                 </Route>
-                <Route path="statistic/*" element={<StatisticsProvider />} />
                 <Route path="*">
                   <NotFoundPage />
                 </Route>
