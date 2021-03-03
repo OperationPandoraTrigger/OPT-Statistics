@@ -21,7 +21,12 @@ import { IntlProvider } from "react-intl";
 import NavigateToLatestBattle from "./components/shared/helpers/navigateToLatestWarEvent";
 import BattleAnnouncement from "./components/battleAnnouncement/battleAnnouncement";
 import Soontm from "./components/battleAnnouncement/soontm";
+import MomentUtils from "@date-io/moment";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import "moment/locale/de";
+import moment from "moment";
 
+moment.locale("de"); // it is required to select default locale manually
 Chart.plugins.unregister(ChartDataLabels);
 
 const firebaseConfig = {
@@ -44,33 +49,46 @@ function App() {
     <BrowserRouter>
       <IntlProvider locale={"de"}>
         <ThemeProvider theme={theme}>
-          <div className={classes.root}>
-            <CssBaseline />
-            <TopAppBar onMenuClick={() => setDrawerOpen(true)} />
-            <LeftDrawer
-              onOpen={() => setDrawerOpen(true)}
-              onClose={() => setDrawerOpen(false)}
-              open={drawerOpen}
-            />
-            <main className={classes.main}>
-              <Toolbar />
-              <Routes basename={"/"}>
-                <Route
-                  path={""}
-                  element={<Navigate replace to="battle-announcement/latest" />}
-                />
-                <Route path={"battle-announcement"}>
-                  <Route path={""} element={<Navigate replace to="latest" />} />
-                  <Route path={"latest"} element={<NavigateToLatestBattle />} />
-                  <Route path={"soontm"} element={<Soontm />} />
-                  <Route path={":battleId"} element={<BattleAnnouncement />} />
-                </Route>
-                <Route path="*">
-                  <NotFoundPage />
-                </Route>
-              </Routes>
-            </main>
-          </div>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <div className={classes.root}>
+              <CssBaseline />
+              <TopAppBar onMenuClick={() => setDrawerOpen(true)} />
+              <LeftDrawer
+                onOpen={() => setDrawerOpen(true)}
+                onClose={() => setDrawerOpen(false)}
+                open={drawerOpen}
+              />
+              <main className={classes.main}>
+                <Toolbar />
+                <Routes basename={"/"}>
+                  <Route
+                    path={""}
+                    element={
+                      <Navigate replace to="battle-announcement/latest" />
+                    }
+                  />
+                  <Route path={"battle-announcement"}>
+                    <Route
+                      path={""}
+                      element={<Navigate replace to="latest" />}
+                    />
+                    <Route
+                      path={"latest"}
+                      element={<NavigateToLatestBattle />}
+                    />
+                    <Route path={"soontm"} element={<Soontm />} />
+                    <Route
+                      path={":battleId"}
+                      element={<BattleAnnouncement />}
+                    />
+                  </Route>
+                  <Route path="*">
+                    <NotFoundPage />
+                  </Route>
+                </Routes>
+              </main>
+            </div>
+          </MuiPickersUtilsProvider>
         </ThemeProvider>
       </IntlProvider>
     </BrowserRouter>
