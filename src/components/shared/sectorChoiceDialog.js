@@ -79,34 +79,36 @@ function SectorChoiceDialog({
         .database()
         .ref(`battles`)
         .orderByChild("battleStart")
-        .endAt(battleStart) // do not include own battle
+        .endAt(battleStart - 1) // do not include own battle
         .once("value")
         .then((snapshot) => {
           const battles = snapshot.val();
-          battles.forEach(({ attackingSector, factionSide, battleWinner }) => {
-            if (attackingSector) {
-              Object.values(attackingSector).forEach((sectorId) => {
-                const battleWinnerSide = factionSide[battleWinner];
-                const wonSector = attackingSector[battleWinner];
-                const sectorSvgId = `sector-${sectorId}`;
-                let nextColor;
+          Object.values(battles).forEach(
+            ({ attackingSector, factionSide, battleWinner }) => {
+              if (attackingSector) {
+                Object.values(attackingSector).forEach((sectorId) => {
+                  const battleWinnerSide = factionSide[battleWinner];
+                  const wonSector = attackingSector[battleWinner];
+                  const sectorSvgId = `sector-${sectorId}`;
+                  let nextColor;
 
-                if (wonSector && battleWinnerSide) {
-                  nextColor = SIDE_TO_COLOR_MAP[battleWinnerSide];
-                } else {
-                  nextColor = INITIAL_SECTOR_COLOR_MAP[sectorSvgId];
-                }
+                  if (wonSector && battleWinnerSide) {
+                    nextColor = SIDE_TO_COLOR_MAP[battleWinnerSide];
+                  } else {
+                    nextColor = INITIAL_SECTOR_COLOR_MAP[sectorSvgId];
+                  }
 
-                const nextSectorColorMap = {
-                  [sectorSvgId]: `disabled ${nextColor}`,
-                };
-                setSectorColorMap((prev) => ({
-                  ...prev,
-                  ...nextSectorColorMap,
-                }));
-              });
+                  const nextSectorColorMap = {
+                    [sectorSvgId]: `disabled ${nextColor}`,
+                  };
+                  setSectorColorMap((prev) => ({
+                    ...prev,
+                    ...nextSectorColorMap,
+                  }));
+                });
+              }
             }
-          });
+          );
         });
     }
 

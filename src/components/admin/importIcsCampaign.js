@@ -6,11 +6,11 @@ import { Form } from "react-final-form";
 import BattleForm from "./battleForm";
 import firebase from "firebase/app";
 
+const HOURS_48 = 1000 * 60 * 60 * 45;
 const EVENTS = ical
   .parseString("") // TODO: get File Uploader or httpLink running
   .events.map(({ dtstart, summary, dtend }) => {
     return {
-      battleId: null,
       battleComment:
         "Kriegsreportern wird es gestattet das Schlachtfeld zu betreten.",
       battleEnd: +dtend.value, // time
@@ -23,9 +23,11 @@ const EVENTS = ical
     };
   })
   .sort((a, b) => a.battleStart - b.battleStart)
-  .map((event, i) => {
+  .map((event, i, events) => {
     return {
       ...event,
+      deadline:
+        events[i - 1]?.battleEnd + HOURS_48 || event.battleStart - HOURS_48,
       factionSide: {
         arf: i > 7 ? "csat" : "aaf",
         sword: i > 7 ? "aaf" : "csat",

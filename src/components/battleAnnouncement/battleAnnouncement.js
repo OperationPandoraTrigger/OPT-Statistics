@@ -10,19 +10,27 @@ import BattleSideChoice from "./battleSideChoice";
 import BurnedSectors from "./burnedSectors";
 import { useStyles } from "../../styles";
 import BattleNavigator from "./battleNavigator";
+import { now } from "moment";
 
 function BattleAnnouncement() {
   const classes = useStyles();
   const { battleId } = useParams();
 
   const [battle] = useObjectVal(firebase.database().ref(`battles/${battleId}`));
-  const { campaignId, battleName, battleStart, battleEnd, battleComment } =
-    battle ?? {};
+  const {
+    campaignId,
+    battleName,
+    battleStart = now(),
+    battleEnd,
+    battleComment,
+    deadline,
+    attackingSector,
+  } = battle ?? {};
 
   return (
     <div>
       <BattleNavigator
-        currentBattleId={battleId}
+        currentBattleStart={battleStart}
         currentCampaignId={campaignId}
       />
       <Typography variant={"h2"}>{battleName}</Typography>
@@ -33,13 +41,22 @@ function BattleAnnouncement() {
       <Divider />
       <BattleParticipants battleId={battleId} />
       <Divider />
-      <BattleSectorChoice battleId={battleId} />
+      <BattleSectorChoice
+        attackingSector={attackingSector}
+        deadline={deadline}
+        battleId={battleId}
+      />
       <BurnedSectors until={battleStart} />
       <Divider />
       <BattleSideChoice />
       <Divider />
       <Typography variant={"h3"}>Technik</Typography>
       <ul>
+        <li>
+          <a href="https://opt4.net/forum/index.php?thread/4851-fairplay-leitfaden/">
+            Fairplay Leitfaden
+          </a>
+        </li>
         <li>
           <a href="https://opt4.net/forum/index.php?thread/8-opt4-server-ips/">
             OPT4-Teamspeak
@@ -57,7 +74,7 @@ function BattleAnnouncement() {
           </a>
         </li>
         <li>
-          <a href="https://docs.google.com/document/d/1x_9wuywOlu04DpzFatMErRSTKwJF4ntTtv_ZfRpV-cY">
+          <a href="https://docs.google.com/document/d/1CxqtbaIv9ZjSiWZbnSsAOiK3QQ9yl2W4xie6wabF0aI">
             Aktuelles Kampagnendokument
           </a>
         </li>

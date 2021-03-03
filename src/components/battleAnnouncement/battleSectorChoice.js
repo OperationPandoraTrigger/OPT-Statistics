@@ -3,7 +3,6 @@ import { Box, Typography } from "@material-ui/core";
 import SectorChoiceDialog from "../shared/sectorChoiceDialog";
 import Faction from "../shared/faction";
 import { useStyles } from "../../styles";
-import { useObjectVal } from "react-firebase-hooks/database";
 import firebase from "firebase/app";
 import Button from "@material-ui/core/Button";
 import { now } from "moment";
@@ -11,17 +10,9 @@ import "moment/locale/de";
 import { FormattedPlural, FormattedRelativeTime } from "react-intl";
 import { trimStart } from "lodash";
 
-function BattleSectorChoice({ battleId }) {
+function BattleSectorChoice({ attackingSector, deadline, battleId }) {
   const classes = useStyles();
-  const [attackingSector] = useObjectVal(
-    firebase.database().ref(`battles/${battleId}/attackingSector`)
-  );
-  const [deadline] = useObjectVal(
-    firebase.database().ref(`pendingSecretSectorChoices/${battleId}/deadline`)
-  );
-
   const [open, setOpen] = useState(false);
-
   const delta = deadline - now();
   const myFaction = "arf"; // TODO get from Auth/userRole
 
@@ -65,7 +56,7 @@ function BattleSectorChoice({ battleId }) {
           <FormattedRelativeTime
             value={delta}
             updateIntervalInSeconds={1}
-            numeric={"always"}
+            numeric={"auto"}
           />
         </Typography>
       </Box>

@@ -5,16 +5,30 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import { Typography } from "@material-ui/core";
 import { useStyles } from "../../styles";
-import { useObjectVal } from "react-firebase-hooks/database";
+import { useListKeys, useObjectVal } from "react-firebase-hooks/database";
 import firebase from "firebase/app";
 
-function BattleNavigator({ currentBattleId, currentCampaignId }) {
+function BattleNavigator({ currentBattleStart, currentCampaignId }) {
   const classes = useStyles();
   const [campaignName] = useObjectVal(
     firebase.database().ref(`campaigns/${currentCampaignId}/campaignName`)
   );
-  const nextBattleId = +currentBattleId + 1;
-  const prevBattleId = +currentBattleId - 1;
+  const [prevBattleId] = useListKeys(
+    firebase
+      .database()
+      .ref(`battles`)
+      .orderByChild("battleStart")
+      .endAt(currentBattleStart - 1)
+      .limitToLast(1)
+  );
+  const [nextBattleId] = useListKeys(
+    firebase
+      .database()
+      .ref(`battles`)
+      .orderByChild("battleStart")
+      .startAt(currentBattleStart + 1)
+      .limitToFirst(1)
+  );
   const [nextBattleName] = useObjectVal(
     firebase.database().ref(`battles/${nextBattleId}/battleName`)
   );
@@ -22,6 +36,7 @@ function BattleNavigator({ currentBattleId, currentCampaignId }) {
     firebase.database().ref(`battles/${prevBattleId}/battleName`)
   );
 
+  console.count("re-render");
   return (
     <Box className={classes.battleNavigator}>
       <Button

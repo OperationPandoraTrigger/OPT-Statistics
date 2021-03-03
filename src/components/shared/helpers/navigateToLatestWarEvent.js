@@ -16,10 +16,13 @@ function NavigateToLatestBattle() {
       .limitToFirst(1)
       .once("value")
       .then((snapshot) => {
-        if (snapshot.val()) {
-          const battleEvent = Object.values(snapshot.val()).pop();
+        const snapshotValue = snapshot.val();
+        if (snapshotValue) {
+          const battleEvent = Object.values(snapshotValue).pop();
+          const battleEventId = Object.keys(snapshotValue).pop();
+
           if (battleEvent) {
-            navigate(`/battle-announcement/${battleEvent.battleId}`, {
+            navigate(`/battle-announcement/${battleEventId}`, {
               replace: true,
             });
           }
