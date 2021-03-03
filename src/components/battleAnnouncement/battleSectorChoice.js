@@ -76,7 +76,7 @@ function BattleSectorChoice({ attackingSector, deadline, battleId }) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://www.figma.com/file/oml9e6Puvw5OWmOE1qW9r3/Rosche-2020---ALPHA?node-id=176%3A33"
+          href="https://www.figma.com/file/eEBV0TBkbzKngKqyvCbHZh/OPT4---Livonia-(Copy)"
         >
           Vorläufige Sektoren-Karte
         </a>
