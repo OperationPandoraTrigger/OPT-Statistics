@@ -57,36 +57,6 @@ export const useStyles = makeStyles(
     captionBlockBox: {
       margin: theme.spacing(1, 2),
     },
-    battleNavigator: {
-      display: "flex",
-      justifyItems: "center",
-      alignItems: "stretch",
-      justifyContent: "space-between",
-      flexWrap: "wrap",
-    },
-    battleNavigatorPrev: {
-      [theme.breakpoints.up("xs")]: {
-        order: 1,
-        marginRight: "auto",
-      },
-      [theme.breakpoints.down("xs")]: {
-        order: 2,
-      },
-    },
-    battleNavigatorCampaign: {
-      [theme.breakpoints.up("xs")]: {
-        order: 2,
-      },
-      [theme.breakpoints.down("xs")]: {
-        order: 1,
-        flex: "1 0 100%",
-        textAlign: "center",
-      },
-    },
-    battleNavigatorNext: {
-      order: 3,
-      marginLeft: "auto",
-    },
     sectorName: {
       minWidth: "89px",
     },

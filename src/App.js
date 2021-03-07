@@ -1,10 +1,6 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { useState } from "react";
-import { Chart } from "react-chartjs-2";
-import "chartjs-plugin-colorschemes/src/plugins/plugin.colorschemes";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 import "hammerjs";
-import "chartjs-plugin-zoom";
 import LeftDrawer from "./components/leftDrawer/leftDrawer";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -27,7 +23,6 @@ import "moment/locale/de";
 import moment from "moment";
 
 moment.locale("de"); // it is required to select default locale manually
-Chart.plugins.unregister(ChartDataLabels);
 
 const firebaseConfig = {
   apiKey: "AIzaSyBvUv_Li0UnU_ypDnFwQ47EuwJDX_imdBg",

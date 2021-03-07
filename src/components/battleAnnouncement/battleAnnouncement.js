@@ -9,8 +9,7 @@ import BattleSectorChoice from "./battleSectorChoice";
 import BattleSideChoice from "./battleSideChoice";
 import BurnedSectors from "./burnedSectors";
 import { useStyles } from "../../styles";
-import BattleNavigator from "./battleNavigator";
-import { now } from "moment";
+import BattleNavigator from "./battleNavigator/battleNavigator";
 
 function BattleAnnouncement() {
   const classes = useStyles();
@@ -18,9 +17,9 @@ function BattleAnnouncement() {
 
   const [battle] = useObjectVal(firebase.database().ref(`battles/${battleId}`));
   const {
-    campaignId,
+    campaignId: campaignName,
     battleName,
-    battleStart = now(),
+    battleStart,
     battleEnd,
     battleComment,
     deadline,
@@ -31,7 +30,7 @@ function BattleAnnouncement() {
     <div>
       <BattleNavigator
         currentBattleStart={battleStart}
-        currentCampaignId={campaignId}
+        currentCampaignName={campaignName}
       />
       <Typography variant={"h2"}>{battleName}</Typography>
       <Typography className={classes.battleComment} variant={"body1"}>
