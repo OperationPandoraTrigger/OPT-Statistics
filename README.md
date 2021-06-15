@@ -10,4 +10,4 @@ Kompilieren mit:\
 \
 **website**\
 Zeigt die Events aus der MariaDB Datenbank grafisch und als Statistiken an.\
-Benötigt *php*, *tabulator* und *flot*.\
+Benötigt *php*, *tabulator* und *flot*.
