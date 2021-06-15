@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="cache-control" content="max-age=600">
+    <meta name="OPT4 ArmA 3 Server Statistics" content="Statistics of the played missions on the Operation Pandora Trigger 4 (OPT4) ArmA 3 Server">
+    <meta name="robots" content="index, follow" />
+    <title>OPT4 Objekte - ArmA 3 Stats</title>
+
+    <link href="tabulator/css/tabulator_midnight_v2.css" rel="stylesheet">
+    <link href="opt_v5.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="tabulator/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/tabulator_core.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/filter.min.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/format.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/responsive_layout.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/select_row.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/modules/sort.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/page.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/ajax.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery_wrapper.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/modules/download.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/modules/export.min.js"></script>
+
+    <script language="javascript" type="text/javascript" src="objects_v3.js"></script>
+</head>
+
+
+
+<body style="background-color: #222;">
+    <div id="header">
+        <form action="select.html">
+            <label>
+                <p style="color:rgb(255, 255, 255);font-size:18px;">Schlachtauswahl:
+                    <select id="MissionSelector" size="1" onchange='MissionSelectorAction(this.value)'></select>
+                    <span class="CampaignPoints"></span>
+                    <span class="Schlachtlink"><a href="index.html">Schlacht</a></span>
+                    <a href="campaigns.html">Kampagnen&uuml;bersicht</a>
+                    <a href="#objectcategories">Kategorien &#8609;</a>
+                    <a href="#objectitems">Produkte &#8609;</a>
+                    <a href="#objects">Objekte &#8609;</a>
+                </p>
+            </label>
+        </form>
+    </div>
+
+    <br>
+
+    <div class="objectcategorycontainer">
+        <div class="objectcontainer">
+            <div class="objectleft">
+                <div class="object-container">
+                    <center>
+                        <div id="objectcategories"><p style="color:rgb(255, 255, 255);font-size:18px;">K&auml;ufe in Kategorien (SWORD)<span class="objectcategories_SWORD_CSV"> &#x1F4BE;</span></p></div>
+                    </center>
+                    <div id="objectcategories_SWORD" class="object-placeholder"></div>
+            </div>
+            </div>
+    
+            <div class="objectright">
+                <div class="object-container">
+                    <center>
+                        <p style="color:rgb(255, 255, 255);font-size:18px;">K&auml;ufe in Kategorien (ARF)<span class="objectcategories_ARF_CSV"> &#x1F4BE;</span></p>
+                    </center>
+                    <div id="objectcategories_ARF" class="object-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="objectitemscontainer">
+        <div class="objectcontainer">
+            <div class="objectleft">
+                <div class="object-container">
+                    <center>
+                        <div id="objectitems"><p style="color:rgb(255, 255, 255);font-size:18px;">Gekaufte Produkte (SWORD)<span class="objectitems_SWORD_CSV"> &#x1F4BE;</span></p></div>
+                    </center>
+                    <div id="objectitems_SWORD" class="object-placeholder"></div>
+                </div>
+            </div>
+    
+            <div class="objectright">
+                <div class="object-container">
+                    <center>
+                        <p style="color:rgb(255, 255, 255);font-size:18px;">Gekaufte Produkte (ARF)<span class="objectitems_ARF_CSV"> &#x1F4BE;</span></p>
+                    </center>
+                    <div id="objectitems_ARF" class="object-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="objectscontainer">
+        <center>
+            <p style="color:rgb(255, 255, 255);font-size:18px;">Alle w&auml;hrend der Schlacht gekauften Objekte und ihre Lebenszeiten<span class="objects_CSV"> &#x1F4BE;</span></p>
+        </center>
+        <div id="objects"></div>
+    </div>
+
+    <br>
+
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+[submodule "website/dependencies/tabulator"]
+	path = website/dependencies/tabulator
+	url = git@github.com:olifolkerd/tabulator.git
+[submodule "website/dependencies/flot"]
+	path = website/dependencies/flot
+	url = git@github.com:flot/flot.git
