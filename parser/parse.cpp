@@ -1,3 +1,15 @@
+//#include <fstream>
+//#include <string>
+//#include <sstream>
+//#include <ctime>
+//#include <chrono>
+//#include <locale>
+//#include <map>
+//#include <iterator>
+//#include <vector>
+//#include <algorithm>
+//#include <cstring>
+//#include <filesystem>
 #include <iostream>
 #include <iomanip>
 #include <stdarg.h>
@@ -12,7 +24,7 @@
 #define SQL_USER "optwriter"
 #define SQL_PASS "xxx"
 
-#define ARCHIVEPATH "log/"
+#define ARCHIVEPATH "/root/log/"
 
 #define DEBUG 0
 #define PRINTPARSINERRORS 0
@@ -33,9 +45,11 @@ string SQL_Mission_Insert = "";
 int ParsingError = 0;
 
 // Mission Settings
+int CampaignID = 2;
+int MissionID = -1;
 string CampaignName = "";
 string MissionName = "";
-int MissionRated = 1;
+int MissionRated = 0;
 string SideSWORD = "";
 string SideARF = "";
 
@@ -179,6 +193,65 @@ string SafeParseSide(string str)
     }
 }
 
+int GetMissionID(void)
+{
+    PrintError("Fetching next Mission-ID from the DB...\n");
+    try
+    {
+        mysqlpp::Connection sql(false);
+        if (sql.connect(SQL_DB, SQL_HOST, SQL_USER, SQL_PASS, SQL_PORT))
+        {
+		    char buf[1000];
+            sprintf(buf, "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = 'Missions'", SQL_DB);
+            mysqlpp::Query query = sql.query(buf);
+        
+            if (mysqlpp::StoreQueryResult res = query.store())
+            {
+                mysqlpp::StoreQueryResult::const_iterator it;
+                for (it = res.begin(); it != res.end(); ++it)
+                {
+                    mysqlpp::Row row = *it;
+                    MissionID = row[0];
+                }
+            }
+            else
+            {
+                cerr << "Failed to get next MissionID: " << query.error() << endl;
+                return 1;
+            }
+        }
+        else
+        {
+            cerr << "DB connection failed: " << sql.error() << endl;
+            return 1;
+        }
+    }
+
+   	catch (const mysqlpp::BadQuery& er)
+    {
+		// Handle any query errors
+		cerr << "Query error: " << er.what() << endl;
+		return -1;
+	}
+	
+    catch (const mysqlpp::BadConversion& er)
+    {	
+		// Handle bad conversions
+		cerr << "Conversion error: " << er.what() << endl <<
+				"\tretrieved data size: " << er.retrieved <<
+				", actual size: " << er.actual_size << endl;
+		return -1;
+	}
+
+	catch (const mysqlpp::Exception& er)
+    {
+		// Catch-all for any other MySQL++ exceptions
+		cerr << "Error: " << er.what() << endl;
+		return -1;
+	}
+    PrintError("Next Mission-ID is: %i \n", MissionID);
+    return 0;
+}
 
 int ParseFPS(string filename, unsigned long starttime, unsigned long endtime)
 {
@@ -227,7 +300,7 @@ int ParseFPS(string filename, unsigned long starttime, unsigned long endtime)
     for(it = db_player.begin(); it != db_player.end(); ++it)
     {
         NumAvgFPS++;
-        InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, FPS, PlayerSide) VALUES", "(FROM_UNIXTIME(%lu), '%lu', '%f', '%s'),\n", endtime, it->first, db_fps[it->second] / db_num[it->second], PlayerSides[it->first].c_str());
+        InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, FPS, PlayerSide) VALUES", "('%i', '%i', FROM_UNIXTIME(%lu), '%lu', '%f', '%s'),\n", CampaignID, MissionID, endtime, it->first, db_fps[it->second] / db_num[it->second], PlayerSides[it->first].c_str());
     }
     
     PrintError("Fetched %i single FPS events for %i players.\n", NumSingleFPS, NumAvgFPS);
@@ -435,14 +508,14 @@ int ParseLog(string logfile, string fpsfile)
                 ItemPrice[ItemNetID] = Price;
                 ItemLifeTime[ItemNetID] = 0;
                 ItemCategories[ItemNetID] = ItemCategory;
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, BudgetItem, BudgetBuy, BudgetSWORD, BudgetARF) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetBuy, BudgetSWORD, BudgetARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
             }
 
             else if(lineArray[3].find("Sell") != string::npos)
             {
                 ItemLifeTime[ItemNetID] = Time - ItemBuyTime[ItemNetID];
                 ItemDeathTime[ItemNetID] = Time;
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, BudgetItem, BudgetSell, BudgetSWORD, BudgetARF) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetSell, BudgetSWORD, BudgetARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
             }
 
             else
@@ -498,7 +571,7 @@ int ParseLog(string logfile, string fpsfile)
                 unsigned long Killer = SafeParseUnsignedLong(lineArray[8]);
                 float Distance = SafeParseFloat(lineArray[11]);
                 string Item = lineArray[12];
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 continue;
             }
             else if(lineArray[3].find("DestroyByCrew") != string::npos)
@@ -518,26 +591,26 @@ int ParseLog(string logfile, string fpsfile)
                 if(elements >= 13)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[11]);
-                    InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 // logge auch kills für die restlichen crewslots
                 if(elements >= 15)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[13]);
-                    InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 if(elements >= 17)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[15]);
-                    InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 if(elements >= 19)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[17]);
-                    InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 continue;
@@ -581,7 +654,7 @@ int ParseLog(string logfile, string fpsfile)
             else if (SideARF.find("CSAT") != string::npos) PointsARF = PointsCSAT;
             else if (SideARF.find("AAF") != string::npos) PointsARF = PointsAAF;
 
-            InsertDB("INSERT IGNORE INTO Events (Time, PointsSWORD, PointsARF) VALUES", "(FROM_UNIXTIME(%li), '%i', '%i'),\n", Time, PointsSWORD, PointsARF);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PointsSWORD, PointsARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%i', '%i'),\n", CampaignID, MissionID, Time, PointsSWORD, PointsARF);
             continue;
         }
 
@@ -610,8 +683,8 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Transported (Air): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, PilotDistance, PassengerUID) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
-            InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, AirPassengerDistance, TransporterUID) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, PilotDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, AirPassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
             continue;
         }
 
@@ -640,8 +713,8 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Transported (Drive): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, DriverDistance, PassengerUID) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
-            InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, DrivePassengerDistance, TransporterUID) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DriverDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DrivePassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
             continue;
         }
 
@@ -665,7 +738,7 @@ int ParseLog(string logfile, string fpsfile)
                 continue;
             }
 
-            InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, FlagDistance) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%.3f'),\n", Time, PlayerUID, PlayerSides[PlayerUID].c_str(), Distance);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, FlagDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), Distance);
             continue;
         }
 
@@ -701,13 +774,13 @@ int ParseLog(string logfile, string fpsfile)
 
             if(CauserSide == VictimSide)
             {
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KilledTeammate, KillDistance, KillItem) VALUES", "(FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", Time, CauserUID, CauserSide.c_str(), VictimUID, Distance, Item.c_str());
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KilledByTeammate, KilledByDistance, KillItem) VALUES", "(FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", Time, VictimUID, VictimSide.c_str(), CauserUID, Distance, Item.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KilledTeammate, KillDistance, KillItem) VALUES", "('%i', '%i', FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", CampaignID, MissionID, Time, CauserUID, CauserSide.c_str(), VictimUID, Distance, Item.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KilledByTeammate, KilledByDistance, KillItem) VALUES", "('%i', '%i', FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str(), CauserUID, Distance, Item.c_str());
             }
             else
             {
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KilledEnemy, KillDistance, KillItem) VALUES", "(FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", Time, CauserUID, CauserSide.c_str(), VictimUID, Distance, Item.c_str());
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, KilledByEnemy, KilledByDistance, KillItem) VALUES", "(FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", Time, VictimUID, VictimSide.c_str(), CauserUID, Distance, Item.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KilledEnemy, KillDistance, KillItem) VALUES", "('%i', '%i', FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", CampaignID, MissionID, Time, CauserUID, CauserSide.c_str(), VictimUID, Distance, Item.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KilledByEnemy, KilledByDistance, KillItem) VALUES", "('%i', '%i', FROM_UNIXTIME(%lu), '%lu', '%s', '%lu', '%.3f', '%s'),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str(), CauserUID, Distance, Item.c_str());
             }
 
             NumKills++;
@@ -742,8 +815,8 @@ int ParseLog(string logfile, string fpsfile)
                     continue;
                 }
 
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, RevivedTeammate, RevivedDistance) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", Time, CauserUID, CauserSide.c_str(), VictimUID, Distance);
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, RevivedByTeammate, RevivedByDistance) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", Time, VictimUID, VictimSide.c_str(), CauserUID, Distance);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedTeammate, RevivedDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, CauserUID, CauserSide.c_str(), VictimUID, Distance);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedByTeammate, RevivedByDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str(), CauserUID, Distance);
             }
             continue;
         }
@@ -768,11 +841,11 @@ int ParseLog(string logfile, string fpsfile)
 
             if(RespawnReason.find("RespawnClick") != string::npos)
             {
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, RespawnClick) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", Time, VictimUID, VictimSide.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnClick) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
             }
             else if(RespawnReason.find("RespawnTimeout") != string::npos)
             {
-                InsertDB("INSERT IGNORE INTO Events (Time, PlayerUID, PlayerSide, RespawnTimeout) VALUES", "(FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", Time, VictimUID, VictimSide.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnTimeout) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
             }
             continue;
         }
@@ -893,7 +966,6 @@ string GetFileTimeString(const string& path)
 string FindNewestFile(string regex)
 {
     const string target_path(".");
-    //const boost::regex my_filter("arma3server_.*\\.log");
     const boost::regex my_filter(regex);
 
     string NewestFileName = "";
@@ -1050,8 +1122,8 @@ int main(int argc, char **argv)
         MissionName = argv[2];
         SideSWORD = argv[3];
         SideARF = argv[4];
-        LogFileName = FindNewestFile("arma3server_20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.log");
-        FPSFileName = FindNewestFile("20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}.log");
+        LogFileName = FindNewestFile("arma3server_20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.rpt");
+        FPSFileName = FindNewestFile("20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}_[0-9]{2}_[0-9]{2}.log");
         PrintError("Automatically using newest files '%s' and '%s'\n", LogFileName.c_str(), FPSFileName.c_str());
     }
 
@@ -1079,6 +1151,7 @@ int main(int argc, char **argv)
     WaitForCompleteLogFile(LogFileName);
     ArchiveLogFile(LogFileName, ARCHIVEPATH);
     ArchiveLogFile(FPSFileName, ARCHIVEPATH);
+    GetMissionID();
     ParseLog(ARCHIVEPATH + LogFileName, ARCHIVEPATH + FPSFileName);
     SendToDatabase();
     PrintError("Done.\n");
