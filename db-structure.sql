@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 04, 2021 at 04:14 PM
--- Server version: 10.5.10-MariaDB
--- PHP Version: 8.0.6
+-- Generation Time: Aug 28, 2021 at 08:26 PM
+-- Server version: 10.5.11-MariaDB
+-- PHP Version: 8.0.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -69,6 +69,10 @@ CREATE TABLE `Events` (
   `PointsSWORD` int(11) DEFAULT NULL,
   `PointsARF` int(11) DEFAULT NULL,
   `FPS` double DEFAULT NULL,
+  `WalkDistance` double DEFAULT NULL,
+  `SwimDistance` double DEFAULT NULL,
+  `BoatDistance` double DEFAULT NULL,
+  `BoatPassengerDistance` double DEFAULT NULL,
   `PilotDistance` double DEFAULT NULL,
   `AirPassengerDistance` double DEFAULT NULL,
   `DriverDistance` double DEFAULT NULL,

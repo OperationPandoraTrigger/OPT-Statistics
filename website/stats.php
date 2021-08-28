@@ -35,7 +35,7 @@
     }
     else die("Wrong number of missions.");
 
-    $sql_stmt = "SELECT PlayerUID, Nickname AS Name, PlayerSide, IF(PlayerUID, COUNT(KilledEnemy), 0) AS Kills, IF(PlayerUID, COUNT(KilledTeammate), 0) AS Teamkills, IF(PlayerUID, COUNT(KilledByEnemy), 0) AS DeathsByEnemy, IF(PlayerUID, COUNT(KilledByTeammate), 0) AS DeathsByTeammate, IF(PlayerUID, COUNT(FlagDistance), 0) AS FlagConquers, IF(PlayerUID, COUNT(KilledVehicleName), 0) AS Vehiclekills, IF(PlayerUID, COUNT(RevivedTeammate), 0) AS Revives, IF(PlayerUID, (COUNT(RespawnClick) + COUNT(RespawnTimeout)), 0) AS Respawns, IF(PlayerUID, (IFNULL(SUM(BudgetBuy), 0) - IFNULL(SUM(BudgetSell), 0)), 0) AS Cost, IF(PlayerUID, ROUND(MAX(KillDistance)), 0) AS MaxKillDistance, ROUND(AVG(FPS), 1) AS FPS, ROUND(IFNULL(SUM(PilotDistance), 0) / 1000, 0) AS PilotDistance, ROUND(IFNULL(SUM(AirPassengerDistance), 0) / 1000, 0) AS AirPassengerDistance, ROUND(IFNULL(SUM(DriverDistance), 0) / 1000, 0) AS DriverDistance, ROUND(IFNULL(SUM(DrivePassengerDistance), 0) / 1000, 0) AS DrivePassengerDistance, ROUND((IF(PlayerUID, COUNT(KilledEnemy), 0) / IF(PlayerUID, COUNT(KilledByEnemy), 0)), 1) AS KD FROM Events INNER JOIN Players ON Events.PlayerUID = Players.SteamID64 WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND PlayerUID IS NOT NULL GROUP BY PlayerUID ORDER BY Kills DESC;";
+    $sql_stmt = "SELECT PlayerUID, Nickname AS Name, PlayerSide, IF(PlayerUID, COUNT(KilledEnemy), 0) AS Kills, IF(PlayerUID, COUNT(KilledTeammate), 0) AS Teamkills, IF(PlayerUID, COUNT(KilledByEnemy), 0) AS DeathsByEnemy, IF(PlayerUID, COUNT(KilledByTeammate), 0) AS DeathsByTeammate, IF(PlayerUID, COUNT(FlagDistance), 0) AS FlagConquers, IF(PlayerUID, COUNT(KilledVehicleName), 0) AS Vehiclekills, IF(PlayerUID, COUNT(RevivedTeammate), 0) AS Revives, IF(PlayerUID, (COUNT(RespawnClick) + COUNT(RespawnTimeout)), 0) AS Respawns, IF(PlayerUID, (IFNULL(SUM(BudgetBuy), 0) - IFNULL(SUM(BudgetSell), 0)), 0) AS Cost, IF(PlayerUID, ROUND(MAX(KillDistance)), 0) AS MaxKillDistance, ROUND(AVG(FPS), 1) AS FPS, ROUND(IFNULL(SUM(PilotDistance), 0) / 1000, 0) AS PilotDistance, ROUND(IFNULL(SUM(AirPassengerDistance), 0) / 1000, 0) AS AirPassengerDistance, ROUND(IFNULL(SUM(DriverDistance), 0) / 1000, 0) AS DriverDistance, ROUND(IFNULL(SUM(DrivePassengerDistance), 0) / 1000, 0) AS DrivePassengerDistance, ROUND(IFNULL(SUM(BoatDistance), 0) / 1000, 0) AS BoatDistance, ROUND(IFNULL(SUM(BoatPassengerDistance), 0) / 1000, 0) AS BoatPassengerDistance, ROUND(IFNULL(SUM(SwimDistance), 0) / 1000, 0) AS SwimDistance, ROUND(IFNULL(SUM(WalkDistance), 0) / 1000, 0) AS WalkDistance, ROUND((IF(PlayerUID, COUNT(KilledEnemy), 0) / IF(PlayerUID, COUNT(KilledByEnemy), 0)), 1) AS KD FROM Events INNER JOIN Players ON Events.PlayerUID = Players.SteamID64 WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND PlayerUID IS NOT NULL GROUP BY PlayerUID ORDER BY Kills DESC;";
 
     $result = mysqli_query($dbh, $sql_stmt);
 
@@ -71,6 +71,10 @@
             'AirPassengerDistance' => $row["AirPassengerDistance"],
             'DriverDistance' => $row["DriverDistance"],
             'DrivePassengerDistance' => $row["DrivePassengerDistance"],
+            'BoatDistance' => $row['BoatDistance'],
+            'BoatPassengerDistance' => $row['BoatPassengerDistance'],
+            'SwimDistance' => $row['SwimDistance'],
+            'WalkDistance' => $row['WalkDistance'],
             'KD' => $KD
         );
         }

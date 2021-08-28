@@ -230,9 +230,9 @@ function show_PlayerStats()
             {
                 title: "Absch&uuml;sse",
                 columns: [
-                    { title: "Feinde", downloadTitle: "KillFeinde", field: "Kills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Freunde", downloadTitle: "KillFreunde", field: "Teamkills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Fahrzeuge", downloadTitle: "KillKFZ", field: "Vehiclekills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Feinde", titleDownload: "KillFeinde", field: "Kills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Freunde", titleDownload: "KillFreunde", field: "Teamkills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Fahrzeuge", titleDownload: "KillKFZ", field: "Vehiclekills", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
                 ],
             },
             { title: "K/D", field: "KD", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.6, headerClick:function(){ScrollToPlayerStats();}, formatter:function(cell, formatterParams)
@@ -245,8 +245,8 @@ function show_PlayerStats()
             {
                 title: "Gestorben durch",
                 columns: [
-                    { title: "Feind", downloadTitle: "KilledByFeind", field: "DeathsByEnemy", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8,  headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Freund", downloadTitle: "KilledByFreund", field: "DeathsByTeammate", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Feind", titleDownload: "KilledByFeind", field: "DeathsByEnemy", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8,  headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Freund", titleDownload: "KilledByFreund", field: "DeathsByTeammate", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
                 ],
             },
             { title: "Flaggen", field: "FlagConquers", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
@@ -255,16 +255,16 @@ function show_PlayerStats()
             {
                 title: "Reisedistanz [km] als",
                 columns: [
-                    { title: "Pilot", downloadTitle: "DistanzPilot", field: "PilotDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Passagier", downloadTitle: "DistanzPassagier", field: "AirPassengerDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Fahrer", downloadTitle: "DistanzFahrer", field: "DriverDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
-                    { title: "Mitfahrer", downloadTitle: "DistanzMitfahrer", field: "DrivePassengerDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Pilot", titleDownload: "DistanzPilot", field: "PilotDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 0.8, headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Passagier", titleDownload: "DistanzPassagier", field: "AirPassengerDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Fahrer", titleDownload: "DistanzFahrer", field: "DriverDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Mitfahrer", titleDownload: "DistanzMitfahrer", field: "DrivePassengerDistance", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
                 ],
             },
             { title: "Kosten", field: "Cost", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();}, formatter:function(cell, formatterParams){return StringToCurrency(cell.getValue());}},
             { title: "Teilnahmen", field: "Participations", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
             {
-                title: "L&auml;ngster<br>Schuss [m]", downloadTitle: "MaxKillDistance", field: "MaxKillDistance", hozAlign: "left", editor: true, headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();}, formatter: "progress", formatterParams: {
+                title: "L&auml;ngster<br>Schuss [m]", titleDownload: "MaxKillDistance", field: "MaxKillDistance", hozAlign: "left", editor: true, headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();}, formatter: "progress", formatterParams: {
                     min: 0,
                     max: 500,
                     color: ["red", "orange", "green"],

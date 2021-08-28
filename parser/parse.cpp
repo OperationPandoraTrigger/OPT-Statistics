@@ -1,15 +1,3 @@
-//#include <fstream>
-//#include <string>
-//#include <sstream>
-//#include <ctime>
-//#include <chrono>
-//#include <locale>
-//#include <map>
-//#include <iterator>
-//#include <vector>
-//#include <algorithm>
-//#include <cstring>
-//#include <filesystem>
 #include <iostream>
 #include <iomanip>
 #include <stdarg.h>
@@ -28,7 +16,7 @@
 
 #define DEBUG 0
 #define PRINTPARSINERRORS 0
-#define MinLogVersion 6
+#define MinLogVersion 11
 
 #define MAX_WAIT_TIME 10000
 
@@ -38,7 +26,7 @@ namespace fs = filesystem;
 // needs:
 // pacman -S mysql++ boost
 // compile:
-// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -I boost_1_75_0/ -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
+// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -I boost_1_76_0/ -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
 
 // global vars
 string SQL_Mission_Insert = "";
@@ -91,7 +79,6 @@ void InsertDB(string entry, const char *format, ...)
     char buffer[BUFFER_SIZE];
     vsnprintf(buffer, BUFFER_SIZE, format, args);
     db[entry] += buffer;
-
     va_end(args);
 }
 
@@ -130,6 +117,20 @@ long int DateToUnixtime(string s)
     {
         PrintError("failed to parse time string!\n");
         return 0;
+    }
+}
+
+bool SafeParseBool(string str)
+{
+    if(str.length())
+    {
+        if(str.find("true") != string::npos) return true;
+        else return false;
+    }
+    else
+    {
+        ParsingError = 1;
+        return false;
     }
 }
 
@@ -335,10 +336,9 @@ int ParseLog(string logfile, string fpsfile)
     long int MissionEnd = 0;
     string MissionFilename = "";
     unsigned long LogVersion = 0;
-    string Fractions = "";
+    string Fractions = "NATOvsCSAT"; // QuickFix
     unsigned long PointsNATO = 0;
     unsigned long PointsCSAT = 0;
-    unsigned long PointsAAF = 0;
     unsigned long PointsSWORD = 0;
     unsigned long PointsARF = 0;
 
@@ -380,7 +380,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(lineArray[2].find("Logging") != string::npos && lineArray[3].find("Start") != string::npos)
         {
-            if(elements != 7)
+            if(elements != 8)
             {
                 PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
                 continue;
@@ -393,12 +393,16 @@ int ParseLog(string logfile, string fpsfile)
                 exit(1);
             }
 */
-            loadtime_real = DateToUnixtime(lineArray[6]);
+            loadtime_real = DateToUnixtime(lineArray[7]);
             loadtime = timecode;
             Time = loadtime_real;
 
             LogVersion = SafeParseUnsignedLong(lineArray[4]);
-            Fractions = lineArray[5];
+
+            if(lineArray[5].find("ARF") != string::npos) SideARF = "NATO";
+            else if(lineArray[5].find("SWORD") != string::npos) SideSWORD = "NATO";
+            if(lineArray[6].find("ARF") != string::npos) SideARF = "CSAT";
+            else if(lineArray[6].find("SWORD") != string::npos) SideSWORD = "CSAT";
 
             if(ParsingError)
             {
@@ -406,7 +410,7 @@ int ParseLog(string logfile, string fpsfile)
                 continue;
             }
 
-            PrintError("Mission started. LogVer: %i - Fractions: %s\n", LogVersion, Fractions.c_str());
+            PrintError("Mission started. LogVer: %i - Fractions: (ARF) %s : %s (SWORD)\n", LogVersion, SideARF.c_str(), SideSWORD.c_str());
             continue;
         }
 
@@ -439,7 +443,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(LogVersion >= MinLogVersion && lineArray[2].find("Mission") != string::npos && lineArray[3].find("Truce") != string::npos)
         {
-            if(elements != 8)
+            if(elements != 7)
             {
                 PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
                 continue;
@@ -454,7 +458,7 @@ int ParseLog(string logfile, string fpsfile)
             Time = timecode - loadtime + loadtime_real;
             MissionStart = Time;
 
-            MissionFilename = lineArray[7];
+            MissionFilename = lineArray[6];
 
             if(DEBUG) PrintError("Mission start @ %li // File: %s\n\n", MissionStart, MissionFilename.c_str());
             continue;
@@ -463,7 +467,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(MissionStart && lineArray[2].find("Budget") != string::npos)
         {
-            if(elements != 14)
+            if(elements != 13)
             {
                 PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
                 continue;
@@ -472,16 +476,15 @@ int ParseLog(string logfile, string fpsfile)
 
             float BudgetNATO = SafeParseFloat(lineArray[4]);
             float BudgetCSAT = SafeParseFloat(lineArray[5]);
-            float BudgetAAF = SafeParseFloat(lineArray[6]);
 
-            long PlayerUID = SafeParseLong(lineArray[7]);
-            string PlayerName = lineArray[8];
+            long PlayerUID = SafeParseLong(lineArray[6]);
+            string PlayerName = lineArray[7];
 
-            string ItemNetID = lineArray[10];
-            string ItemName = lineArray[11];
-            string ItemCategory = lineArray[12];
+            string ItemNetID = lineArray[9];
+            string ItemName = lineArray[10];
+            string ItemCategory = lineArray[11];
 
-            float Price = SafeParseFloat(lineArray[13]);
+            float Price = SafeParseFloat(lineArray[12]);
 
             if(ParsingError)
             {
@@ -492,12 +495,10 @@ int ParseLog(string logfile, string fpsfile)
             float BudgetSWORD;
             if (SideSWORD.find("NATO") != string::npos) BudgetSWORD = BudgetNATO;
             else if (SideSWORD.find("CSAT") != string::npos) BudgetSWORD = BudgetCSAT;
-            else if (SideSWORD.find("AAF") != string::npos) BudgetSWORD = BudgetAAF;
 
             float BudgetARF;
             if (SideARF.find("NATO") != string::npos) BudgetARF = BudgetNATO;
             else if (SideARF.find("CSAT") != string::npos) BudgetARF = BudgetCSAT;
-            else if (SideARF.find("AAF") != string::npos) BudgetARF = BudgetAAF;
 
             if(lineArray[3].find("Buy") != string::npos)
             {
@@ -508,14 +509,16 @@ int ParseLog(string logfile, string fpsfile)
                 ItemPrice[ItemNetID] = Price;
                 ItemLifeTime[ItemNetID] = 0;
                 ItemCategories[ItemNetID] = ItemCategory;
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetBuy, BudgetSWORD, BudgetARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetBuy, BudgetSWORD, BudgetARF) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                if(DEBUG) PrintError("%li - Budget (Buy): %s by %s\n", timecode, ItemName.c_str(), PlayerName.c_str());
             }
 
             else if(lineArray[3].find("Sell") != string::npos)
             {
                 ItemLifeTime[ItemNetID] = Time - ItemBuyTime[ItemNetID];
                 ItemDeathTime[ItemNetID] = Time;
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetSell, BudgetSWORD, BudgetARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BudgetItem, BudgetSell, BudgetSWORD, BudgetARF) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%s', '%.2f', '%.2f', '%.2f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), ItemName.c_str(), Price, BudgetSWORD, BudgetARF);
+                if(DEBUG) PrintError("%li - Budget (Sell): %s by %s\n", timecode, ItemName.c_str(), PlayerName.c_str());
             }
 
             else
@@ -571,7 +574,7 @@ int ParseLog(string logfile, string fpsfile)
                 unsigned long Killer = SafeParseUnsignedLong(lineArray[8]);
                 float Distance = SafeParseFloat(lineArray[11]);
                 string Item = lineArray[12];
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 continue;
             }
             else if(lineArray[3].find("DestroyByCrew") != string::npos)
@@ -591,26 +594,26 @@ int ParseLog(string logfile, string fpsfile)
                 if(elements >= 13)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[11]);
-                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 // logge auch kills für die restlichen crewslots
                 if(elements >= 15)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[13]);
-                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 if(elements >= 17)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[15]);
-                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 if(elements >= 19)
                 {
                     unsigned long Killer = SafeParseUnsignedLong(lineArray[17]);
-                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
+                    InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, KillDistance, KillItem, KilledVehicleName, KilledVehicleCategory) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%s', '%s', '%s'),\n", CampaignID, MissionID, Time, Killer, PlayerSides[Killer].c_str(), Distance, Item.c_str(), ItemName.c_str(), ItemCategory.c_str());
                 }
 
                 continue;
@@ -628,7 +631,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(MissionStart && lineArray[2].find("Mission") != string::npos && lineArray[3].find("State") != string::npos)
         {
-            if(elements != 8)
+            if(elements != 7)
             {
                 PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
                 continue;
@@ -638,7 +641,6 @@ int ParseLog(string logfile, string fpsfile)
 
             PointsNATO = SafeParseUnsignedLong(lineArray[4]);
             PointsCSAT = SafeParseUnsignedLong(lineArray[5]);
-            PointsAAF = SafeParseUnsignedLong(lineArray[6]);
 
             if(ParsingError)
             {
@@ -648,16 +650,15 @@ int ParseLog(string logfile, string fpsfile)
 
             if (SideSWORD.find("NATO") != string::npos) PointsSWORD = PointsNATO;
             else if (SideSWORD.find("CSAT") != string::npos) PointsSWORD = PointsCSAT;
-            else if (SideSWORD.find("AAF") != string::npos) PointsSWORD = PointsAAF;
 
             if (SideARF.find("NATO") != string::npos) PointsARF = PointsNATO;
             else if (SideARF.find("CSAT") != string::npos) PointsARF = PointsCSAT;
-            else if (SideARF.find("AAF") != string::npos) PointsARF = PointsAAF;
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PointsSWORD, PointsARF) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%i', '%i'),\n", CampaignID, MissionID, Time, PointsSWORD, PointsARF);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PointsSWORD, PointsARF) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%i', '%i'),\n", CampaignID, MissionID, Time, PointsSWORD, PointsARF);
             continue;
         }
 
+// TRAVEL //
 
         if(MissionStart && lineArray[2].find("Transport") != string::npos && lineArray[3].find("Fly") != string::npos)
         {
@@ -718,6 +719,92 @@ int ParseLog(string logfile, string fpsfile)
             continue;
         }
 
+        if(MissionStart && lineArray[2].find("Transport") != string::npos && lineArray[3].find("Boat") != string::npos)
+        {
+            if(elements != 11)
+            {
+                PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
+                continue;
+            }
+
+            Time = timecode - loadtime + loadtime_real;
+
+            unsigned long PassengerUID = SafeParseUnsignedLong(lineArray[4]);
+            string PassengerName = lineArray[5];
+            unsigned long TransporterUID = SafeParseUnsignedLong(lineArray[7]);
+            string TransporterName = lineArray[8];
+            float Distance = SafeParseFloat(lineArray[10]);
+
+            if(ParsingError)
+            {
+                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                continue;
+            }
+
+            if(DEBUG) PrintError("%li - Transported (Boat): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
+
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatPassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            continue;
+        }
+
+        if(MissionStart && lineArray[2].find("Transport") != string::npos && lineArray[3].find("Walk") != string::npos)
+        {
+            if(elements != 11)
+            {
+                PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
+                continue;
+            }
+
+            Time = timecode - loadtime + loadtime_real;
+
+            unsigned long PassengerUID = SafeParseUnsignedLong(lineArray[4]);
+            string PassengerName = lineArray[5];
+            unsigned long TransporterUID = SafeParseUnsignedLong(lineArray[7]);
+            string TransporterName = lineArray[8];
+            float Distance = SafeParseFloat(lineArray[10]);
+
+            if(ParsingError)
+            {
+                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                continue;
+            }
+
+            if(DEBUG) PrintError("%li - Walked: %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), Distance, Time);
+
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, WalkDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            continue;
+        }
+
+        if(MissionStart && lineArray[2].find("Transport") != string::npos && lineArray[3].find("Swim") != string::npos)
+        {
+            if(elements != 11)
+            {
+                PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
+                continue;
+            }
+
+            Time = timecode - loadtime + loadtime_real;
+
+            unsigned long PassengerUID = SafeParseUnsignedLong(lineArray[4]);
+            string PassengerName = lineArray[5];
+            unsigned long TransporterUID = SafeParseUnsignedLong(lineArray[7]);
+            string TransporterName = lineArray[8];
+            float Distance = SafeParseFloat(lineArray[10]);
+
+            if(ParsingError)
+            {
+                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                continue;
+            }
+
+            if(DEBUG) PrintError("%li - Swim: %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), Distance, Time);
+
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, SwimDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            continue;
+        }
+
+/////
 
         if(MissionStart && lineArray[2].find("Flag") != string::npos && lineArray[3].find("Conquer") != string::npos)
         {
@@ -738,7 +825,7 @@ int ParseLog(string logfile, string fpsfile)
                 continue;
             }
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, FlagDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), Distance);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, FlagDistance) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f'),\n", CampaignID, MissionID, Time, PlayerUID, PlayerSides[PlayerUID].c_str(), Distance);
             continue;
         }
 
@@ -764,8 +851,12 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
-                continue;
+                if(PRINTPARSINERRORS)
+                {
+            	    PrintError("ParsingError in line: %s\n", line.c_str());
+            	    PrintError("1: %s // 2: %s // 3: %s // 4: %s // 5: %s // 6: %s // 7: %s // 8: %s // 9: %s // 10: %s // 11: %s // 12: %s\n", lineArray[0].c_str(), lineArray[1].c_str(), lineArray[2].c_str(), lineArray[3].c_str(), lineArray[4].c_str(), lineArray[5].c_str(), lineArray[6].c_str(), lineArray[7].c_str(), lineArray[8].c_str(), lineArray[9].c_str(), lineArray[10].c_str(), lineArray[11].c_str());
+            	}
+//                continue;
             }
 
             if(DEBUG)
@@ -815,8 +906,8 @@ int ParseLog(string logfile, string fpsfile)
                     continue;
                 }
 
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedTeammate, RevivedDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, CauserUID, CauserSide.c_str(), VictimUID, Distance);
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedByTeammate, RevivedByDistance) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str(), CauserUID, Distance);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedTeammate, RevivedDistance) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, CauserUID, CauserSide.c_str(), VictimUID, Distance);
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RevivedByTeammate, RevivedByDistance) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%lu', '%.3f'),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str(), CauserUID, Distance);
             }
             continue;
         }
@@ -841,11 +932,11 @@ int ParseLog(string logfile, string fpsfile)
 
             if(RespawnReason.find("RespawnClick") != string::npos)
             {
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnClick) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnClick) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
             }
             else if(RespawnReason.find("RespawnTimeout") != string::npos)
             {
-                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnTimeout) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
+                InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, RespawnTimeout) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', 1),\n", CampaignID, MissionID, Time, VictimUID, VictimSide.c_str());
             }
             continue;
         }
@@ -853,7 +944,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(MissionStart && lineArray[2].find("Mission") != string::npos && lineArray[3].find("End") != string::npos)
         {
-            if(elements != 8)
+            if(elements != 7)
             {
                 PrintError("Parameteranzahl: %i @ %s\n", elements, line.c_str());
                 continue;
@@ -863,15 +954,12 @@ int ParseLog(string logfile, string fpsfile)
             MissionEnd = Time;
             PointsNATO = SafeParseUnsignedLong(lineArray[4]);
             PointsCSAT = SafeParseUnsignedLong(lineArray[5]);
-            PointsAAF = SafeParseUnsignedLong(lineArray[6]);
 
             if (SideSWORD.find("NATO") != string::npos) PointsSWORD = PointsNATO;
             else if (SideSWORD.find("CSAT") != string::npos) PointsSWORD = PointsCSAT;
-            else if (SideSWORD.find("AAF") != string::npos) PointsSWORD = PointsAAF;
 
             if (SideARF.find("NATO") != string::npos) PointsARF = PointsNATO;
             else if (SideARF.find("CSAT") != string::npos) PointsARF = PointsCSAT;
-            else if (SideARF.find("AAF") != string::npos) PointsARF = PointsAAF;
 
             PrintError("Mission finished. SWORD: %lu // ARF:%lu\n", PointsSWORD, PointsARF);
             break;
@@ -1116,25 +1204,21 @@ int main(int argc, char **argv)
     string LogFileName = "";
     string FPSFileName = "";
 
-    if(argc == 5)
+    if(argc == 3)
     {
         CampaignName = argv[1];
         MissionName = argv[2];
-        SideSWORD = argv[3];
-        SideARF = argv[4];
-        LogFileName = FindNewestFile("arma3server_20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.rpt");
-        FPSFileName = FindNewestFile("20[0-9]{2}-[0-9]{2}-[0-9]{2}T[0-9]{2}_[0-9]{2}_[0-9]{2}.log");
+        LogFileName = FindNewestFile("20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}_WarServer_server.log");
+        FPSFileName = FindNewestFile("20[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}_WarServer_FPS.log");
         PrintError("Automatically using newest files '%s' and '%s'\n", LogFileName.c_str(), FPSFileName.c_str());
     }
 
-    else if(argc == 7)
+    else if(argc == 5)
     {
         CampaignName = argv[1];
         MissionName = argv[2];
-        SideSWORD = argv[3];
-        SideARF = argv[4];
-        LogFileName = argv[5];
-        FPSFileName = argv[6];
+        LogFileName = argv[3];
+        FPSFileName = argv[4];
         PrintError("Using files '%s' and '%s'\n", LogFileName.c_str(), FPSFileName.c_str());
     }
 
@@ -1142,8 +1226,8 @@ int main(int argc, char **argv)
     {
         PrintError("Usage examples:\n");
         PrintError("===============\n");
-        PrintError("> %s CampaignName MissionName SideSWORD SideARF\n", argv[0]);
-        PrintError("> %s CampaignName MissionName SideSWORD SideARF logfile fpsfile\n", argv[0]);
+        PrintError("> %s CampaignName MissionName\n", argv[0]);
+        PrintError("> %s CampaignName MissionName logfile fpsfile\n", argv[0]);
         PrintError("\n");
         exit(1);
     }
