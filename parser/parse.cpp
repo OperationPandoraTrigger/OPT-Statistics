@@ -16,7 +16,7 @@
 
 #define DEBUG 0
 #define PRINTPARSINERRORS 0
-#define MinLogVersion 11
+#define MinLogVersion 10
 
 #define MAX_WAIT_TIME 10000
 
@@ -684,8 +684,8 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Transported (Air): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, PilotDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, AirPassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            if (PassengerUID == TransporterUID) InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, PilotDistance, PassengerUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            else InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, AirPassengerDistance, TransporterUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
             continue;
         }
 
@@ -714,8 +714,8 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Transported (Drive): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DriverDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DrivePassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            if (PassengerUID == TransporterUID) InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DriverDistance, PassengerUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            else InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, DrivePassengerDistance, TransporterUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
             continue;
         }
 
@@ -743,8 +743,8 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Transported (Boat): %s by %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), TransporterName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatPassengerDistance, TransporterUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
+            if (PassengerUID == TransporterUID) InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatDistance, PassengerUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            else InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, BoatPassengerDistance, TransporterUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, PassengerUID, PlayerSides[PassengerUID].c_str(), Distance, TransporterUID);
             continue;
         }
 
@@ -772,7 +772,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Walked: %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, WalkDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, WalkDistance, PassengerUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
             continue;
         }
 
@@ -800,7 +800,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(DEBUG) PrintError("%li - Swim: %s (dist: %.1f) @ %li\n", timecode, PassengerName.c_str(), Distance, Time);
 
-            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, SwimDistance, PassengerUID) VALUES", "'%i', '%i', (FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
+            InsertDB("INSERT IGNORE INTO Events (CampaignID, MissionID, Time, PlayerUID, PlayerSide, SwimDistance, PassengerUID) VALUES", "('%i', '%i', FROM_UNIXTIME(%li), '%lu', '%s', '%.3f', '%lu'),\n", CampaignID, MissionID, Time, TransporterUID, PlayerSides[TransporterUID].c_str(), Distance, PassengerUID);
             continue;
         }
 
@@ -975,7 +975,7 @@ int ParseLog(string logfile, string fpsfile)
     {
         if(MissionEnd == 0)
         {
-            PrintError("WARNING: No mission-end detected. Using last timestamp that occured.");
+            PrintError("WARNING: No mission-end detected. Using last timestamp that occured.\n");
             MissionEnd = Time;
         }
 
@@ -1142,10 +1142,13 @@ int SendToDatabase(void)
             {
                 it->second[it->second.length() - 2] = ';';  // letztes komma durch semikolon ersetzen
                 query.execute(it->first + '\n' + it->second);
+                if(DEBUG > 3) PrintError("%s\n%s", it->first.c_str(), it->second.c_str());
             }
 
             // Ausgabe des Missions-Eintrags ganz zum Schluss
             query.execute(SQL_Mission_Insert);
+            if(DEBUG > 3) PrintError("%s", SQL_Mission_Insert.c_str());
+
             return 0;
         }
         else
