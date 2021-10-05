@@ -15,7 +15,7 @@
 #define ARCHIVEPATH "/root/log/"
 
 #define DEBUG 0
-#define PRINTPARSINERRORS 0
+#define PRINTPARSINGERRORS 0
 #define MinLogVersion 10
 
 #define MAX_WAIT_TIME 10000
@@ -37,7 +37,7 @@ int CampaignID = 2;
 int MissionID = -1;
 string CampaignName = "";
 string MissionName = "";
-int MissionRated = 0;
+int MissionRated = 1;
 string SideSWORD = "";
 string SideARF = "";
 
@@ -374,7 +374,7 @@ int ParseLog(string logfile, string fpsfile)
 
         if(ParsingError)
         {
-            if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+            if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
             continue;
         }
 
@@ -406,7 +406,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -429,7 +429,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -488,7 +488,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -523,7 +523,7 @@ int ParseLog(string logfile, string fpsfile)
 
             else
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -621,7 +621,7 @@ int ParseLog(string logfile, string fpsfile)
 
             else
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -644,7 +644,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -678,7 +678,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -708,7 +708,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -737,7 +737,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -766,7 +766,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -794,7 +794,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -821,7 +821,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                 continue;
             }
 
@@ -851,7 +851,7 @@ int ParseLog(string logfile, string fpsfile)
 
             if(ParsingError)
             {
-                if(PRINTPARSINERRORS)
+                if(PRINTPARSINGERRORS)
                 {
             	    PrintError("ParsingError in line: %s\n", line.c_str());
             	    PrintError("1: %s // 2: %s // 3: %s // 4: %s // 5: %s // 6: %s // 7: %s // 8: %s // 9: %s // 10: %s // 11: %s // 12: %s\n", lineArray[0].c_str(), lineArray[1].c_str(), lineArray[2].c_str(), lineArray[3].c_str(), lineArray[4].c_str(), lineArray[5].c_str(), lineArray[6].c_str(), lineArray[7].c_str(), lineArray[8].c_str(), lineArray[9].c_str(), lineArray[10].c_str(), lineArray[11].c_str());
@@ -902,7 +902,7 @@ int ParseLog(string logfile, string fpsfile)
 
                 if(ParsingError)
                 {
-                    if(PRINTPARSINERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
+                    if(PRINTPARSINGERRORS) PrintError("ParsingError in line: %s\n", line.c_str());
                     continue;
                 }
 

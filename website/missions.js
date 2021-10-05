@@ -894,33 +894,36 @@ function render_Popup(playerdata) {
             rows++;
         }
 
-        if (playerevent.PilotDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " flog " + playerevent.PassengerName + " ins Kampfgebiet (" + playerevent.PilotDistance + " km) &#128641;</p>";
+        if (playerevent.PilotDistance > 0.2) {
+            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " war " + playerevent.PilotDistance + " km als Pilot unterwegs &#128641;</p>";
             rows++;
         }
 
-        if (playerevent.AirPassengerDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " eingeflogen (" + playerevent.AirPassengerDistance + " km) &#128641;</p>";
+        if (playerevent.AirPassengerDistance > 0.2) {
+            if (playerdata.Info.Nickname != playerevent.TransporterName) html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " eingeflogen (" + playerevent.AirPassengerDistance + " km) &#128641;</p>";
+            else html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " flog " + playerevent.Name + " ins Kampfgebiet (" + playerevent.AirPassengerDistance + " km) &#128641;</p>";
             rows++;
         }
 
-        if (playerevent.BoatDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " verschiffte " + playerevent.PassengerName + " ins Kampfgebiet (" + playerevent.BoatDistance + " km) &#128741;</p>";
+        if (playerevent.BoatDistance > 0.2) {
+            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " war " + playerevent.BoatDistance + " km als Kapit&auml;n unterwegs &#128741;</p>";
             rows++;
         }
 
-        if (playerevent.BoatPassengerDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " verschifft (" + playerevent.BoatPassengerDistance + " km) &#128741;</p>";
+        if (playerevent.BoatPassengerDistance > 0.2) {
+            if (playerdata.Info.Nickname != playerevent.TransporterName) html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " verschifft (" + playerevent.BoatPassengerDistance + " km) &#128741;</p>";
+            else html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " verschiffte " + playerevent.TransporterName + " ins Kampfgebiet (" + playerevent.BoatPassengerDistance + " km) &#128741;</p>";
             rows++;
         }
 
-        if (playerevent.DriverDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " fuhr " + playerevent.PassengerName + " ins Kampfgebiet (" + playerevent.DriverDistance + " km) &#128661;</p>";
+        if (playerevent.DriverDistance > 0.2) {
+            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " war " + playerevent.DriverDistance + " km als Fahrer unterwegs &#128661;</p>";
             rows++;
         }
 
-        if (playerevent.DrivePassengerDistance) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " gefahren (" + playerevent.DrivePassengerDistance + " km) &#128661;</p>";
+        if (playerevent.DrivePassengerDistance > 0.2) {
+            if (playerdata.Info.Nickname != playerevent.TransporterName) html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " wurde von " + playerevent.TransporterName + " gefahren (" + playerevent.DrivePassengerDistance + " km) &#128661;</p>";
+            else html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " fuhr " + playerevent.Name + " ins Kampfgebiet (" + playerevent.DrivePassengerDistance + " km) &#128661;</p>";
             rows++;
         }
     });
