@@ -798,7 +798,7 @@ function render_Popup(playerdata) {
     var Sein_Ihr = "Sein";
     var ihm_ihr = "ihm";
     var Pilot_Pilotin = "Pilot";
-    if (playerdata.Info.PlayerUID == 76561198171657467n || playerdata.Info.PlayerUID == 76561198137678533n || playerdata.Info.PlayerUID == 76561198381160293n)
+    if (playerdata.Info.PlayerUID == 76561198171657467n || playerdata.Info.PlayerUID == 76561198137678533n || playerdata.Info.PlayerUID == 76561198381160293n || playerdata.Info.PlayerUID == 76561198066948063n)
     {
         var er_sie = "sie";
         var Er_Sie = "Sie";

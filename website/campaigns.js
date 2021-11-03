@@ -311,7 +311,6 @@ function fillList(CampaignData, CampaignPoints) {
 }
 
 function CampaignSelectorAction(CampaignID) {
-    closePopup();
     SelectedCampaignID = CampaignID;
     $.ajax(
         {
