@@ -44,7 +44,7 @@
     else die("No campaigns found.");
 
     // Schlachten Übersicht
-    $sql_missions = "SELECT ID, Start, End, MissionName, MissionFileName, Fractions, SideSWORD, SideARF, PointsSWORD, PointsARF, Rated from Missions WHERE CampaignName = '$Selected_Campaign';";
+    $sql_missions = "SELECT ID, Start, End, MissionName, MissionFileName, Fractions, SideSWORD, SideARF, PointsSWORD, PointsARF, Rated, NumPlayers from Missions WHERE CampaignName = '$Selected_Campaign';";
 
     $result = mysqli_query($dbh, $sql_missions);
 
@@ -66,7 +66,8 @@
                 "SideARF"=>$row['SideARF'],
                 "PointsSWORD"=>$row['PointsSWORD'],
                 "PointsARF"=>$row['PointsARF'],
-                "Rated"=>$row['Rated']
+                "Rated"=>$row['Rated'],
+                "NumPlayers"=>$row['NumPlayers']
             );
         }
         echo json_encode($data);

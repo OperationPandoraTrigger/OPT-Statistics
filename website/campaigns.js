@@ -208,6 +208,7 @@ function show_Stats() {
                 ],
             },
             { title: "Gewertet", field: "Rated", editor: "input", headerSortStartingDir: "asc", widthGrow: 1, hozAlign:"center", headerClick:function(){ScrollToStats();}, formatter:"tickCross" },
+            { title: "Spieler", field: "NumPlayers", editor: "input", headerSortStartingDir: "asc", widthGrow: 1, hozAlign:"center", headerClick:function(){ScrollToStats();} }
         ]
     });
 }

@@ -845,7 +845,7 @@ function render_Popup(playerdata) {
 
     playerdata.Events.forEach(playerevent => {
         if (playerevent.KilledEnemy) {
-            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " t&ouml;tete " + playerevent.KilledEnemy + " (Feind)" + (playerevent.KillItem ? (" mit " + playerevent.KillItem) : "") + " (" + playerevent.KillDistance + " m)</p>";
+            html += "<p style='margin: 1px'>" + playerevent.Time + " &rArr; " + playerdata.Info.Nickname + " t&ouml;tete " + playerevent.KilledEnemy + " (Feind)" + (playerevent.KillItem ? (" mit " + playerevent.KillItem) : "") + " (" + playerevent.KillDistance + " m) &#128299;</p>";
             rows++;
         }
 

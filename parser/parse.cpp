@@ -961,7 +961,7 @@ int ParseLog(string logfile, string fpsfile)
             if (SideARF.find("NATO") != string::npos) PointsARF = PointsNATO;
             else if (SideARF.find("CSAT") != string::npos) PointsARF = PointsCSAT;
 
-            PrintError("Mission finished. SWORD: %lu // ARF:%lu\n", PointsSWORD, PointsARF);
+            PrintError("Mission finished. SWORD: %lu // ARF: %lu\n", PointsSWORD, PointsARF);
             break;
         }
     }
@@ -998,10 +998,13 @@ int ParseLog(string logfile, string fpsfile)
 
         // Update Playerlist for Players (UID > 0)
         map<unsigned long, string>::iterator pi;
+        int NumPlayers = 0;
         for(pi = PlayerNames.begin(); pi != PlayerNames.end(); ++pi)
         {
             InsertDB("INSERT INTO Players (SteamID64, Nickname, SeenFirst, SeenLast) VALUES", "('%lu', '%s', FROM_UNIXTIME(%li), FROM_UNIXTIME(%li)),\n", pi->first, pi->second.c_str(), MissionStart, MissionEnd);
+            NumPlayers++;
         }
+        PrintError("Players found: %i\n", NumPlayers);
 
         // Letztes Komma vom letzten Eintrag wieder entfernen
         map<string, string>::iterator tmpit;
@@ -1022,7 +1025,7 @@ int ParseLog(string logfile, string fpsfile)
 
         // Missionseintrag ganz zum Schluss schreiben
         char buf[1000];
-        sprintf(buf, "INSERT IGNORE INTO Missions (Start, End, Fractions, SideSWORD, SideARF, MissionFileName, CampaignName, MissionName, Rated, PointsSWORD, PointsARF) VALUES (FROM_UNIXTIME(%li), FROM_UNIXTIME(%li), '%s', '%s', '%s', '%s', '%s', '%s', %i, '%lu', '%lu');\n", MissionStart, MissionEnd, Fractions.c_str(), SideSWORD.c_str(), SideARF.c_str(), MissionFilename.c_str(), CampaignName.c_str(), MissionName.c_str(), MissionRated, PointsSWORD, PointsARF);
+        sprintf(buf, "INSERT IGNORE INTO Missions (Start, End, Fractions, SideSWORD, SideARF, MissionFileName, CampaignName, MissionName, Rated, PointsSWORD, PointsARF, NumPlayers) VALUES (FROM_UNIXTIME(%li), FROM_UNIXTIME(%li), '%s', '%s', '%s', '%s', '%s', '%s', %i, '%lu', '%lu', '%i');\n", MissionStart, MissionEnd, Fractions.c_str(), SideSWORD.c_str(), SideARF.c_str(), MissionFilename.c_str(), CampaignName.c_str(), MissionName.c_str(), MissionRated, PointsSWORD, PointsARF, NumPlayers);
         SQL_Mission_Insert = buf;
 
         if (NumKills > 10)
