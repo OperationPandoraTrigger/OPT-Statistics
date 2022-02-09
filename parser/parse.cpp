@@ -1,10 +1,12 @@
 #include <iostream>
 #include <iomanip>
+#include <cstdio>
 #include <stdarg.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 #include <mysql++.h>
+#include <curl/curl.h>
 
 #define SQL_HOST "127.0.0.1"
 #define SQL_PORT 3306
@@ -26,7 +28,7 @@ namespace fs = filesystem;
 // needs:
 // pacman -S mysql++ boost
 // compile:
-// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -I boost_1_76_0/ -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
+// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -lcurl -I boost_1_76_0/ -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
 
 // global vars
 string SQL_Mission_Insert = "";
@@ -66,6 +68,51 @@ void PrintError(const char *format, ...)
     va_start(args, format);
     vsnprintf(buffer, BUFFER_SIZE, format, args);
     cerr << buffer;
+    va_end(args);
+}
+
+void DeleteFile(const char *format, ...)
+{
+    int BUFFER_SIZE = 1000;
+    char buffer[BUFFER_SIZE];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, BUFFER_SIZE, format, args);
+    cerr << "Wiping cachefile " << buffer << " ...\n";
+    remove(buffer);
+    va_end(args);
+}
+
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+void DownloadURL(const char *format, ...)
+{
+    int BUFFER_SIZE = 1000;
+    char buffer[BUFFER_SIZE];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, BUFFER_SIZE, format, args);
+    cerr << "Downloading " << buffer << " ...\n";
+
+    CURL *curl;
+    CURLcode res;
+    std::string readBuffer;
+
+    curl = curl_easy_init();
+    if(curl)
+    {
+        curl_easy_setopt(curl, CURLOPT_URL, buffer);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+
+        if (DEBUG > 4) std::cout << readBuffer << std::endl;
+    }
     va_end(args);
 }
 
@@ -1205,6 +1252,49 @@ void ArchiveLogFile(string FileName, string DestinationDirectory)
     }
 }
 
+void WipeCache(void)
+{
+    DeleteFile("/var/www/cache/getdata.json");
+    DeleteFile("/var/www/cache/campaigns.json");
+    DeleteFile("/var/www/cache/campaigns_campaign_%04d.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignmissions.json");
+    DeleteFile("/var/www/cache/campaignmissions_campaign_%04d.json", CampaignID);
+    DeleteFile("/var/www/cache/playerstats_campaign_%04d.json", CampaignID);
+}
+
+void FillCache(void)
+{
+    DownloadURL("https://stats.opt4.net:2021/getdata.php");
+    DownloadURL("https://stats.opt4.net:2021/getdata.php?mission=%d", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/stats.php?mission=%d", MissionID);
+
+    DownloadURL("https://stats.opt4.net:2021/campaigns.php");
+    DownloadURL("https://stats.opt4.net:2021/campaigns.php?campaign=%d", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignmissions.php");
+    DownloadURL("https://stats.opt4.net:2021/campaignmissions.php?campaign=%d", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/playerstats.php?campaign=%d", CampaignID);
+
+    DownloadURL("https://stats.opt4.net:2021/objectcategories.php?mission=%d&side=SWORD", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/objectcategories.php?mission=%d&side=ARF", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/objectitems.php?mission=%d&side=SWORD", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/objectitems.php?mission=%d&side=ARF", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/objects.php?mission=%d", MissionID);
+
+    DownloadURL("https://stats.opt4.net:2021/player.php?mission=%d&player=0", MissionID);
+    DownloadURL("https://stats.opt4.net:2021/playerfps.php?mission=%d&player=0", MissionID);
+
+    map<unsigned long, string>::iterator pi;
+    for(pi = PlayerNames.begin(); pi != PlayerNames.end(); ++pi)
+    {
+        DownloadURL("https://stats.opt4.net:2021/player.php?mission=%d&player=%li", MissionID, pi->first);
+    }
+
+    for(pi = PlayerNames.begin(); pi != PlayerNames.end(); ++pi)
+    {
+        DownloadURL("https://stats.opt4.net:2021/playerfps.php?mission=%d&player=%li", MissionID, pi->first);
+    }
+}
+
 int main(int argc, char **argv)
 {
     string LogFileName = "";
@@ -1243,6 +1333,8 @@ int main(int argc, char **argv)
     ArchiveLogFile(FPSFileName, ARCHIVEPATH);
     GetMissionID();
     ParseLog(ARCHIVEPATH + LogFileName, ARCHIVEPATH + FPSFileName);
+    WipeCache();
     SendToDatabase();
+    FillCache();
     PrintError("Done.\n");
 }
