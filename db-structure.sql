@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 28, 2021 at 08:26 PM
+-- Generation Time: Feb 09, 2022 at 10:56 AM
 -- Server version: 10.5.11-MariaDB
 -- PHP Version: 8.0.8
 
@@ -112,7 +112,8 @@ CREATE TABLE `Missions` (
   `MissionName` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Rated` tinyint(1) NOT NULL DEFAULT 0,
   `PointsSWORD` int(11) DEFAULT NULL,
-  `PointsARF` int(11) DEFAULT NULL
+  `PointsARF` int(11) DEFAULT NULL,
+  `NumPlayers` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
