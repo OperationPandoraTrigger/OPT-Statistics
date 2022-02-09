@@ -788,7 +788,7 @@ function closePopup() {
     scrollEnable();
 }
 
-function render_Popup(playerdata) {
+function render_Popup(playerdata, PlayerUID) {
     var html = "";
     var rows = 0;
 
@@ -943,8 +943,18 @@ function render_Popup(playerdata) {
 
     html += "</div>"
     document.getElementById("Popup").innerHTML = html;
-    show_chartFPS(playerdata);
     openPopup();
+
+    // async load after page is open
+    $.ajax(
+    {
+        url: "playerfps.php?mission=" + SelectedMissionID + "&player=" + PlayerUID,
+        type: "GET",
+        dataType: "json",
+        success: function (fpsdata) {
+            show_chartFPS(fpsdata);
+        }
+    });
 }
 
 function show_Popup(PlayerUID) {
@@ -954,7 +964,7 @@ function show_Popup(PlayerUID) {
             type: "GET",
             dataType: "json",
             success: function (playerdata) {
-                render_Popup(playerdata);
+                render_Popup(playerdata, PlayerUID);
             }
         });
 }
