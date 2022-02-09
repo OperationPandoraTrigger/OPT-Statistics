@@ -945,7 +945,8 @@ function render_Popup(playerdata, PlayerUID) {
     document.getElementById("Popup").innerHTML = html;
 
     // loading screen disable
-    document.getElementById("loading").style.display = "none";
+    document.getElementById("loading").style.visibility = "hidden";
+    document.getElementById("loading").style.opacity = "0";
 
     openPopup();
 
@@ -964,7 +965,8 @@ function render_Popup(playerdata, PlayerUID) {
 function show_Popup(PlayerUID)
 {
     // loading screen enable
-    document.getElementById("loading").style.display = "block";
+    document.getElementById("loading").style.visibility = "visible";
+    document.getElementById("loading").style.opacity = "1";
   
     $.ajax(
         {

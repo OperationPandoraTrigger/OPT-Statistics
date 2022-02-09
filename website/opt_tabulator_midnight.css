@@ -1115,10 +1115,10 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
   background: #fff;
 }
 
-
-
 #loading {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
   position: fixed;
   top: 0;
   left: 0;
