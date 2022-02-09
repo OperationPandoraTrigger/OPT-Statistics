@@ -1,6 +1,16 @@
 <?php
 if(isset($_GET['campaign'])) $SelectedCampaignID = htmlspecialchars($_GET["campaign"]); 
 
+if (!empty($SelectedCampaignID)) $cachefile = sprintf('cache/campaigns_campaign_%04d.json', $SelectedCampaignID);
+else $cachefile = 'cache/campaigns.json';
+
+if (file_exists($cachefile))
+{
+    $result = file_get_contents($cachefile);
+    echo $result;
+    exit(0);
+}
+
 $db_server = 'localhost';
 $db_name = 'opt';
 $db_user = 'opt';
@@ -78,6 +88,8 @@ if ($rows_points)
 }
 
 // Output
-echo json_encode(array("CampaignData"=>$CampaignData, "CampaignPoints"=>$CampaignPoints, "Points_SWORD"=>$Points_SWORD, "Points_SumSWORD"=>$Points_SumSWORD, "Points_ARF"=>$Points_ARF, "Points_SumARF"=>$Points_SumARF, "Points_MissionName"=>$Points_MissionName));
+$result = json_encode(array("CampaignData"=>$CampaignData, "CampaignPoints"=>$CampaignPoints, "Points_SWORD"=>$Points_SWORD, "Points_SumSWORD"=>$Points_SumSWORD, "Points_ARF"=>$Points_ARF, "Points_SumARF"=>$Points_SumARF, "Points_MissionName"=>$Points_MissionName));
+echo $result;
+file_put_contents($cachefile, $result);
 mysqli_close($dbh);
 ?>

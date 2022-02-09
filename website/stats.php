@@ -1,6 +1,16 @@
 <?php
     if(isset($_GET['mission'])) $SelectedMissionID = htmlspecialchars($_GET["mission"]); 
 
+    if (!empty($SelectedMissionID)) $cachefile = sprintf('cache/stats_mission_%04d.json', $SelectedMissionID);
+    else $cachefile = 'cache/stats.json';
+
+    if (file_exists($cachefile))
+    {
+        $result = file_get_contents($cachefile);
+        echo $result;
+        exit(0);
+    }
+
     $db_server = 'localhost';
     $db_name = 'opt';
     $db_user = 'opt';
@@ -78,7 +88,9 @@
             'KD' => $KD
         );
         }
-        echo json_encode($data);
+        $result = json_encode($data);
+        echo $result;
+        file_put_contents($cachefile, $result);
     }
     mysqli_close($dbh);
 ?>

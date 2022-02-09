@@ -6,6 +6,15 @@
     }
     else die ("Missing parameters."); 
 
+    $cachefile = sprintf('cache/objectitems_mission_%04d_%s.json', $SelectedMissionID, $SelectedSide);
+
+    if (file_exists($cachefile))
+    {
+        $result = file_get_contents($cachefile);
+        echo $result;
+        exit(0);
+    }
+
     $db_server = 'localhost';
     $db_name = 'opt';
     $db_user = 'opt';
@@ -64,7 +73,9 @@
                 'Percentage' => $row["Percentage"]
             );
         }
-        echo json_encode($data);
+        $result = json_encode($data);
+        echo $result;
+        file_put_contents($cachefile, $result);
     }
     mysqli_close($dbh);
 ?>

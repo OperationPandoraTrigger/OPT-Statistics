@@ -1,6 +1,16 @@
 <?php
 if(isset($_GET['mission'])) $SelectedMissionID = htmlspecialchars($_GET["mission"]); 
 
+if (!empty($SelectedMissionID)) $cachefile = sprintf('cache/objects_mission_%04d.json', $SelectedMissionID);
+else $cachefile = 'cache/objects.json';
+
+if (file_exists($cachefile))
+{
+    $result = file_get_contents($cachefile);
+    echo $result;
+    exit(0);
+}
+
 $db_server = 'localhost';
 $db_name = 'opt';
 $db_user = 'opt';
@@ -55,7 +65,9 @@ else die("Wrong number of missions.");
             'Price' => $row["Price"]
         );
         }
-        echo json_encode($data);
+        $result = json_encode($data);
+        echo $result;
+        file_put_contents($cachefile, $result);
     }
     mysqli_close($dbh);
 ?>

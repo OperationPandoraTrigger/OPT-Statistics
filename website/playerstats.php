@@ -1,6 +1,16 @@
 <?php
     if(isset($_GET['campaign'])) $SelectedCampaignID = htmlspecialchars($_GET["campaign"]); 
 
+    if (!empty($SelectedCampaignID)) $cachefile = sprintf('cache/playerstats_campaign_%04d.json', $SelectedCampaignID);
+    else $cachefile = 'cache/playerstats.json';
+
+    if (file_exists($cachefile))
+    {
+        $result = file_get_contents($cachefile);
+        echo $result;
+        exit(0);
+    }
+
     $db_server = 'localhost';
     $db_name = 'opt';
     $db_user = 'opt';
@@ -114,7 +124,9 @@
             'Participations' => $row["Participations"]
         );
         }
-        echo json_encode($data);
+        $result = json_encode($data);
+        echo $result;
+        file_put_contents($cachefile, $result);
     }
     mysqli_close($dbh);
 ?>

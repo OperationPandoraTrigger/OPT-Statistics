@@ -1,6 +1,16 @@
 <?php
 if(isset($_GET['mission'])) $SelectedMissionID = htmlspecialchars($_GET["mission"]); 
 
+if (!empty($SelectedMissionID)) $cachefile = sprintf('cache/getdata_mission_%04d.json', $SelectedMissionID);
+else $cachefile = 'cache/getdata.json';
+
+if (file_exists($cachefile))
+{
+    $result = file_get_contents($cachefile);
+    echo $result;
+    exit(0);
+}
+
 $db_server = 'localhost';
 $db_name = 'opt';
 $db_user = 'opt';
@@ -139,7 +149,9 @@ if ($rows_CampaignPoints)
     }
 }
 
-// Output
-echo json_encode(array("MissionData"=>$MissionData, "Points_SWORD"=>$Points_SWORD, "Points_ARF"=>$Points_ARF, "Points_Conquer"=>$Points_conquer, "Budget_SWORD"=>$Budget_SWORD, "Budget_ARF"=>$Budget_ARF, "CampaignPoints"=>$CampaignPoints, "Selected_Mission_PointsSWORD"=>$Selected_Mission_PointsSWORD, "Selected_Mission_PointsARF"=>$Selected_Mission_PointsARF, "StartBudget_SWORD"=>$StartBudget_SWORD, "StartBudget_ARF"=>$StartBudget_ARF, "EndBudget_SWORD"=>$EndBudget_SWORD, "EndBudget_ARF"=>$EndBudget_ARF, "SideSWORD"=>$Selected_SideSWORD, "SideARF"=>$Selected_SideARF));
+// Output & Cachefill
+$result = json_encode(array("MissionData"=>$MissionData, "Points_SWORD"=>$Points_SWORD, "Points_ARF"=>$Points_ARF, "Points_Conquer"=>$Points_conquer, "Budget_SWORD"=>$Budget_SWORD, "Budget_ARF"=>$Budget_ARF, "CampaignPoints"=>$CampaignPoints, "Selected_Mission_PointsSWORD"=>$Selected_Mission_PointsSWORD, "Selected_Mission_PointsARF"=>$Selected_Mission_PointsARF, "StartBudget_SWORD"=>$StartBudget_SWORD, "StartBudget_ARF"=>$StartBudget_ARF, "EndBudget_SWORD"=>$EndBudget_SWORD, "EndBudget_ARF"=>$EndBudget_ARF, "SideSWORD"=>$Selected_SideSWORD, "SideARF"=>$Selected_SideARF));
+echo $result;
+file_put_contents($cachefile, $result);
 mysqli_close($dbh);
 ?>

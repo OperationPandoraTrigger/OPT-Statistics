@@ -6,6 +6,15 @@
     }
     else die ("Missing parameters.");
 
+    $cachefile = sprintf('cache/player_mission_%04d_%d.json', $SelectedMissionID, $PlayerUID);
+
+    if (file_exists($cachefile))
+    {
+        $result = file_get_contents($cachefile);
+        echo $result;
+        exit(0);
+    }
+
     $db_server = 'localhost';
     $db_name = 'opt';
     $db_user = 'opt';
@@ -61,7 +70,7 @@
     }
     else die("Player not found.");
 
-
+    // ALLTIME STATS
     $sql_alltime = "SELECT COUNT(KilledEnemy) AS Kills, COUNT(KilledTeammate) AS Teamkills, COUNT(KilledByEnemy) AS DeathsByEnemy, COUNT(KilledByTeammate) AS DeathsByTeammate, COUNT(FlagDistance) AS FlagConquers, COUNT(KilledVehicleName) AS Vehiclekills, COUNT(RevivedTeammate) AS Revives, COUNT(RevivedByTeammate) AS RevivesBy, (COUNT(RespawnClick) + COUNT(RespawnTimeout)) AS Respawns, IFNULL(SUM(BudgetBuy), 0) - IFNULL(SUM(BudgetSell), 0) AS Cost, ROUND(MAX(KillDistance)) AS MaxKillDistance, ROUND(IFNULL(SUM(PilotDistance), 0) / 1000, 0) AS PilotDistance, ROUND(IFNULL(SUM(AirPassengerDistance), 0) / 1000, 0) AS AirPassengerDistance, ROUND(IFNULL(SUM(BoatDistance), 0) / 1000, 0) AS BoatDistance, ROUND(IFNULL(SUM(BoatPassengerDistance), 0) / 1000, 0) AS BoatPassengerDistance, ROUND(IFNULL(SUM(DriverDistance), 0) / 1000, 0) AS DriverDistance, ROUND(IFNULL(SUM(DrivePassengerDistance), 0) / 1000, 0) AS DrivePassengerDistance, ROUND(IFNULL(SUM(SwimDistance), 0) / 1000, 0) AS SwimDistance, ROUND(IFNULL(SUM(WalkDistance), 0) / 1000, 0) AS WalkDistance FROM Events WHERE PlayerUID = $PlayerUID;";
     $result_alltime = mysqli_query($dbh, $sql_alltime);
     if (!$result_alltime) die("Database access failed: " . mysqli_error($dbh)); 
@@ -96,6 +105,7 @@
     }
     else die("Player not found.");
 
+    // MISSION STATS
     $sql_stmt = "SELECT Time, Player.Nickname AS Name, PlayerSide, KilledEnemy.Nickname AS KilledEnemy, KilledByEnemy.Nickname AS KilledByEnemy, KilledTeammate.Nickname AS KilledTeammate, KilledByTeammate.Nickname AS KilledByTeammate, KillItem, KilledVehicleName, ROUND(KillDistance, 1) AS KillDistance, ROUND(KilledByDistance, 1) AS KilledByDistance, RevivedTeammate.Nickname AS RevivedTeammate, RevivedByTeammate.Nickname AS RevivedByTeammate, ROUND(RevivedDistance, 1) AS RevivedDistance, ROUND(RevivedByDistance, 1) AS RevivedByDistance, ROUND(FlagDistance, 1) AS FlagDistance, BudgetItem, BudgetBuy, BudgetSell, ROUND(PilotDistance / 1000, 1) AS PilotDistance, ROUND(AirPassengerDistance / 1000, 1) AS AirPassengerDistance, ROUND(BoatDistance / 1000, 1) AS BoatDistance, ROUND(BoatPassengerDistance / 1000, 1) AS BoatPassengerDistance, ROUND(DriverDistance / 1000, 1) AS DriverDistance, ROUND(DrivePassengerDistance / 1000, 1) AS DrivePassengerDistance, ROUND(SwimDistance / 1000, 1) AS SwimDistance, ROUND(WalkDistance / 1000, 1) AS WalkDistance, TransporterUID.Nickname AS TransporterName, PassengerUID.Nickname AS PassengerName FROM Events LEFT JOIN Players AS Player ON Events.PlayerUID = Player.SteamID64 LEFT JOIN Players AS KilledEnemy ON Events.KilledEnemy = KilledEnemy.SteamID64 LEFT JOIN Players AS KilledByEnemy ON Events.KilledByEnemy = KilledByEnemy.SteamID64 LEFT JOIN Players AS KilledTeammate ON Events.KilledTeammate = KilledTeammate.SteamID64 LEFT JOIN Players AS KilledByTeammate ON Events.KilledByTeammate = KilledByTeammate.SteamID64 LEFT JOIN Players AS RevivedTeammate ON Events.RevivedTeammate = RevivedTeammate.SteamID64 LEFT JOIN Players AS RevivedByTeammate ON Events.RevivedByTeammate = RevivedByTeammate.SteamID64 LEFT JOIN Players AS TransporterUID ON Events.TransporterUID = TransporterUID.SteamID64 LEFT JOIN Players AS PassengerUID ON Events.PassengerUID = PassengerUID.SteamID64 WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND (PlayerUID = $PlayerUID OR TransporterUID = $PlayerUID) ORDER BY Time ASC;";
 
     $result = mysqli_query($dbh, $sql_stmt);
@@ -141,21 +151,8 @@
         }
     }
 
-    // FPS
-    $sql_fps = "SELECT Time, FPS FROM FPS WHERE PlayerUID = $PlayerUID AND Time BETWEEN '$Mission_Start' AND '$Mission_End' ORDER BY Time ASC;";
-    $result_fps = mysqli_query($dbh, $sql_fps);
-    if (!$result_fps) die("Database access failed: " . mysqli_error($dbh)); 
-
-    $rows = mysqli_num_rows($result_fps); 
-    if ($rows)
-    {
-        while ($row = mysqli_fetch_array($result_fps))
-        {
-            $FPS[] = [strtotime($row['Time']) * 1000, $row['FPS']];
-        }
-    }
-    else die("Player not found.");
-
-    echo json_encode(array("Info"=>$info, "Alltime"=>$alltime, "Events"=>$events, "FPS"=>$FPS));
+    $result = json_encode(array("Info"=>$info, "Alltime"=>$alltime, "Events"=>$events));
+    echo $result;
+    file_put_contents($cachefile, $result);
     mysqli_close($dbh);
 ?>
