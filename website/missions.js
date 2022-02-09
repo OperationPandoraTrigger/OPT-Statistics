@@ -943,6 +943,10 @@ function render_Popup(playerdata, PlayerUID) {
 
     html += "</div>"
     document.getElementById("Popup").innerHTML = html;
+
+    // loading screen disable
+    document.getElementById("loading").style.display = "none";
+
     openPopup();
 
     // async load after page is open
@@ -957,7 +961,11 @@ function render_Popup(playerdata, PlayerUID) {
     });
 }
 
-function show_Popup(PlayerUID) {
+function show_Popup(PlayerUID)
+{
+    // loading screen enable
+    document.getElementById("loading").style.display = "block";
+  
     $.ajax(
         {
             url: "player.php?mission=" + SelectedMissionID + "&player=" + PlayerUID,

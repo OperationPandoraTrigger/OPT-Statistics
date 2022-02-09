@@ -62,54 +62,48 @@
 
 </head>
 <div id="Popup" class="overlay"></div>
+<div id="loading"></div>
 
 <body style="background-color: #222;">
-    <div id="header">
-        <form action="select.html">
-            <label>
-                <p style="color:rgb(255, 255, 255);font-size:18px;">Schlachtauswahl:
-                    <select id="MissionSelector" size="1" onchange='MissionSelectorAction(this.value)'></select>
-                    <span class="CampaignPoints"></span>
-                    <a href="campaigns.html">Kampagnen&uuml;bersicht</a>
-                    <a href="#graphs">Diagramme &#8609;</a>
-                    <a href="#stats">Statistiken &#8609;</a>
-                    <span class="Objektlink"><a href="objects.html">Objekt&uuml;bersicht</a></span>
-                </p>
-            </label>
-        </form>
-    </div>
-
-    <div id="graphs"><br></div>
-
-    <div class="graphcontainer">
-        <div class="graphleft">
-            <div class="graph-container">
-                <center>
-                    <p style="color:rgb(255, 255, 255);font-size:18px;"><span class="PunkteText"></span></p>
-                </center>
-                <div id="points" class="graph-placeholder"></div>
-            </div>
-        </div>
-
-        <div class="graphright">
-            <div class="graph-container">
-                <center>
-                    <p style="color:rgb(255, 255, 255);font-size:18px;"><span class="BudgetText"></span></p>
-                </center>
-                <div id="budget" class="graph-placeholder"></div>
-            </div>
+<div id="header">
+    <form action="select.html">
+        <label>
+            <p style="color:rgb(255, 255, 255);font-size:18px;">Schlachtauswahl:
+                <select id="MissionSelector" size="1" onchange='MissionSelectorAction(this.value)'></select>
+                <span class="CampaignPoints"></span>
+                <a href="campaigns.html">Kampagnen&uuml;bersicht</a>
+                <a href="#graphs">Diagramme &#8609;</a>
+                <a href="#stats">Statistiken &#8609;</a>
+                <span class="Objektlink"><a href="objects.html">Objekt&uuml;bersicht</a></span>
+            </p>
+        </label>
+    </form>
+</div>
+<div id="graphs"><br></div>
+<div class="graphcontainer">
+    <div class="graphleft">
+        <div class="graph-container">
+            <center>
+                <p style="color:rgb(255, 255, 255);font-size:18px;"><span class="PunkteText"></span></p>
+            </center>
+            <div id="points" class="graph-placeholder"></div>
         </div>
     </div>
-
-
-    <div class="statscontainer">
-        <center>
-            <span class="stats_CSV"> &#x1F4BE;</span>
-        </center>        
-        <div id="stats"></div>
+    <div class="graphright">
+        <div class="graph-container">
+            <center>
+                <p style="color:rgb(255, 255, 255);font-size:18px;"><span class="BudgetText"></span></p>
+            </center>
+            <div id="budget" class="graph-placeholder"></div>
+        </div>
     </div>
-
-    <br>
-
+</div>
+<div class="statscontainer">
+    <center>
+        <span class="stats_CSV"> &#x1F4BE;</span>
+    </center>        
+    <div id="stats"></div>
+</div>
+<br>
 </body>
 </html>
