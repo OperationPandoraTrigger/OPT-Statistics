@@ -1254,23 +1254,17 @@ void ArchiveLogFile(string FileName, string DestinationDirectory)
 
 void WipeCache(void)
 {
-    DeleteFile("/var/www/cache/getdata.json");
-    DeleteFile("/var/www/cache/campaigns.json");
     DeleteFile("/var/www/cache/campaigns_campaign_%04d.json", CampaignID);
-    DeleteFile("/var/www/cache/campaignmissions.json");
     DeleteFile("/var/www/cache/campaignmissions_campaign_%04d.json", CampaignID);
     DeleteFile("/var/www/cache/playerstats_campaign_%04d.json", CampaignID);
 }
 
 void FillCache(void)
 {
-    DownloadURL("https://stats.opt4.net:2021/getdata.php");
     DownloadURL("https://stats.opt4.net:2021/getdata.php?mission=%d", MissionID);
     DownloadURL("https://stats.opt4.net:2021/stats.php?mission=%d", MissionID);
 
-    DownloadURL("https://stats.opt4.net:2021/campaigns.php");
     DownloadURL("https://stats.opt4.net:2021/campaigns.php?campaign=%d", CampaignID);
-    DownloadURL("https://stats.opt4.net:2021/campaignmissions.php");
     DownloadURL("https://stats.opt4.net:2021/campaignmissions.php?campaign=%d", CampaignID);
     DownloadURL("https://stats.opt4.net:2021/playerstats.php?campaign=%d", CampaignID);
 
@@ -1333,8 +1327,8 @@ int main(int argc, char **argv)
     ArchiveLogFile(FPSFileName, ARCHIVEPATH);
     GetMissionID();
     ParseLog(ARCHIVEPATH + LogFileName, ARCHIVEPATH + FPSFileName);
-    WipeCache();
     SendToDatabase();
+    WipeCache();
     FillCache();
     PrintError("Done.\n");
 }

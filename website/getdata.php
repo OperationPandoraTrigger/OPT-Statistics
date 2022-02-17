@@ -1,16 +1,6 @@
 <?php
 if(isset($_GET['mission'])) $SelectedMissionID = htmlspecialchars($_GET["mission"]); 
 
-if (!empty($SelectedMissionID)) $cachefile = sprintf('cache/getdata_mission_%04d.json', $SelectedMissionID);
-else $cachefile = 'cache/getdata.json';
-
-if (file_exists($cachefile))
-{
-    $result = file_get_contents($cachefile);
-    echo $result;
-    exit(0);
-}
-
 $db_server = 'localhost';
 $db_name = 'opt';
 $db_user = 'opt';
@@ -52,6 +42,7 @@ if ($rows)
                 $Selected_SideARF = $row['SideARF'];
                 $Selected_Mission_PointsSWORD = $row['PointsSWORD'];
                 $Selected_Mission_PointsARF = $row['PointsARF'];
+                break;
             }
         }
 
@@ -68,6 +59,16 @@ if ($rows)
     }
 }
 else die("No missions found.");
+
+// Cache
+$cachefile = sprintf('cache/getdata_mission_%04d.json', $MissionID);
+
+if (file_exists($cachefile))
+{
+    $result = file_get_contents($cachefile);
+    echo $result;
+    exit(0);
+}
 
 // Punkte
 $sql_points = "SELECT Time, PointsSWORD, PointsARF FROM Events WHERE Time BETWEEN '$Selected_Mission_Start' AND '$Selected_Mission_End' AND PointsSWORD IS NOT NULL ORDER BY Time ASC;";

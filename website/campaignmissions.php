@@ -1,16 +1,6 @@
 <?php
     if(isset($_GET['campaign'])) $SelectedCampaignID = htmlspecialchars($_GET["campaign"]); 
 
-    if (!empty($SelectedCampaignID)) $cachefile = sprintf('cache/campaignmissions_campaign_%04d.json', $SelectedCampaignID);
-    else $cachefile = 'cache/campaignmissions.json';
-
-    if (file_exists($cachefile))
-    {
-        $result = file_get_contents($cachefile);
-        echo $result;
-        exit(0);
-    }
-
     $db_server = 'localhost';
     $db_name = 'opt';
     $db_user = 'opt';
@@ -43,6 +33,7 @@
                 if ($CampaignID == $SelectedCampaignID)
                 {
                     $Selected_Campaign = $CampaignName;
+                    break;
                 }
             }
             else
@@ -52,6 +43,16 @@
         }
     }
     else die("No campaigns found.");
+
+    // Cache
+    $cachefile = sprintf('cache/campaignmissions_campaign_%04d.json', $CampaignID);
+
+    if (file_exists($cachefile))
+    {
+        $result = file_get_contents($cachefile);
+        echo $result;
+        exit(0);
+    }
 
     // Schlachten Übersicht
     $sql_missions = "SELECT ID, Start, End, MissionName, MissionFileName, Fractions, SideSWORD, SideARF, PointsSWORD, PointsARF, Rated, NumPlayers from Missions WHERE CampaignName = '$Selected_Campaign';";

@@ -1,16 +1,6 @@
 <?php
 if(isset($_GET['campaign'])) $SelectedCampaignID = htmlspecialchars($_GET["campaign"]); 
 
-if (!empty($SelectedCampaignID)) $cachefile = sprintf('cache/campaigns_campaign_%04d.json', $SelectedCampaignID);
-else $cachefile = 'cache/campaigns.json';
-
-if (file_exists($cachefile))
-{
-    $result = file_get_contents($cachefile);
-    echo $result;
-    exit(0);
-}
-
 $db_server = 'localhost';
 $db_name = 'opt';
 $db_user = 'opt';
@@ -43,6 +33,7 @@ if ($rows)
             if ($CampaignID == $SelectedCampaignID)
             {
                  $Selected_Campaign = $CampaignName;
+                 break;
             }
         }
         else
@@ -52,6 +43,16 @@ if ($rows)
     }
 }
 else die("No campaigns found.");
+
+// Cache
+$cachefile = sprintf('cache/campaigns_campaign_%04d.json', $CampaignID);
+
+if (file_exists($cachefile))
+{
+    $result = file_get_contents($cachefile);
+    echo $result;
+    exit(0);
+}
 
 // Kampagnenpunkte
 $sql_CampaignPoints = "SELECT SUM(PointsSWORD) AS PointsSWORD, SUM(PointsARF) AS PointsARF from Missions WHERE Rated = True AND CampaignName = '$Selected_Campaign';";
