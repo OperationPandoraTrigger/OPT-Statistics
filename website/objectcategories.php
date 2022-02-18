@@ -54,7 +54,7 @@
     if ($SelectedSide == "SWORD") $Side = $SideSWORD;
     if ($SelectedSide == "ARF") $Side = $SideARF;
 
-    $sql_stmt = "SELECT Category, COUNT(Category) AS Amount, SUM(Price) AS Price, ROUND(SUM(Price)/(SELECT SUM(Price) FROM ObjectLifetime WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND Side = '$Side')*100, 1) AS Percentage FROM ObjectLifetime WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND Side = '$Side' GROUP BY Category;";
+    $sql_stmt = "SELECT Category, COUNT(Category) AS Amount, ROUND(AVG(Lifetime)/60,0) AS Lifetime, SUM(Price) AS Price, ROUND(SUM(Price)/(SELECT SUM(Price) FROM ObjectLifetime WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND Side = '$Side')*100, 1) AS Percentage FROM ObjectLifetime WHERE Time BETWEEN '$Mission_Start' AND '$Mission_End' AND Side = '$Side' GROUP BY Category;";
     $result = mysqli_query($dbh,$sql_stmt);
 
     if (!$result) die("Database access failed: " . mysqli_error($dbh)); 
@@ -67,6 +67,7 @@
             $data[] = array(
                 'Category' => $row["Category"],
                 'Amount' => $row["Amount"],
+                'Lifetime' => $row["Lifetime"],
                 'Price' => $row["Price"],
                 'Percentage' => $row["Percentage"]
             );
