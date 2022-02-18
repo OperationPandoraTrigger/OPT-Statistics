@@ -304,6 +304,7 @@ function show_ObjectCategories_SWORD() {
         columns: [
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
             {
                 title: "Kosten",
                 columns: [
@@ -328,6 +329,7 @@ function show_ObjectCategories_SWORD2() {
         columns: [
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
             {
                 title: "Kosten",
                 columns: [
@@ -352,6 +354,7 @@ function show_ObjectCategories_ARF() {
         columns: [
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories();} },
             {
                 title: "Kosten",
                 columns: [
@@ -376,6 +379,7 @@ function show_ObjectCategories_ARF2() {
         columns: [
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectCategories2();} },
             {
                 title: "Kosten",
                 columns: [
@@ -402,6 +406,7 @@ function show_ObjectItems_SWORD() {
         columns: [
             { title: "Produkt", field: "Name", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 3, headerClick:function(){ScrollToObjectItems();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
             {
                 title: "Kosten",
@@ -427,6 +432,7 @@ function show_ObjectItems_SWORD2() {
         columns: [
             { title: "Produkt", field: "Name", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 3, headerClick:function(){ScrollToObjectItems2();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
             {
                 title: "Kosten",
@@ -452,6 +458,7 @@ function show_ObjectItems_ARF() {
         columns: [
             { title: "Produkt", field: "Name", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 3, headerClick:function(){ScrollToObjectItems();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectItems();} },
             {
                 title: "Kosten",
@@ -477,6 +484,7 @@ function show_ObjectItems_ARF2() {
         columns: [
             { title: "Produkt", field: "Name", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 3, headerClick:function(){ScrollToObjectItems2();} },
             { title: "Anzahl", field: "Amount", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
+            { title: "Lebenszeit<br>&#8709;/min", titleDownload: "Lebenszeit", field: "Lifetime", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
             { title: "Kategorie", field: "Category", editor: "input", hozAlign: "center", headerSortStartingDir: "asc", widthGrow: 1, headerClick:function(){ScrollToObjectItems2();} },
             {
                 title: "Kosten",
