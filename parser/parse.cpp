@@ -1256,6 +1256,14 @@ void WipeCache(void)
 {
     DeleteFile("/var/www/cache/campaigns_campaign_%04d.json", CampaignID);
     DeleteFile("/var/www/cache/campaignmissions_campaign_%04d.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectcategories_campaign_%04d_side_NATO_halftime_1.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectcategories_campaign_%04d_side_CSAT_halftime_1.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectcategories_campaign_%04d_side_NATO_halftime_2.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectcategories_campaign_%04d_side_CSAT_halftime_2.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectitems_campaign_%04d_side_NATO_halftime_1.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectitems_campaign_%04d_side_CSAT_halftime_1.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectitems_campaign_%04d_side_NATO_halftime_2.json", CampaignID);
+    DeleteFile("/var/www/cache/campaignobjectitems_campaign_%04d_side_CSAT_halftime_2.json", CampaignID);
     DeleteFile("/var/www/cache/playerstats_campaign_%04d.json", CampaignID);
 }
 
@@ -1267,6 +1275,14 @@ void FillCache(void)
     DownloadURL("https://stats.opt4.net:2021/campaigns.php?campaign=%d", CampaignID);
     DownloadURL("https://stats.opt4.net:2021/campaignmissions.php?campaign=%d", CampaignID);
     DownloadURL("https://stats.opt4.net:2021/playerstats.php?campaign=%d", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectcategories.php?campaign=%d&side=NATO&halftime=1", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectcategories.php?campaign=%d&side=CSAT&halftime=1", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectcategories.php?campaign=%d&side=NATO&halftime=2", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectcategories.php?campaign=%d&side=CSAT&halftime=2", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectitems.php?campaign=%d&side=NATO&halftime=1", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectitems.php?campaign=%d&side=CSAT&halftime=1", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectitems.php?campaign=%d&side=NATO&halftime=2", CampaignID);
+    DownloadURL("https://stats.opt4.net:2021/campaignobjectitems.php?campaign=%d&side=CSAT&halftime=2", CampaignID);
 
     DownloadURL("https://stats.opt4.net:2021/objectcategories.php?mission=%d&side=SWORD", MissionID);
     DownloadURL("https://stats.opt4.net:2021/objectcategories.php?mission=%d&side=ARF", MissionID);
