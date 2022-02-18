@@ -43,6 +43,7 @@
                 if ($CampaignID == $SelectedCampaignID)
                 {
                     $Selected_Campaign = $CampaignName;
+                    break;
                 }
             }
             else
@@ -53,39 +54,22 @@
     }
     else die("No campaigns found.");
 
-    $sql_start = "SELECT Start FROM Missions WHERE Rated = 1 AND CampaignName = '$Selected_Campaign' ORDER BY Start LIMIT 1;";
+    $sql = "SELECT ID FROM Missions WHERE Rated = TRUE AND CampaignName = '$Selected_Campaign' ORDER BY Start;";
 
-    $result_start = mysqli_query($dbh, $sql_start);
-    if (!$result_start) die("Database access failed: " . mysqli_error($dbh)); 
+    $result = mysqli_query($dbh, $sql);
+    if (!$result) die("Database access failed: " . mysqli_error($dbh)); 
 
-    $rows = mysqli_num_rows($result_start); 
-    if ($rows == 1)
+    $rows = mysqli_num_rows($result); 
+    if ($rows)
     {
-        while ($row = mysqli_fetch_array($result_start))
+        while ($row = mysqli_fetch_array($result))
         {
-            $Mission_Start = $row['Start'];
+            $MissionIDs[] = $row['ID'];
         }
     }
     else die("Wrong number of missions.");
 
-
-    $sql_end = "SELECT End FROM Missions WHERE Rated = 1 AND CampaignName = '$Selected_Campaign' ORDER BY End DESC LIMIT 1;";
-
-    $result_end = mysqli_query($dbh, $sql_end);
-    if (!$result_end) die("Database access failed: " . mysqli_error($dbh)); 
-
-    $rows = mysqli_num_rows($result_end); 
-    if ($rows == 1)
-    {
-        while ($row = mysqli_fetch_array($result_end))
-        {
-            $Mission_End = $row['End'];
-        }
-    }
-    else die("Wrong number of missions.");
-
-
-    $sql_stmt = "WITH Contributions AS (SELECT PlayerUID, MissionID FROM Events GROUP BY PlayerUID, MissionID ) SELECT E.PlayerUID, P.Nickname AS Name, E.PlayerSide, IF(E.PlayerUID, COUNT(E.KilledEnemy), 0) AS Kills, IF(E.PlayerUID, COUNT(E.KilledTeammate), 0) AS Teamkills, IF(E.PlayerUID, COUNT(E.KilledByEnemy), 0) AS DeathsByEnemy, IF(E.PlayerUID, COUNT(E.KilledByTeammate), 0) AS DeathsByTeammate, IF(E.PlayerUID, COUNT(E.FlagDistance), 0) AS FlagConquers, IF(E.PlayerUID, COUNT(E.KilledVehicleName), 0) AS Vehiclekills, IF(E.PlayerUID, COUNT(E.RevivedTeammate), 0) AS Revives, IF(E.PlayerUID, (COUNT(E.RespawnClick) + COUNT(RespawnTimeout)), 0) AS Respawns, IF(E.PlayerUID, (IFNULL(SUM(E.BudgetBuy), 0) - IFNULL(SUM(BudgetSell), 0)), 0) AS Cost, IF(E.PlayerUID, ROUND(MAX(E.KillDistance)), 0) AS MaxKillDistance, ROUND(AVG(E.FPS), 1) AS FPS, ROUND(IFNULL(SUM(E.PilotDistance), 0) / 1000, 0) AS PilotDistance, ROUND(IFNULL(SUM(E.AirPassengerDistance), 0) / 1000, 0) AS AirPassengerDistance, ROUND(IFNULL(SUM(E.DriverDistance), 0) / 1000, 0) AS DriverDistance, ROUND(IFNULL(SUM(E.DrivePassengerDistance), 0) / 1000, 0) AS DrivePassengerDistance, ROUND((IF(E.PlayerUID, COUNT(E.KilledEnemy), 0) / IF(E.PlayerUID, COUNT(E.KilledByEnemy), 0)), 1) AS KD, (SELECT COUNT(*) FROM Contributions C WHERE C.PlayerUID = E.PlayerUID GROUP BY C.PlayerUID) AS Participations FROM Events E INNER JOIN Players P ON E.PlayerUID = P.SteamID64 WHERE E.Time BETWEEN '$Mission_Start' AND '$Mission_End' AND E.PlayerUID IS NOT NULL GROUP BY E.PlayerUID ORDER BY Kills DESC;";
+    $sql_stmt = "WITH Contributions AS (SELECT PlayerUID, MissionID FROM Events GROUP BY PlayerUID, MissionID ) SELECT E.PlayerUID, P.Nickname AS Name, E.PlayerSide, IF(E.PlayerUID, COUNT(E.KilledEnemy), 0) AS Kills, IF(E.PlayerUID, COUNT(E.KilledTeammate), 0) AS Teamkills, IF(E.PlayerUID, COUNT(E.KilledByEnemy), 0) AS DeathsByEnemy, IF(E.PlayerUID, COUNT(E.KilledByTeammate), 0) AS DeathsByTeammate, IF(E.PlayerUID, COUNT(E.FlagDistance), 0) AS FlagConquers, IF(E.PlayerUID, COUNT(E.KilledVehicleName), 0) AS Vehiclekills, IF(E.PlayerUID, COUNT(E.RevivedTeammate), 0) AS Revives, IF(E.PlayerUID, (COUNT(E.RespawnClick) + COUNT(RespawnTimeout)), 0) AS Respawns, IF(E.PlayerUID, (IFNULL(SUM(E.BudgetBuy), 0) - IFNULL(SUM(BudgetSell), 0)), 0) AS Cost, IF(E.PlayerUID, ROUND(MAX(E.KillDistance)), 0) AS MaxKillDistance, ROUND(AVG(E.FPS), 1) AS FPS, ROUND(IFNULL(SUM(E.PilotDistance), 0) / 1000, 0) AS PilotDistance, ROUND(IFNULL(SUM(E.AirPassengerDistance), 0) / 1000, 0) AS AirPassengerDistance, ROUND(IFNULL(SUM(E.DriverDistance), 0) / 1000, 0) AS DriverDistance, ROUND(IFNULL(SUM(E.DrivePassengerDistance), 0) / 1000, 0) AS DrivePassengerDistance, ROUND((IF(E.PlayerUID, COUNT(E.KilledEnemy), 0) / IF(E.PlayerUID, COUNT(E.KilledByEnemy), 0)), 1) AS KD, (SELECT COUNT(*) FROM Contributions C WHERE C.PlayerUID = E.PlayerUID GROUP BY C.PlayerUID) AS Participations FROM Events E INNER JOIN Players P ON E.PlayerUID = P.SteamID64 WHERE E.MissionID IN (" . implode(',', array_map('intval', $MissionIDs)) . ") AND E.PlayerUID IS NOT NULL GROUP BY E.PlayerUID ORDER BY Kills DESC;";
 
     $result = mysqli_query($dbh, $sql_stmt);
 
