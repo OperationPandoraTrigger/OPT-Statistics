@@ -28,7 +28,7 @@ namespace fs = filesystem;
 // needs:
 // pacman -S mysql++ boost
 // compile:
-// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -lcurl -I boost_1_76_0/ -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
+// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -lcurl -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
 
 // global vars
 string SQL_Mission_Insert = "";
