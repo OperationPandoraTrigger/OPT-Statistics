@@ -2,6 +2,13 @@
 https://stats.opt4.net:2021
 \
 \
+**orden**\
+Rendert für jeden Spieler ein PNG mit entsprechendem Dienstgrad und Orden.\
+Zur Einbindung in die Statistik-Webseite und/oder in die Forensignatur.\
+Benötigt *imagemagick*, *ghostscript* und *gsfonts*. Vermutlich auch *librsvg*, *libxft* und *freetype2*.\
+Ausführen mit:\
+`./orden.sh`\
+\
 **parser**\
 Parst die ArmA-Logfiles und schreibt die einzelnen Events in eine MariaDB Datenbank.\
 Benötigt *mysql++*, *boost* und *curl*.\
