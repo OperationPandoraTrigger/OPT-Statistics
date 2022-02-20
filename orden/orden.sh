@@ -64,76 +64,76 @@ do
 	CAMPAIGNS=${player[21]}
 
         echo ${PLAYER}/${PLAYERS} Rendering picture for ${STEAM64} ${NICK}... \(Kills: ${KILLS} / Revives: ${REVIVES} / Flags: ${FLAGS} / TrapoKM: ${TRAPO} / VehicleKills: ${VEHICLEKILLS} / Participations: ${PARTICIPATIONS} / Campaigns: ${CAMPAIGNS}\)
-	CMD="magick montage -background transparent -fill white -pointsize 12 -gravity north \( "
+	CMD="magick montage -background transparent -fill white -pointsize 12 -gravity north "
 
 	# Dienstgrad nach Anzahl der Schlachtteilnahmen
 	if [ "${PARTICIPATIONS}" -ge "50" ]; then
-	    CMD+="-annotate +0+5 General ${ORDENDIR}/schulterklappen/general.png "
+	    CMD+="\( -annotate +0+5 General ${ORDENDIR}/schulterklappen/general.png \) "
 	else
 	    if [ "${PARTICIPATIONS}" -ge "48" ]; then
-		CMD+="-annotate +0+5 Generalleutnant ${ORDENDIR}/schulterklappen/generalleutnant.png "
+		CMD+="\( -annotate +0+5 Generalleutnant ${ORDENDIR}/schulterklappen/generalleutnant.png \) "
 	    else
 		if [ "${PARTICIPATIONS}" -ge "46" ]; then
-		    CMD+="-annotate +0+5 Generalmajor ${ORDENDIR}/schulterklappen/generalmajor.png "
+		    CMD+="\( -annotate +0+5 Generalmajor ${ORDENDIR}/schulterklappen/generalmajor.png \) "
 		else
 		    if [ "${PARTICIPATIONS}" -ge "44" ]; then
-			CMD+="-annotate +0+5 Brigadegeneral ${ORDENDIR}/schulterklappen/brigadegeneral.png "
+			CMD+="\( -annotate +0+5 Brigadegeneral ${ORDENDIR}/schulterklappen/brigadegeneral.png \) "
 		    else
 			if [ "${PARTICIPATIONS}" -ge "42" ]; then
-			    CMD+="-annotate +0+5 Oberst ${ORDENDIR}/schulterklappen/oberst.png "
+			    CMD+="\( -annotate +0+5 Oberst ${ORDENDIR}/schulterklappen/oberst.png \) "
 			else
 			    if [ "${PARTICIPATIONS}" -ge "40" ]; then
-				CMD+="-annotate +0+5 Oberstleutnant ${ORDENDIR}/schulterklappen/oberstleutnant.png "
+				CMD+="\( -annotate +0+5 Oberstleutnant ${ORDENDIR}/schulterklappen/oberstleutnant.png \) "
 			    else
 				if [ "${PARTICIPATIONS}" -ge "38" ]; then
-				    CMD+="-annotate +0+5 Major ${ORDENDIR}/schulterklappen/major.png "
+				    CMD+="\( -annotate +0+5 Major ${ORDENDIR}/schulterklappen/major.png \) "
 				else
 				    if [ "${PARTICIPATIONS}" -ge "36" ]; then
-					CMD+="-annotate +0+5 Hauptmann ${ORDENDIR}/schulterklappen/hauptmann.png "
+					CMD+="\( -annotate +0+5 Hauptmann ${ORDENDIR}/schulterklappen/hauptmann.png \) "
 				    else
 					if [ "${PARTICIPATIONS}" -ge "34" ]; then
-					    CMD+="-annotate +0+5 Oberleutnant ${ORDENDIR}/schulterklappen/oberleutnant.png "
+					    CMD+="\( -annotate +0+5 Oberleutnant ${ORDENDIR}/schulterklappen/oberleutnant.png \) "
 					else
 					    if [ "${PARTICIPATIONS}" -ge "32" ]; then
-						CMD+="-annotate +0+5 Leutnant ${ORDENDIR}/schulterklappen/leutnant.png "
+						CMD+="\( -annotate +0+5 Leutnant ${ORDENDIR}/schulterklappen/leutnant.png \) "
 					    else
 						if [ "${PARTICIPATIONS}" -ge "30" ]; then
-						    CMD+="-annotate +0+5 Oberstabsfeldwebel ${ORDENDIR}/schulterklappen/oberstabsfeldwebel.png "
+						    CMD+="\( -annotate +0+5 Oberstabsfeldwebel ${ORDENDIR}/schulterklappen/oberstabsfeldwebel.png \) "
 						else
 						    if [ "${PARTICIPATIONS}" -ge ""26 ]; then
-							CMD+="-annotate +0+5 Stabsfeldwebel ${ORDENDIR}/schulterklappen/stabsfeldwebel.png "
+							CMD+="\( -annotate +0+5 Stabsfeldwebel ${ORDENDIR}/schulterklappen/stabsfeldwebel.png \) "
 						    else
 							if [ "${PARTICIPATIONS}" -ge "24" ]; then
-							    CMD+="-annotate +0+5 Hauptfeldwebel ${ORDENDIR}/schulterklappen/hauptfeldwebel.png "
+							    CMD+="\( -annotate +0+5 Hauptfeldwebel ${ORDENDIR}/schulterklappen/hauptfeldwebel.png \) "
 							else
 							    if [ "${PARTICIPATIONS}" -ge "22" ]; then
-								CMD+="-annotate +0+5 Oberfeldwebel ${ORDENDIR}/schulterklappen/oberfeldwebel.png "
+								CMD+="\( -annotate +0+5 Oberfeldwebel ${ORDENDIR}/schulterklappen/oberfeldwebel.png \) "
 							    else
 								if [ "${PARTICIPATIONS}" -ge "20" ]; then
-								    CMD+="-annotate +0+5 Feldwebel ${ORDENDIR}/schulterklappen/feldwebel.png "
+								    CMD+="\( -annotate +0+5 Feldwebel ${ORDENDIR}/schulterklappen/feldwebel.png \) "
 								else	
 								    if [ "${PARTICIPATIONS}" -ge "18" ]; then
-									CMD+="-annotate +0+5 Stabsunteroffizier ${ORDENDIR}/schulterklappen/stabsunteroffizier.png "
+									CMD+="\( -annotate +0+5 Stabsunteroffizier ${ORDENDIR}/schulterklappen/stabsunteroffizier.png \) "
 								    else
 									if [ "${PARTICIPATIONS}" -ge "16" ]; then
-									    CMD+="-annotate +0+5 Unteroffizier ${ORDENDIR}/schulterklappen/unteroffizier.png "
+									    CMD+="\( -annotate +0+5 Unteroffizier ${ORDENDIR}/schulterklappen/unteroffizier.png \) "
 									else
 									    if [ "${PARTICIPATIONS}" -ge "14" ]; then
-										CMD+="-annotate +0+5 Oberstabsgefreiter ${ORDENDIR}/schulterklappen/oberstabsgefreiter.png "
+										CMD+="\( -annotate +0+5 Oberstabsgefreiter ${ORDENDIR}/schulterklappen/oberstabsgefreiter.png \) "
 									    else
 										if [ "${PARTICIPATIONS}" -ge "10" ]; then
-										    CMD+="-annotate +0+5 Stabsgefreiter ${ORDENDIR}/schulterklappen/stabsgefreiter.png "
+										    CMD+="\( -annotate +0+5 Stabsgefreiter ${ORDENDIR}/schulterklappen/stabsgefreiter.png \) "
 										else
 										    if [ "${PARTICIPATIONS}" -ge "6" ]; then
-											CMD+="-annotate +0+5 Hauptgefreiter ${ORDENDIR}/schulterklappen/hauptgefreiter.png "
+											CMD+="\( -annotate +0+5 Hauptgefreiter ${ORDENDIR}/schulterklappen/hauptgefreiter.png \) "
 										    else
 											if [ "${PARTICIPATIONS}" -ge "4" ]; then
-											    CMD+="-annotate +0+5 Obergefreiter ${ORDENDIR}/schulterklappen/obergefreiter.png "
+											    CMD+="\( -annotate +0+5 Obergefreiter ${ORDENDIR}/schulterklappen/obergefreiter.png \) "
 											else
 											    if [ "${PARTICIPATIONS}" -ge "2" ]; then
-												CMD+="-annotate +0+5 Gefreiter ${ORDENDIR}/schulterklappen/gefreiter.png "
+												CMD+="\( -annotate +0+5 Gefreiter ${ORDENDIR}/schulterklappen/gefreiter.png \) "
 											    else
-												CMD+="-annotate +0+5 Schütze ${ORDENDIR}/schulterklappen/schuetze.png "
+												CMD+="\( -annotate +0+5 Schütze ${ORDENDIR}/schulterklappen/schuetze.png \) "
 											    fi
 											fi
 										    fi
@@ -157,87 +157,101 @@ do
 	    fi
 	fi
 
+	# Get campaigns
+	CMD2="magick montage -background transparent null: null: "
+	mariadb -u ${DB_USER} -p${DB_PASS} ${DB_NAME} --skip-column-names --silent --execute="SELECT CampaignID, CampaignName FROM Events INNER JOIN Campaigns ON Events.CampaignID = Campaigns.ID WHERE PlayerUID = ${STEAM64} GROUP BY CampaignID ORDER BY Time;" > ${TEMPDIR}/campaigns.tmp
+	while IFS=$'\t' read -r -a campaigns
+	do
+	    CAMPAIGN=${campaigns[1]}
+	    CMD2+="§${ORDENDIR}/kampagnen/${CAMPAIGN}.png§ "
+	done < ${TEMPDIR}/campaigns.tmp
+	rm ${TEMPDIR}/campaigns.tmp
+	CMD2+="-tile x10 -geometry +0+5 ${TEMPDIR}/campaigns.png"
+	echo "${CMD2}" | sed s/§/\"/g | sh
+	CMD+="\( -annotate +0+5 §${CAMPAIGNS} Kampagnenteilnahmen§ ${TEMPDIR}/campaigns.png \) "
+
 	# Kills
 	if [ "${KILLS}" -ge "150" ]; then
-	    CMD+="\) \( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_gold.png "
+	    CMD+="\( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_gold.png \) "
 	else
 	    if [ "${KILLS}" -ge "100" ]; then
-		CMD+="\) \( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_silber.png "
+		CMD+="\( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_silber.png \) "
 	    else
 		if [ "${KILLS}" -ge "50" ]; then
-		    CMD+="\) \( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_bronze.png "
+		    CMD+="\( -annotate +0+5 §${KILLS} Feindabschüsse§ ${ORDENDIR}/orden/kills_bronze.png \) "
 		fi
 	    fi
 	fi
 
 	# Wiederbelebungen
 	if [ "${REVIVES}" -ge "100" ]; then
-	    CMD+="\) \( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_gold.png "
+	    CMD+="\( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_gold.png \) "
 	else
 	    if [ "${REVIVES}" -ge "50" ]; then
-		CMD+="\) \( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_silber.png "
+		CMD+="\( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_silber.png \) "
 	    else
 		if [ "${REVIVES}" -ge "25" ]; then
-		    CMD+="\) \( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_bronze.png "
+		    CMD+="\( -annotate +0+5 §${REVIVES} Wiederbelebungen§ ${ORDENDIR}/orden/sani_bronze.png \) "
 		fi
 	    fi
 	fi
 
 	# Flaggeneroberungen
 	if [ "${FLAGS}" -ge "25" ]; then
-	    CMD+="\) \( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_gold.png "
+	    CMD+="\( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_gold.png \) "
 	else
 	    if [ "${FLAGS}" -ge "10" ]; then
-		CMD+="\) \( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_silber.png "
+		CMD+="\( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_silber.png \) "
 	    else
 		if [ "${FLAGS}" -ge "5" ]; then
-		    CMD+="\) \( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_bronze.png "
+		    CMD+="\( -annotate +0+5 §${FLAGS} Flaggeneroberungen§ ${ORDENDIR}/orden/fahne_bronze.png \) "
 		fi
 	    fi
 	fi
 
 	# Transport-Kilometer (Pilot + Fahrer + Kapitän)
 	if [ "${TRAPO}" -ge "1000" ]; then
-	    CMD+="\) \( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_gold.png "
+	    CMD+="\( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_gold.png \) "
 	else
 	    if [ "${TRAPO}" -ge "500" ]; then
-		CMD+="\) \( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_silber.png "
+		CMD+="\( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_silber.png \) "
 	    else
 		if [ "${TRAPO}" -ge "200" ]; then
-		    CMD+="\) \( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_bronze.png "
+		    CMD+="\( -annotate +0+5 §${TRAPO} Transportkilometer§ ${ORDENDIR}/orden/trapo_bronze.png \) "
 		fi
 	    fi
 	fi
 
 	# Fahrzeugzerstörungen
 	if [ "${VEHICLEKILLS}" -ge "50" ]; then
-	    CMD+="\) \( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_gold.png "
+	    CMD+="\( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_gold.png \) "
 	else
 	    if [ "${VEHICLEKILLS}" -ge "25" ]; then
-		CMD+="\) \( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_silber.png "
+		CMD+="\( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_silber.png \) "
 	    else
 		if [ "${VEHICLEKILLS}" -ge "10" ]; then
-		    CMD+="\) \( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_bronze.png "
+		    CMD+="\( -annotate +0+5 §${VEHICLEKILLS} Fahrzeugzerstörungen§ ${ORDENDIR}/orden/pa_bronze.png \) "
 		fi
 	    fi
 	fi
 
 	# Purple Heart für die meisten Kills
 	if [ "${STEAM64}" == "${MOSTKILLS}" ]; then
-	    CMD+="\) \( -annotate +0+5 §Purple Heart§ ${ORDENDIR}/orden/purple_heart.png "
+	    CMD+="\( -annotate +0+5 §Purple Heart§ ${ORDENDIR}/orden/purple_heart.png \) "
 	fi
 
 	# Purple Heart für die meisten Tode
-	if [ "\) \( -annotate +0+5 §Purple Heart§ ${STEAM64}" == "${MOSTDEATHS}" ]; then
-	    CMD+="${ORDENDIR}/orden/purple_heart.png "
+	if [ "${STEAM64}" == "${MOSTDEATHS}" ]; then
+	    CMD+="\( -annotate +0+5 §Purple Heart§ ${ORDENDIR}/orden/purple_heart.png \) "
 	fi
 
 	# Bild rendern
-	CMD+="\) -tile x1 -geometry +5 -gravity northwest ${TEMPDIR}/tmp.png"
+	CMD+="-tile x1 -geometry +10 -gravity northwest ${TEMPDIR}/tmp.png"
 	echo "${CMD}" | sed s/§/\"/g | sh
+	rm ${TEMPDIR}/campaigns.png
 
 	# Text ins Bild schreiben
-	magick convert ${TEMPDIR}/tmp.png -background transparent -gravity northwest -extent 1200 -fill white -pointsize 32 -draw "text 200,360 '${NICK}'" -pointsize 16 -draw "text 200,395 'Bei der OPT seit dem ${SINCE}'" \( -font URWBookman-Demi -fill rgba\(155,155,155,0.35\) -pointsize 120 -gravity center caption:"BETA" -rotate -15 \) -geometry +100+140 -compose over -composite  ${WWWDIR}/${STEAM64}.png
+	magick convert ${TEMPDIR}/tmp.png -background transparent -gravity northwest -extent 1400 -fill white -pointsize 32 -draw "text 200,360 '${NICK}'" -pointsize 16 -draw "text 200,395 'Bei der OPT seit dem ${SINCE}'" \( -font URWBookman-Demi -fill rgba\(155,155,155,0.35\) -pointsize 120 -gravity center caption:"BETA" -rotate -15 \) -geometry +100+140 -compose over -composite  ${WWWDIR}/${STEAM64}.png
 	rm ${TEMPDIR}/tmp.png
 
     done < ${TEMPDIR}/player.tmp
