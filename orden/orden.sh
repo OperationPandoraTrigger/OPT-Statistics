@@ -6,7 +6,7 @@ DB_USER=opt
 DB_PASS=optpass
 
 TEMPDIR=/tmp
-ORDENDIR=/root/log/orden
+ORDENDIR=/root/log/orden/resized
 WWWDIR=/var/www/orden
 ##########################
 
@@ -67,75 +67,75 @@ do
 
 	# Dienstgrad nach Anzahl der Schlachtteilnahmen
 	if [ "${PARTICIPATIONS}" -ge "50" ]; then
-	    CMD+="${ORDENDIR}/teamblau/general.svg "
+	    CMD+="${ORDENDIR}/schulterklappen/general.png "
 	else
 	    if [ "${PARTICIPATIONS}" -ge "48" ]; then
-		CMD+="${ORDENDIR}/teamblau/generalleutnant.svg "
+		CMD+="${ORDENDIR}/schulterklappen/generalleutnant.png "
 	    else
 		if [ "${PARTICIPATIONS}" -ge "46" ]; then
-		    CMD+="${ORDENDIR}/teamblau/generalmajor.svg "
+		    CMD+="${ORDENDIR}/schulterklappen/generalmajor.png "
 		else
 		    if [ "${PARTICIPATIONS}" -ge "44" ]; then
-			CMD+="${ORDENDIR}/teamblau/brigadegeneral.svg "
+			CMD+="${ORDENDIR}/schulterklappen/brigadegeneral.png "
 		    else
 			if [ "${PARTICIPATIONS}" -ge "42" ]; then
-			    CMD+="${ORDENDIR}/teamblau/oberst.svg "
+			    CMD+="${ORDENDIR}/schulterklappen/oberst.png "
 			else
 			    if [ "${PARTICIPATIONS}" -ge "40" ]; then
-				CMD+="${ORDENDIR}/teamblau/oberstleutnant.svg "
+				CMD+="${ORDENDIR}/schulterklappen/oberstleutnant.png "
 			    else
 				if [ "${PARTICIPATIONS}" -ge "38" ]; then
-				    CMD+="${ORDENDIR}/teamblau/major.svg "
+				    CMD+="${ORDENDIR}/schulterklappen/major.png "
 				else
 				    if [ "${PARTICIPATIONS}" -ge "36" ]; then
-					CMD+="${ORDENDIR}/teamblau/hauptmann.svg "
+					CMD+="${ORDENDIR}/schulterklappen/hauptmann.png "
 				    else
 					if [ "${PARTICIPATIONS}" -ge "34" ]; then
-					    CMD+="${ORDENDIR}/teamblau/oberleutnant.svg "
+					    CMD+="${ORDENDIR}/schulterklappen/oberleutnant.png "
 					else
 					    if [ "${PARTICIPATIONS}" -ge "32" ]; then
-						CMD+="${ORDENDIR}/teamblau/leutnant.svg "
+						CMD+="${ORDENDIR}/schulterklappen/leutnant.png "
 					    else
 						if [ "${PARTICIPATIONS}" -ge "30" ]; then
-						    CMD+="${ORDENDIR}/teamblau/oberstabsfeldwebel.svg "
+						    CMD+="${ORDENDIR}/schulterklappen/oberstabsfeldwebel.png "
 						else
 						    if [ "${PARTICIPATIONS}" -ge "28" ]; then
-							CMD+="${ORDENDIR}/teamblau/stabsfeldwebel.svg "
+							CMD+="${ORDENDIR}/schulterklappen/stabsfeldwebel.png "
 						    else
 							if [ "${PARTICIPATIONS}" -ge ""26 ]; then
-							    CMD+="${ORDENDIR}/teamblau/stabsfeldwebel.svg "
+							    CMD+="${ORDENDIR}/schulterklappen/stabsfeldwebel.png "
 							else
 							    if [ "${PARTICIPATIONS}" -ge "24" ]; then
-								CMD+="${ORDENDIR}/teamblau/hauptfeldwebel.svg "
+								CMD+="${ORDENDIR}/schulterklappen/hauptfeldwebel.png "
 							    else
 								if [ "${PARTICIPATIONS}" -ge "22" ]; then
-								    CMD+="${ORDENDIR}/teamblau/oberfeldwebel.svg "
+								    CMD+="${ORDENDIR}/schulterklappen/oberfeldwebel.png "
 								else
 								    if [ "${PARTICIPATIONS}" -ge "20" ]; then
-									CMD+="${ORDENDIR}/teamblau/feldwebel.svg "
+									CMD+="${ORDENDIR}/schulterklappen/feldwebel.png "
 								    else
 									if [ "${PARTICIPATIONS}" -ge "18" ]; then
-									    CMD+="${ORDENDIR}/teamblau/stabsunteroffizier.svg "
+									    CMD+="${ORDENDIR}/schulterklappen/stabsunteroffizier.png "
 									else
 									    if [ "${PARTICIPATIONS}" -ge "16" ]; then
-										CMD+="${ORDENDIR}/teamblau/unteroffizier.svg "
+										CMD+="${ORDENDIR}/schulterklappen/unteroffizier.png "
 									    else
 										if [ "${PARTICIPATIONS}" -ge "14" ]; then
-										    CMD+="${ORDENDIR}/teamblau/oberstabsgefreiter.svg "
+										    CMD+="${ORDENDIR}/schulterklappen/oberstabsgefreiter.png "
 										else
 										    if [ "${PARTICIPATIONS}" -ge "10" ]; then
-											CMD+="${ORDENDIR}/teamblau/stabsgefreiter.svg "
+											CMD+="${ORDENDIR}/schulterklappen/stabsgefreiter.png "
 										    else
 											if [ "${PARTICIPATIONS}" -ge "6" ]; then
-											    CMD+="${ORDENDIR}/teamblau/hauptgefreiter.svg "
+											    CMD+="${ORDENDIR}/schulterklappen/hauptgefreiter.png "
 											else
 											    if [ "${PARTICIPATIONS}" -ge "4" ]; then
-												CMD+="${ORDENDIR}/teamblau/obergefreiter.svg "
+												CMD+="${ORDENDIR}/schulterklappen/obergefreiter.png "
 											    else
 												if [ "${PARTICIPATIONS}" -ge "2" ]; then
-												    CMD+="${ORDENDIR}/teamblau/gefreiter.svg "
+												    CMD+="${ORDENDIR}/schulterklappen/gefreiter.png "
 												else
-												    CMD+="${ORDENDIR}/teamblau/schuetze.svg "
+												    CMD+="${ORDENDIR}/schulterklappen/schuetze.png "
 												fi
 											    fi
 											fi
@@ -162,85 +162,85 @@ do
 
 	# Kills
 	if [ "${KILLS}" -ge "150" ]; then
-	    CMD+="${ORDENDIR}/orden/kills_gold.svg "
+	    CMD+="${ORDENDIR}/orden/kills_gold.png "
 	else
 	    if [ "${KILLS}" -ge "100" ]; then
-		CMD+="${ORDENDIR}/orden/kills_silber.svg "
+		CMD+="${ORDENDIR}/orden/kills_silber.png "
 	    else
 		if [ "${KILLS}" -ge "50" ]; then
-		    CMD+="${ORDENDIR}/orden/kills_bronze.svg "
+		    CMD+="${ORDENDIR}/orden/kills_bronze.png "
 		fi
 	    fi
 	fi
 
 	# Wiederbelebungen
 	if [ "${REVIVES}" -ge "100" ]; then
-	    CMD+="${ORDENDIR}/orden/sani_gold.svg "
+	    CMD+="${ORDENDIR}/orden/sani_gold.png "
 	else
 	    if [ "${REVIVES}" -ge "50" ]; then
-		CMD+="${ORDENDIR}/orden/sani_silber.svg "
+		CMD+="${ORDENDIR}/orden/sani_silber.png "
 	    else
 		if [ "${REVIVES}" -ge "25" ]; then
-		    CMD+="${ORDENDIR}/orden/sani_bronze.svg "
+		    CMD+="${ORDENDIR}/orden/sani_bronze.png "
 		fi
 	    fi
 	fi
 
 	# Flaggeneroberungen
 	if [ "${FLAGS}" -ge "25" ]; then
-	    CMD+="${ORDENDIR}/orden/fahne_gold.svg "
+	    CMD+="${ORDENDIR}/orden/fahne_gold.png "
 	else
 	    if [ "${FLAGS}" -ge "10" ]; then
-		CMD+="${ORDENDIR}/orden/fahne_silber.svg "
+		CMD+="${ORDENDIR}/orden/fahne_silber.png "
 	    else
 		if [ "${FLAGS}" -ge "5" ]; then
-		    CMD+="${ORDENDIR}/orden/fahne_bronze.svg "
+		    CMD+="${ORDENDIR}/orden/fahne_bronze.png "
 		fi
 	    fi
 	fi
 
 	# Transport-Kilometer (Pilot + Fahrer + Kapitän)
 	if [ "${TRAPO}" -ge "1000" ]; then
-	    CMD+="${ORDENDIR}/orden/trapo_gold.svg "
+	    CMD+="${ORDENDIR}/orden/trapo_gold.png "
 	else
 	    if [ "${TRAPO}" -ge "500" ]; then
-		CMD+="${ORDENDIR}/orden/trapo_silber.svg "
+		CMD+="${ORDENDIR}/orden/trapo_silber.png "
 	    else
 		if [ "${TRAPO}" -ge "200" ]; then
-		    CMD+="${ORDENDIR}/orden/trapo_bronze.svg "
+		    CMD+="${ORDENDIR}/orden/trapo_bronze.png "
 		fi
 	    fi
 	fi
 
 	# Fahrzeugzerstörungen
 	if [ "${VEHICLEKILLS}" -ge "50" ]; then
-	    CMD+="${ORDENDIR}/orden/pa_gold.svg "
+	    CMD+="${ORDENDIR}/orden/pa_gold.png "
 	else
 	    if [ "${VEHICLEKILLS}" -ge "25" ]; then
-		CMD+="${ORDENDIR}/orden/pa_silber.svg "
+		CMD+="${ORDENDIR}/orden/pa_silber.png "
 	    else
 		if [ "${VEHICLEKILLS}" -ge "10" ]; then
-		    CMD+="${ORDENDIR}/orden/pa_bronze.svg "
+		    CMD+="${ORDENDIR}/orden/pa_bronze.png "
 		fi
 	    fi
 	fi
 
 	# Purple Heart für die meisten Kills
 	if [ "${STEAM64}" == "${MOSTKILLS}" ]; then
-	    CMD+="${ORDENDIR}/orden/purple_heart.svg "
+	    CMD+="${ORDENDIR}/orden/purple_heart.png "
 	fi
 
 	# Purple Heart für die meisten Tode
 	if [ "${STEAM64}" == "${MOSTDEATHS}" ]; then
-	    CMD+="${ORDENDIR}/orden/purple_heart.svg "
+	    CMD+="${ORDENDIR}/orden/purple_heart.png "
 	fi
 
 	# Bild rendern
-	CMD+="-tile x1 -geometry +5 -gravity north ${TEMPDIR}/tmp.png"
+	CMD+="-tile x1 -geometry +5 -gravity northwest ${TEMPDIR}/tmp.png"
 	${CMD}
 
 	# Text ins Bild schreiben
-	magick convert ${TEMPDIR}/tmp.png -resize x600 -fill white -pointsize 32 -draw "text 300,515 '${NICK}'" -pointsize 16 -draw "text 300,550 'Bei der OPT seit dem ${SINCE}'" ${WWWDIR}/${STEAM64}.png
+	magick convert ${TEMPDIR}/tmp.png -background transparent -gravity northwest -extent 1400 -fill white -pointsize 32 -draw "text 250,420 '${NICK}'" -pointsize 16 -draw "text 250,460 'Bei der OPT seit dem ${SINCE}'" ${WWWDIR}/${STEAM64}.png
 	rm ${TEMPDIR}/tmp.png
 
     done < ${TEMPDIR}/player.tmp
