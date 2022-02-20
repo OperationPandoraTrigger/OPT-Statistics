@@ -35,7 +35,7 @@ if [[ "${1}" =~ $RegularExpressionNumber ]] ; then
     SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 = ${1};"
 else
     if [[ "$*" == *"--all"* ]]; then
-	SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0;"
+	SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0 ORDER BY SeenLast DESC;"
     else
 	SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0 AND SeenLast > SUBDATE(NOW(), 9);"
     fi
