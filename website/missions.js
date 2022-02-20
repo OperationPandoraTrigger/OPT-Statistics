@@ -825,6 +825,9 @@ function render_Popup(playerdata, PlayerUID) {
     html += "<a href = 'javascript:void(0)' class='closebtn' onclick='closePopup()'>&times;</a>";
 
     html += "<div class='overlay-content'>";
+
+    if (playerdata.Info.PlayerUID != 0) html += "<img src='orden/" + playerdata.Info.PlayerUID + ".png'><br><br><br>";
+
     html += "<p style='font-size: 18px;margin: 1px;'>All-time Stats (Alle Kampagnen inkl. Testschlachten)</p>";
     html += "<p style='font-size: 15px;margin: 1px;'>" + playerdata.Info.SeenFirst + " &#10144; " + playerdata.Info.SeenLast + "</p>";
     html += "<p style='margin: 1px'>" + playerdata.Info.Nickname + " hat bei der OPT bisher "

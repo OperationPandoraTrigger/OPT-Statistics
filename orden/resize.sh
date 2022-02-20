@@ -12,3 +12,8 @@ for f in orden/*.svg; do
     magick montage -background transparent orden/${basename}.svg -geometry +0 -trim -resize x300 -gravity southwest -extent x320 resized/orden/${basename}.png
 done
 
+for f in kampagnen/*.svg; do
+    basename=`basename "$f" .svg`
+    echo Resizing "$basename" ...
+    magick montage -background transparent "kampagnen/${basename}.svg" -geometry +0 -trim -resize 146 -gravity southwest "resized/kampagnen/${basename}.png"
+done
