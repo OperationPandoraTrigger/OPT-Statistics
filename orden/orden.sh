@@ -27,14 +27,21 @@ done < ${TEMPDIR}/mostdeaths.tmp
 rm ${TEMPDIR}/mostdeaths.tmp
 
 
-# Get players seen max. 9 days ago - Or get all players if called with --all
-if [[ "$*" == *"--all"* ]]
-then
-    mariadb -u ${DB_USER} -p${DB_PASS} ${DB_NAME} --skip-column-names --silent --execute="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0;" > ${TEMPDIR}/players.tmp
+# Scriptaufruf mit Steam64-ID: Nur für diesen Spieler rendern
+# Scriptaufruf mit --all: Für alle Spieler rendern
+# Scriptaufruf ohne Parameter: Nur Spieler rendern, die in den letzten 9 Tagen aktiv waren
+RegularExpressionNumber='^[0-9]+$'
+if [[ "${1}" =~ $RegularExpressionNumber ]] ; then
+    SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 = ${1};"
 else
-    mariadb -u ${DB_USER} -p${DB_PASS} ${DB_NAME} --skip-column-names --silent --execute="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0 AND SeenLast > SUBDATE(NOW(), 9);" > ${TEMPDIR}/players.tmp
+    if [[ "$*" == *"--all"* ]]; then
+	SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0;"
+    else
+	SQL="SELECT SteamID64, Nickname, DATE_FORMAT(SeenFirst, '%d.%m.%Y') AS SeenFirst FROM Players WHERE SteamID64 != 0 AND SeenLast > SUBDATE(NOW(), 9);"
+    fi
 fi
 
+mariadb -u ${DB_USER} -p${DB_PASS} ${DB_NAME} --skip-column-names --silent --execute="${SQL}" > ${TEMPDIR}/players.tmp
 PLAYERS=`wc -l ${TEMPDIR}/players.tmp | cut -d " " -f 1`
 PLAYER=0
 while IFS=$'\t' read -r -a players
