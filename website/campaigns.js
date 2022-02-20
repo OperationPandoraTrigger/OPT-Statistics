@@ -264,7 +264,15 @@ function show_PlayerStats()
                 ],
             },
             { title: "Kosten", field: "Cost", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();}, formatter:function(cell, formatterParams){return StringToCurrency(cell.getValue());}},
-            { title: "Teilnahmen", field: "Participations", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+
+            {
+                title: "Teilnahmen an",
+                columns: [
+                    { title: "Schlachten", titleDownload: "Missions", field: "Participations", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                    { title: "Kampagnen", titleDownload: "Campaigns", field: "Campaigns", editor: "input", hozAlign: "center", headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();} },
+                ],
+            },
+
             {
                 title: "L&auml;ngster<br>Schuss [m]", titleDownload: "MaxKillDistance", field: "MaxKillDistance", hozAlign: "left", editor: true, headerSortStartingDir: "desc", headerClick:function(){ScrollToPlayerStats();}, formatter: "progress", formatterParams: {
                     min: 0,
