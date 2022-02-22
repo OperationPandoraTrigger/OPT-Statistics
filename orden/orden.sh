@@ -251,7 +251,7 @@ do
 	rm ${TEMPDIR}/campaigns.png
 
 	# Text ins Bild schreiben
-	magick convert ${TEMPDIR}/tmp.png -background transparent -gravity northwest -extent 1400 -fill white -pointsize 32 -draw "text 200,360 '${NICK}'" -pointsize 16 -draw "text 200,395 'Bei der OPT seit dem ${SINCE}'" \( -font URWBookman-Demi -fill rgba\(155,155,155,0.35\) -pointsize 120 -gravity center caption:"BETA" -rotate -15 \) -geometry +100+140 -compose over -composite  ${WWWDIR}/${STEAM64}.png
+	magick convert ${TEMPDIR}/tmp.png -background transparent -gravity northwest -extent 1400 -fill white -pointsize 32 -draw "text 200,350 '${NICK}'" -pointsize 12 -draw "text 200,407 'Letztes update am `date +'%d.%m.%Y um %H:%M:%S'`'" -pointsize 16 -draw "text 200,385 'Bei der OPT seit dem ${SINCE}'" \( -font URWBookman-Demi -fill rgba\(155,155,155,0.35\) -pointsize 120 -gravity center caption:"BETA" -rotate -15 \) -geometry +100+140 -compose over -composite  ${WWWDIR}/${STEAM64}.png
 	rm ${TEMPDIR}/tmp.png
 
     done < ${TEMPDIR}/player.tmp
