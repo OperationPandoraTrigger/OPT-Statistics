@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="cache-control" content="max-age=600">
+    <meta name="OPT4 ArmA 3 Server Statistics" content="Statistics of the played missions on the Operation Pandora Trigger 4 (OPT4) ArmA 3 Server">
+    <meta name="robots" content="index, follow" />
+    <title>OPT4 Kampagnen - ArmA 3 Stats</title>
+
+    <link href="opt_tabulator_midnight.css" rel="stylesheet">
+    <link href="opt.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="tabulator/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/tabulator_core.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/filter.min.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/format.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/responsive_layout.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/select_row.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/modules/sort.min.js"></script>
+    <!-- <script type="text/javascript" src="tabulator/js/modules/page.js"></script> -->
+    <script type="text/javascript" src="tabulator/js/modules/ajax.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/jquery_wrapper.min.js"></script>
+
+    <script type="text/javascript" src="tabulator/js/modules/download.min.js"></script>
+    <script type="text/javascript" src="tabulator/js/modules/export.min.js"></script>
+
+    <script language="javascript" type="text/javascript" src="mercurat.js"></script>
+
+</head>
+
+<body style="background-color: #222;">
+    <div id="header">
+        <form action="select.html">
+            <label>
+                <p style="color:rgb(255, 255, 255);font-size:18px;">Kampagnenauswahl:
+                    <select id="CampaignSelector" size="1" onchange='CampaignSelectorAction(this.value)'></select>
+                    <span class="CampaignPoints"></span>
+                    <a href="index.html">Schlacht</a>
+                    <a href="#graphs">Diagramme &#8609;</a>
+                    <a href="#stats">Statistiken &#8609;</a>
+                    <a href="#playerstats">Spieler-Statistiken &#8609;</a>
+                    <a href="#hz1">K&auml;ufe (1. HZ) &#8609;</a>
+                    <a href="#hz2">(2. HZ) &#8609;</a>
+                    <!-- <span class="Blinky"> neues feature </span> -->
+                    <span class="Objektlink"><a href="objects.html">Objekt&uuml;bersicht</a></span>
+                </p>
+            </label>
+        </form>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="statscontainer">
+        <center>
+            <p style="color:rgb(255, 255, 255);font-size:18px;">Liste der gewerteten Schlachten w&auml;hrend der gew&auml;hlten Kampagne<span class="campaigns_CSV"> &#x1F4BE;</span></p>
+        </center>        
+        <div id="stats"></div>
+    </div>
+
+    <br>
+</body>
+</html>
