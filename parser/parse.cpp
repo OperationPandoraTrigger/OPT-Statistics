@@ -35,7 +35,7 @@ string SQL_Mission_Insert = "";
 int ParsingError = 0;
 
 // Mission Settings
-int CampaignID = 2;
+int CampaignID = 3;
 int MissionID = -1;
 string CampaignName = "";
 string MissionName = "";
