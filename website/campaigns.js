@@ -23,10 +23,12 @@ function show_chartPoints(SWORD, SumSWORD, ARF, SumARF, Mission)
 
     // Missiondates for x-axis ticks
     var MissionDates = [];
-    Mission.forEach(element => {
-        MissionDates.push(element[0]);
-    });
-
+    if (Mission != null)
+    {
+        Mission.forEach(element => {
+            MissionDates.push(element[0]);
+        });
+    }
     var ColorSWORD = "magenta";
     var ColorARF = "cyan";
     var ColorDots = "blue";
