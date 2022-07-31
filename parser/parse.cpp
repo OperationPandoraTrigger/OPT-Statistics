@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
+#include <map>
 #include <stdarg.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -28,7 +29,7 @@ namespace fs = filesystem;
 // needs:
 // pacman -S mysql++ boost
 // compile:
-// c++ -std=c++17 -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -lcurl -I /usr/include/mysql++/ -I /usr/include/mysql/ parse.cpp -o parse && strip parse
+// c++ -std=c++17 parse.cpp -lboost_filesystem -lboost_regex -lmysqlpp -lmysqlclient -lcurl -I /usr/include/mysql++/ -I /usr/include/mysql/ -o parse && strip parse
 
 // global vars
 string SQL_Mission_Insert = "";
@@ -59,6 +60,7 @@ map<string, string> ItemCategories;
 // Players
 map<unsigned long, string> PlayerNames;
 map<unsigned long, string> PlayerSides;
+map<string, time_t> KillPairTimes;
 
 void PrintError(const char *format, ...)
 {
@@ -909,6 +911,19 @@ int ParseLog(string logfile, string fpsfile)
             if(DEBUG)
                 PrintError("%li - Killed: %s by %s with %s (dist: %.1f) @ %li\n", timecode, VictimName.c_str(), CauserName.c_str(), Item.c_str(), Distance, Time);
 
+            // Double-Kill Filter zur Verhinderung von Mehrfachzählung des selben Kills (z.B. bei Explosion von Hubschrauber)
+            char KillPairIndex[100];
+            sprintf(KillPairIndex, "%lu_%lu", CauserUID, VictimUID);
+            if (KillPairTimes.find(KillPairIndex) != KillPairTimes.end())   // zeit für dieses paar schon bekannt?
+            {
+                if (Time - KillPairTimes[KillPairIndex] < 10)   // innerhalb der letzten 10 sekunden?
+                {
+                    if(DEBUG) PrintError("Kill ignored: %s by %s with %s. Same pair occured %lu secs ago.\n", VictimName.c_str(), CauserName.c_str(), Item.c_str(), Time - KillPairTimes[KillPairIndex]);
+                    KillPairTimes[KillPairIndex] = Time;    // neue zeit speichern
+                    continue;
+                }
+            }
+            KillPairTimes[KillPairIndex] = Time;    // zeit speichern
 
             if(CauserSide == VictimSide)
             {
