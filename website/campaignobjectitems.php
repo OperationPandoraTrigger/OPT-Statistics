@@ -12,10 +12,6 @@
     $db_user = 'opt';
     $db_passwort = 'optpass';
 
-
-    if ($SelectedHalftime == '1') $SWORDSide = 'NATO';
-    if ($SelectedHalftime == '2') $SWORDSide = 'CSAT';
-
     $dbh = mysqli_connect($db_server, $db_user, $db_passwort); 
 
     if (!$dbh) die("Unable to connect to MySQL: " . mysqli_error($dbh));
@@ -62,6 +58,23 @@
         echo $result;
         exit(0);
     }
+
+    // SWORD-Seite von der ersten gewerteten Schlacht aus dieser Kampagne ermitteln - für späteren Filter nach Halbzeit
+    if ($SelectedHalftime == '1') $sql_swordside = "SELECT SideSWORD AS Side FROM Missions WHERE Rated = TRUE AND CampaignName = '$Selected_Campaign' ORDER BY Start LIMIT 1;";
+    if ($SelectedHalftime == '2') $sql_swordside = "SELECT SideARF AS Side FROM Missions WHERE Rated = TRUE AND CampaignName = '$Selected_Campaign' ORDER BY Start LIMIT 1;";
+
+    $result_swordside = mysqli_query($dbh, $sql_swordside);
+    if (!$result_swordside) die("Database access failed: " . mysqli_error($dbh)); 
+
+    $rows = mysqli_num_rows($result_swordside); 
+    if ($rows == 1)
+    {
+        while ($row = mysqli_fetch_array($result_swordside))
+        {
+            $SWORDSide = $row['Side'];
+        }
+    }
+    else die("Error fetching SWORDSide.");
 
 
     $sql_start = "SELECT Start FROM Missions WHERE Rated = TRUE AND CampaignName = '$Selected_Campaign' AND SideSWORD = '$SWORDSide' ORDER BY Start LIMIT 1;";
