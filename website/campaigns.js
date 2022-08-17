@@ -90,6 +90,7 @@ function show_chartPoints(SWORD, SumSWORD, ARF, SumARF, Mission)
         xaxis:
         {
             mode: "time",
+            timezone: "browser",
             timeBase: "milliseconds",
             timeformat: "%Y-%m-%d",
             tickLength: 10,

@@ -108,6 +108,7 @@ function show_chartPoints(SWORD, ARF, Conquer, SideSWORD, SideARF)
         xaxis:
         {
             mode: "time",
+            timezone: "browser",
             timeBase: "milliseconds",
             timeformat: "%H:%M",
             tickLength: 10,
@@ -294,6 +295,7 @@ function show_chartBudget(SWORD, ARF, SideSWORD, SideARF)
         xaxis:
         {
             mode: "time",
+            timezone: "browser",
             timeBase: "milliseconds",
             timeformat: "%H:%M",
             tickLength: 10,
@@ -450,6 +452,7 @@ function show_chartFPS(playerdata)
         xaxis:
         {
             mode: "time",
+            timezone: "browser",
             timeBase: "milliseconds",
             timeformat: "%H:%M",
             tickLength: 10,
